@@ -35,3 +35,8 @@ pBeverageList createFromString(char* record) {
 
     return head;
 }
+
+pBeverageList sortBeverage(pBeverageList list, char* key) {
+
+    return NULL;
+}
