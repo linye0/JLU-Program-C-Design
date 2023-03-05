@@ -52,6 +52,7 @@ void deleteBeverage(int number); // 根据编号删除指定结点
 pBeverageList chageBeverage(int number, char* key, char* newValue); // 修改酒水属性
 
 beverageNode searchBeverage(struct beverageData data); // 还没想清楚search的关键字要怎么搞
+//************************************下面都是我的捏******************************************************
 
 typedef struct clientLinkedList {
 
@@ -77,9 +78,19 @@ typedef struct clientData {
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username); // 将注册信息写入链表
+void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving); // 将注册信息写入链表//更改了一下多了一个saving
 
-clientNode signIn(pClientLinkedList list, char* account, char* password); // 登录，返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作
+clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);
+// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作
+//带回三种状态 登录成功1 密码错误0 以及找不到账号-1
+
+clientNode clientSearch(pClientLinkedList list,char *account);//查用户
+
+void chageAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
+
+void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改密码
+
+pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status);//删用户 返回头指针避免出现头指针被logout status状态反馈是否成功0/-1
 
 void deposit(clientNode client, int money); // 存款
 

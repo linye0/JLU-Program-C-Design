@@ -40,3 +40,105 @@ pBeverageList sortBeverage(pBeverageList list, char* key) {
 
     return NULL;
 }
+
+pClientLinkedList initClient(){
+    pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    head->next=NULL;
+    return head;
+}
+
+void Signup(pClientLinkedList list, char *account, char* password, char* username,int saving){
+    pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    pClientLinkedList p=list;
+    while(p->next!=NULL){
+        p=p->next;
+    }
+    p->next=NewClientAccount;
+
+    NewClientAccount->next=NULL;
+    strcpy(NewClientAccount->data->account,account);
+    strcpy(NewClientAccount->data->password,password);
+    strcpy(NewClientAccount->data->username,username);
+    NewClientAccount->data->saving=saving;
+}
+
+clientNode clientSearch(pClientLinkedList list,char *account){
+    pClientLinkedList p=list;
+    while(p!=NULL&&!strcmp(p->data->account,account)){
+        p=p->next;
+    }
+    return p;
+}
+
+clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    if(p!=NULL){
+        if(!strcmp(p->data->password,password)){
+            printf("登陆成功 你好，%s！",p->data->account);
+            *status=1;
+        }else{
+            printf("密码错误 请输入正确的密码\n");
+            *status=0;
+        }
+    }else{
+        printf("抱歉 未能找到输入的用户名T^T\n");
+        printf("您是否需要 注册？");
+        *status=-1;
+    }
+    return p;
+}
+
+void chageAccount(pClientLinkedList list,char* account,char*newAccount){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    strcpy(p->data->account,newAccount);
+    //这里有一个把日志也改了的过程 暂时先搁一下
+}
+
+void NewPassword(pClientLinkedList list,char* account,char* newPassword){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    strcpy(p->data->account,newPassword);
+}
+
+pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
+    pClientLinkedList p=list;
+    if(strcmp(p->data->account,account)==0)
+    {
+        pClientLinkedList t=p->next;
+        free(p);
+        return t;
+    }
+    pClientLinkedList p0=p;
+    p=p->next;
+    while(p!=NULL&&!strcmp(p->data->account,account)){
+        p0=p;
+        p=p->next;
+    }
+    if(p!=NULL){
+        if(p->next!=NULL){
+            p0->next=p->next;
+            free(p);
+            *status=0;
+        }else{
+            p0->next=NULL;
+            free(p);
+            *status=0;
+        }
+        return list;
+    }else
+    {
+        *status=-1;
+        return list;
+    }
+}
+
+void deposit(clientNode client, int money){
+    client->data->saving+=money;
+}
+
+void buy(clientNode client, pBeverageList list, int number){
+    list->storeNum-=number;
+   // client->data->saving-=number*list->哥们你价格呢
+}
