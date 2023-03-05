@@ -99,7 +99,8 @@ int main()
       break;
   }
   break;
-}case'2':
+}
+ case'2':
  {system("cls");
   printf("    ª∂”≠π‚¡Ÿ\n");
   printf("     «Î—°‘Ò\n");
