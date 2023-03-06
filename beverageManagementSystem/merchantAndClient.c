@@ -3,7 +3,7 @@
 #include <string.h>
 #include "merchantAndClient.h"
 
-int isEmpty(pBeverageList list) {
+/*int isEmpty(pBeverageList list) {
     if (list->next == NULL) return 1;
     else return 0;
 }
@@ -39,7 +39,7 @@ pBeverageList createFromString(char* record) {
 pBeverageList sortBeverage(pBeverageList list, char* key) {
 
     return NULL;
-}
+}*/
 
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
@@ -47,7 +47,7 @@ pClientLinkedList initClient(){
     return head;
 }
 
-void Signup(pClientLinkedList list, char *account, char* password, char* username,int saving){
+void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving){
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
     while(p->next!=NULL){
@@ -56,26 +56,27 @@ void Signup(pClientLinkedList list, char *account, char* password, char* usernam
     p->next=NewClientAccount;
 
     NewClientAccount->next=NULL;
-    strcpy(NewClientAccount->data->account,account);
-    strcpy(NewClientAccount->data->password,password);
-    strcpy(NewClientAccount->data->username,username);
-    NewClientAccount->data->saving=saving;
-}
+
+    strcpy_s(NewClientAccount->account,strlen(account)+1,account);
+    strcpy_s(NewClientAccount->password,strlen(password)+1,password);
+    strcpy_s(NewClientAccount->username,strlen(username)+1,username);
+    NewClientAccount->saving=saving;
+}//已测试
 
 clientNode clientSearch(pClientLinkedList list,char *account){
     pClientLinkedList p=list;
-    while(p!=NULL&&!strcmp(p->data->account,account)){
+    while(p!=NULL&&strcmp(p->account,account)!=0){
         p=p->next;
     }
     return p;
-}
+}//已测试
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
     pClientLinkedList p;
     p=clientSearch(list,account);
     if(p!=NULL){
-        if(!strcmp(p->data->password,password)){
-            printf("登陆成功 你好，%s！",p->data->account);
+        if(strcmp(p->password,password)==0){
+            printf("登陆成功 你好，%s！",p->account);
             *status=1;
         }else{
             printf("密码错误 请输入正确的密码\n");
@@ -87,24 +88,24 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
         *status=-1;
     }
     return p;
-}
+}//已测试
 
 void chageAccount(pClientLinkedList list,char* account,char*newAccount){
     pClientLinkedList p;
     p=clientSearch(list,account);
-    strcpy(p->data->account,newAccount);
+    strcpy_s(p->account,strlen(newAccount)+1,newAccount);
     //这里有一个把日志也改了的过程 暂时先搁一下
 }
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword){
     pClientLinkedList p;
     p=clientSearch(list,account);
-    strcpy(p->data->account,newPassword);
+    strcpy_s(p->account,strlen(newPassword)+1,newPassword);
 }
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
     pClientLinkedList p=list;
-    if(strcmp(p->data->account,account)==0)
+    if(strcmp(p->account,account)==0)
     {
         pClientLinkedList t=p->next;
         free(p);
@@ -112,7 +113,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
     }
     pClientLinkedList p0=p;
     p=p->next;
-    while(p!=NULL&&!strcmp(p->data->account,account)){
+    while(p!=NULL&&strcmp(p->account,account)!=0){
         p0=p;
         p=p->next;
     }
@@ -135,10 +136,10 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
 }
 
 void deposit(clientNode client, int money){
-    client->data->saving+=money;
+    client->saving+=money;
 }
 
-void buy(clientNode client, pBeverageList list, int number){
+/*void buy(clientNode client, pBeverageList list, int number){
     list->storeNum-=number;
    // client->data->saving-=number*list->哥们你价格呢
-}
+}*/

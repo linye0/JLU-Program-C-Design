@@ -56,16 +56,6 @@ beverageNode searchBeverage(struct beverageData data); // 还没想清楚search�
 
 typedef struct clientLinkedList {
 
-    struct clientData* data;
-
-    struct clientLinkedList* next;
-
-}*pClientLinkedList, ClientLinkedList;
-
-typedef pClientLinkedList clientNode;
-
-typedef struct clientData {
-
     char account[20];
 
     char password[20];
@@ -74,7 +64,12 @@ typedef struct clientData {
 
     int saving;
 
-}*pClientData, ClientData;
+    struct clientLinkedList* next;
+
+}*pClientLinkedList, ClientLinkedList;
+
+typedef pClientLinkedList clientNode;
+
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
@@ -89,6 +84,7 @@ clientNode clientSearch(pClientLinkedList list,char *account);//查用户
 void chageAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改密码
+//改用户名
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status);//删用户 返回头指针避免出现头指针被logout status状态反馈是否成功0/-1
 
