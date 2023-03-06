@@ -48,6 +48,12 @@ pClientLinkedList initClient(){
 }
 
 void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving){
+    pClientLinkedList p0=clientSearch(list,account);
+    if(p0!=NULL)
+    {
+        printf("gimmeanothernamebitch");
+        return ;//这个地方再调一下
+    }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
     while(p->next!=NULL){
@@ -90,7 +96,7 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
     return p;
 }//已测试
 
-void chageAccount(pClientLinkedList list,char* account,char*newAccount){
+void changeAccount(pClientLinkedList list,char* account,char*newAccount){
     pClientLinkedList p;
     p=clientSearch(list,account);
     strcpy_s(p->account,strlen(newAccount)+1,newAccount);
@@ -105,12 +111,12 @@ void NewPassword(pClientLinkedList list,char* account,char* newPassword){
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
     pClientLinkedList p=list;
-    if(strcmp(p->account,account)==0)
+    /*if(strcmp(p->account,account)==0)
     {
         pClientLinkedList t=p->next;
-        free(p);
+        //free(p);
         return t;
-    }
+    }似乎不用 head节点没东西的*/
     pClientLinkedList p0=p;
     p=p->next;
     while(p!=NULL&&strcmp(p->account,account)!=0){
@@ -120,19 +126,18 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
     if(p!=NULL){
         if(p->next!=NULL){
             p0->next=p->next;
-            free(p);
+           // free(p);
             *status=0;
         }else{
             p0->next=NULL;
-            free(p);
+           // free(p);
             *status=0;
         }
-        return list;
     }else
     {
         *status=-1;
-        return list;
     }
+    return list;
 }
 
 void deposit(clientNode client, int money){

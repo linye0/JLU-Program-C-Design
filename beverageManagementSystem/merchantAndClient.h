@@ -81,7 +81,7 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
 
 clientNode clientSearch(pClientLinkedList list,char *account);//查用户
 
-void chageAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
+void changeAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改密码
 //改用户名
