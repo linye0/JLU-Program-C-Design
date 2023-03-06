@@ -62,7 +62,11 @@ typedef struct clientLinkedList {
 
     char username[20];
 
+    int cost;
+
     int saving;
+
+    int grade;//0123对应 administrator 和客户等级一二三
 
     struct clientLinkedList* next;
 
@@ -73,11 +77,9 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving); // 将注册信息写入链表//更改了一下多了一个saving
+void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving,int cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
-clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);
-// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作
-//带回三种状态 登录成功1 密码错误0 以及找不到账号-1
+clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
 clientNode clientSearch(pClientLinkedList list,char *account);//查用户
 
@@ -87,11 +89,20 @@ void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改�
 //改用户名
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status);//删用户 返回头指针避免出现头指针被logout status状态反馈是否成功0/-1
-
+//*******************************以上是基本登录 增删改查****************************
+//*******************************以下是客户进行购买活动*****************************
 void deposit(clientNode client, int money); // 存款
 
-void showStaff(pBeverageList list); // 就是printStaff
-
 void buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
+
+void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
+
+void recordInit();//初始化购买记录
+
+void recordClient(clientNode client, pBeverageList list, int number);//记录商户操作并记录导入文件
+
+void showStaff(pBeverageList list); // 就是printStaff输出整个链表
+
+void showClientRecord();
 
 #endif // MERCHANTANDCLIENT_H

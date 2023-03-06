@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "merchantAndClient.h"
-
-/*int isEmpty(pBeverageList list) {
+int isEmpty(pBeverageList list) {
     if (list->next == NULL) return 1;
     else return 0;
 }
@@ -39,7 +39,7 @@ pBeverageList createFromString(char* record) {
 pBeverageList sortBeverage(pBeverageList list, char* key) {
 
     return NULL;
-}*/
+}
 
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
@@ -47,7 +47,7 @@ pClientLinkedList initClient(){
     return head;
 }
 
-void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving){
+void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving,int cost,int grade){
     pClientLinkedList p0=clientSearch(list,account);
     if(p0!=NULL)
     {
@@ -67,6 +67,8 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     strcpy_s(NewClientAccount->password,strlen(password)+1,password);
     strcpy_s(NewClientAccount->username,strlen(username)+1,username);
     NewClientAccount->saving=saving;
+    NewClientAccount->cost=cost;
+    NewClientAccount->grade=grade;
 }//已测试
 
 clientNode clientSearch(pClientLinkedList list,char *account){
@@ -144,7 +146,33 @@ void deposit(clientNode client, int money){
     client->saving+=money;
 }
 
-/*void buy(clientNode client, pBeverageList list, int number){
+void clientUpgradeCheck(pClientLinkedList list)
+{
+    if(list->cost>pow(10,2*p->grade))
+    {
+        list->grade++;
+    }
+}
+
+void buy(clientNode client, pBeverageList list, int number){
     list->storeNum-=number;
-   // client->data->saving-=number*list->哥们你价格呢
-}*/
+    client->cost+=number*list->price;
+    client->saving-=number*list->price;
+    clientUpgradeCheck(client);
+    recordClient(client,list,number);
+}
+
+void recordInit()
+{
+
+}
+
+void recordClient(clientNode client, pBeverageList list, int number)
+{
+
+}
+
+void showClientRecord()
+{
+
+}
