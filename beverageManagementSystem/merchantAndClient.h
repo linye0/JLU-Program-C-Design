@@ -7,9 +7,11 @@ typedef struct beverageLinkedList {
 
     char name[100];
 
-    int time;
+    char time[100];
 
     int storeNum;
+
+    int price;
 
     char info[1000];
 
@@ -17,41 +19,48 @@ typedef struct beverageLinkedList {
 
 }*pBeverageList, BeverageList;
 
-typedef pBeverageList beverageNode;
+typedef BeverageList BeverageNode;
+typedef pBeverageList pBeverageNode;
 
 typedef struct beverageData {
 
-    char brand[10]; // å“ç‰Œ
+    char brand[10]; // Æ·ÅÆ
 
-    char name[100]; // é…’æ°´å
+    char name[100]; // ¾ÆË®Ãû
 
-    int time; // è¿›è´§æ—¶é—´
+    int time; // ½ø»õÊ±¼ä
 
-    int storeNum; // å­˜é‡
+    int storeNum; // ´æÁ¿
 
-    char info[1000]; // é…’æ°´ä¿¡æ¯
+    int price; // ¼Û¸ñ
+
+    char info[1000]; // ¾ÆË®ĞÅÏ¢
 
 }*pBeverageData, BeverageData;
 
-int isEmpty(pBeverageList list); // åˆ¤æ–­é“¾è¡¨æ˜¯å¦ä¸ºç©ºï¼Œè¿”å›intç±»å‹çœŸå€¼
+int isEmpty(pBeverageList list); // ÅĞ¶ÏÁ´±íÊÇ·ñÎª¿Õ£¬·µ»ØintÀàĞÍÕæÖµ
 
-void add(pBeverageList list, beverageNode newNode); // å¾€listä¸­åŠ å…¥newNode
+void add(pBeverageList list, pBeverageNode newNode); // ÍùlistÖĞ¼ÓÈënewNode
 
-pBeverageList init(); // åˆå§‹åŒ–ï¼Œåˆ›å»ºç©ºé“¾è¡¨
+pBeverageNode find(pBeverageList head, int i);
 
-pBeverageList createFromString(char* record); // ä»å­—ç¬¦ä¸²è¯»å…¥è¿›è´§è®°å½•ï¼Œå­˜å…¥é“¾è¡¨ä¸­
+pBeverageNode insert(pBeverageList list, pBeverageNode node, int i);
 
-// pBeverageList createFromFile(File* fp); // ä»æ–‡ä»¶è¯»å…¥è¿›è´§è®°å½•ï¼Œå­˜å…¥é“¾è¡¨ä¸­
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]);
 
-pBeverageList sortBeverage(pBeverageList list, char* key); // æ ¹æ®å…³é”®è¯å¯¹é“¾è¡¨è¿›è¡Œæ’åº
+pBeverageList init(); // ³õÊ¼»¯£¬´´½¨¿ÕÁ´±í
 
-void printStaff(pBeverageList list); // æ‰“å°é“¾è¡¨ï¼Œæ‰“å°æ—¶é…’æ°´å‰é¢ä¼šæ˜¾ç¤ºä»0å¼€å§‹çš„ç¼–å·ï¼Œä¾›åç»­æ“ä½œå‚è€ƒ
+pBeverageList createFromFile(char* file); // ´ÓÎÄ¼ş¶ÁÈë½ø»õ¼ÇÂ¼£¬´æÈëÁ´±íÖĞ
 
-void deleteBeverage(int number); // æ ¹æ®ç¼–å·åˆ é™¤æŒ‡å®šç»“ç‚¹
+pBeverageList sortBeverage(pBeverageList list, char* key); // ¸ù¾İ¹Ø¼ü´Ê¶ÔÁ´±í½øĞĞÅÅĞò
 
-pBeverageList chageBeverage(int number, char* key, char* newValue); // ä¿®æ”¹é…’æ°´å±æ€§
+void printStaff(pBeverageList list); // ´òÓ¡Á´±í£¬´òÓ¡Ê±¾ÆË®Ç°Ãæ»áÏÔÊ¾´Ó0¿ªÊ¼µÄ±àºÅ£¬¹©ºóĞø²Ù×÷²Î¿¼
 
-beverageNode searchBeverage(struct beverageData data); // è¿˜æ²¡æƒ³æ¸…æ¥šsearchçš„å…³é”®å­—è¦æ€ä¹ˆæ
+void deleteBeverage(int number); // ¸ù¾İ±àºÅÉ¾³ıÖ¸¶¨½áµã
+
+pBeverageList chageBeverage(int number, char* key, char* newValue); // ĞŞ¸Ä¾ÆË®ÊôĞÔ
+
+pBeverageNode searchBeverage(struct beverageData data); // »¹Ã»ÏëÇå³şsearchµÄ¹Ø¼ü×ÖÒªÔõÃ´¸ã
 
 typedef struct clientLinkedList {
 
@@ -75,16 +84,16 @@ typedef struct clientData {
 
 }*pClientData, ClientData;
 
-pClientLinkedList initClient(); // åˆå§‹åŒ–ï¼Œåˆ›å»ºç©ºé“¾è¡¨
+pClientLinkedList initClient(); // ³õÊ¼»¯£¬´´½¨¿ÕÁ´±í
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username); // å°†æ³¨å†Œä¿¡æ¯å†™å…¥é“¾è¡¨
+void signUp(pClientLinkedList list, char* account, char* password, char* username); // ½«×¢²áĞÅÏ¢Ğ´ÈëÁ´±í
 
-clientNode signIn(pClientLinkedList list, char* account, char* password); // ç™»å½•ï¼Œè¿”å›å€¼æ—¶æ•°æ®åº“ï¼ˆé“¾è¡¨ï¼‰ä¸­å¯¹åº”çš„ç»“ç‚¹ï¼Œåœ¨ç™»é™†æ“ä½œä¹‹åï¼Œæ‰€æœ‰å®¢æˆ·çš„æ“ä½œéƒ½æ˜¯å¯¹è¯¥ç»“ç‚¹è¿›è¡Œæ“ä½œ
+clientNode signIn(pClientLinkedList list, char* account, char* password); // µÇÂ¼£¬·µ»ØÖµÊ±Êı¾İ¿â£¨Á´±í£©ÖĞ¶ÔÓ¦µÄ½áµã£¬ÔÚµÇÂ½²Ù×÷Ö®ºó£¬ËùÓĞ¿Í»§µÄ²Ù×÷¶¼ÊÇ¶Ô¸Ã½áµã½øĞĞ²Ù×÷
 
-void deposit(clientNode client, int money); // å­˜æ¬¾
+void deposit(clientNode client, int money); // ´æ¿î
 
-void showStaff(pBeverageList list); // å°±æ˜¯printStaff
+void showStaff(pBeverageList list); // ¾ÍÊÇprintStaff
 
-void buy(clientNode client, pBeverageList list, int number); // è®¢è´­æŒ‡å®šæ•°é‡çš„é…’æ°´
+void buy(clientNode client, pBeverageList list, int number); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË®
 
 #endif // MERCHANTANDCLIENT_H

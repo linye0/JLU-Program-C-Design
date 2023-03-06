@@ -8,8 +8,8 @@ int isEmpty(pBeverageList list) {
     else return 0;
 }
 
-void add(pBeverageList list, beverageNode newNode) {
-    beverageNode p = list;
+void add(pBeverageList list, pBeverageNode newNode) {
+    pBeverageNode p = list;
     while (p->next != NULL) {
         p = p->next;
     }
@@ -23,17 +23,142 @@ pBeverageList init() {
     return head;
 }
 
-pBeverageList createFromString(char* record) {
-    pBeverageList head = (pBeverageList)malloc(sizeof(BeverageList));
+pBeverageNode find(pBeverageList head, int i) {
+    int j = 1;
+    pBeverageNode p = head;
+
+    if (i < 1) {
+        printf("\nÁ´±í³¤¶ÈÒª´óÓÚÁã\n");
+        return NULL;
+    }
+
+    while (p && i != j) {
+        p = p->next;
+        j++;
+    }
+
+    return p;
+
+}
+
+pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
+    pBeverageNode p;
+    p = find(list, i);
+
+    if (!p && i != 0) {
+        printf("ÕÒ²»µ½µÚ%d¸öÊı¾İ£¬ÎŞ·¨²åÈëÊı¾İ\n", i);
+    } else {
+        if (i == 0) {
+            node->next = list;
+            list = node;
+        } else {
+            node->next = p->next;
+            p->next = node;
+        }
+    }
+
+    return list;
+}
+
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]) {
+    pBeverageNode node = malloc(sizeof(BeverageNode));
+    strcpy(node->brand, brand);
+    strcpy(node->name, name);
+    strcpy(node->time, time);
+    node->storeNum = storeNum;
+    node->price = price;
+    strcpy(node->info, info);
+    node->next = NULL;
+    return node;
+}
+
+pBeverageList createFromFile(char* file) {
+    FILE*fp;
+    fp = fopen(file, "r");
+    int line_len = 0;
+    char ch[1000] = {0};
+
+    pBeverageNode head = (pBeverageNode)malloc(sizeof(BeverageNode));
     head->next = NULL;
-    char tmp[100];
-    printf("æ¬¢è¿ä½¿ç”¨é…’æ°´è¿›è´§ç³»ç»Ÿ!\n");
-    printf("è¯·ä¾æ¬¡è¾“å…¥ï¼šé…’æ°´å“ç‰Œ é…’æ°´åç§° è¿›è´§æ—¶é—´ è¿›è´§é‡ é…’æ°´ä¿¡æ¯\n");
-    printf("æ¯ä¸€æ¡è¾“å…¥è®°å½•ä»¥æ¢è¡Œç¬¦ä¸ºç»“æŸæ ‡å¿—ï¼Œå¦‚æœä½ åœ¨è¾“å…¥äº†ç»“æŸæ¢è¡Œç¬¦åç»§ç»­è¾“å…¥äº†'-1'ï¼Œåˆ™è§†ä¸ºè¾“å…¥ç»“æŸ.\n");
-    scanf_s("%s", tmp);
-    if (strcmp(tmp, "\n") == 0) return head;
+
+    if (fp == NULL) {
+        printf("\n¶ÁÈ¡ÎÄ¼şÊ§°Ü\n");
+        exit(0);
+    } else {
+        printf("\n¶ÁÈ¡ÎÄ¼ş³É¹¦\n");
+    }
+
+    int insertPos = 1;
+
+    while(fgets(ch, 1000, fp)) {
+        line_len = strlen(ch);
+        if ('\n' == ch[line_len - 1]) {
+            ch[line_len - 1] = '\0';
+            line_len--;
+            if (0 == line_len) {
+                continue;
+            }
+        }
+        // ¶Ôch½øĞĞ·Ö¸î
+
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; char info[100] = {0};
+
+        int i = 0;
+
+        char *p = strtok(ch, " ");
+        while(p=strtok(NULL, " ")){//Ê¹ÓÃµÚÒ»¸ö²ÎÊıÎªNULLÀ´ÌáÈ¡×Ó´®
+            printf("%s\n", p);
+            switch(i) {
+                case 0:
+                    strcpy(brand, p);
+                    break;
+                case 1:
+                    strcpy(name, p);
+                    break;
+                case 2:
+                    strcpy(time, p);
+                    break;
+                case 3:
+                    storeNum = atoi(p);
+                    break;
+                case 4:
+                    price = atoi(p);
+                    break;
+                case 5:
+                    strcpy(info, p);
+                    break;
+            }
+            i++;
+        }
+
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
+
+        head = insert(head, newNode, insertPos);
+
+        insertPos++;
+    }
+
+    showStaff(head);
 
     return head;
+}
+
+void showStaff(pBeverageList list) {
+    pBeverageNode p;
+    p = list;
+    if (!p) //Èç¹ûheadÖ¸ÕëÎª¿ÕËµÃ÷Á´±íÎª¿Õ
+    {
+        printf("\nÁ´±íÎª¿Õ£¡\n\n");
+    }
+    else
+    {
+        printf("\nÁ´±íµÄ¸÷¸ö½ÚµãµÄÖµÎª£º\n");
+        while (p)  //Ñ­»·½«¸÷¸ö½ÚµãÖµÊä³ö
+        {
+            p = p->next;//µÚÒ»ÊÇÀ¬»øÖµ   Ìø¹ı
+            if(p) printf("%s %s %s %d %d %s\n", p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+        }
+    }
 }
 
 pBeverageList sortBeverage(pBeverageList list, char* key) {

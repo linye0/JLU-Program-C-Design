@@ -5,7 +5,9 @@ CONFIG -= qt
 
 SOURCES += \
         main.c \
-        merchantAndClient.c
+        merchantAndClient.c \
+        test.c
 
 HEADERS += \
-    merchantAndClient.h
+    merchantAndClient.h \
+    test.h
