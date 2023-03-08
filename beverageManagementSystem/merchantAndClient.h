@@ -42,21 +42,21 @@ int isEmpty(pBeverageList list); // 判断链表是否为空，返回int类型真值
 
 void add(pBeverageList list, pBeverageNode newNode); // 往list中加入newNode
 
+pBeverageList init(); // 初始化，创建空链表
+
 pBeverageNode find(pBeverageList head, int i);
 
 pBeverageNode insert(pBeverageList list, pBeverageNode node, int i);
 
 pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]);
 
-pBeverageList init(); // 初始化，创建空链表
-
 pBeverageList createFromFile(char* file); // 从文件读入进货记录，存入链表中
 
-pBeverageList sortBeverage(pBeverageList list, char* key); // 根据关键词对链表进行排序
+void showStaff(pBeverageList list); // 打印链表，打印时酒水前面会显示从0开始的编号，供后续操作参考
 
-void printStaff(pBeverageList list); // 打印链表，打印时酒水前面会显示从0开始的编号，供后续操作参考
+pBeverageList sortBeverageBrand(pBeverageList list, int key); // 对酒水以品牌为关键词进行排序
 
-void deleteBeverage(int number); // 根据编号删除指定结点
+void deleteBeverage(pBeverageList list, int pos); // 根据编号删除指定结点
 
 pBeverageList chageBeverage(int number, char* key, char* newValue); // 修改酒水属性
 

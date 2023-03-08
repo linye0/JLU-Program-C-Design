@@ -107,7 +107,6 @@ pBeverageList createFromFile(char* file) {
 
         char *p = strtok(ch, " ");
         while(p=strtok(NULL, " ")){//使用第一个参数为NULL来提取子串
-            printf("%s\n", p);
             switch(i) {
                 case 0:
                     strcpy(brand, p);
@@ -138,30 +137,85 @@ pBeverageList createFromFile(char* file) {
         insertPos++;
     }
 
-    showStaff(head);
-
     return head;
 }
 
 void showStaff(pBeverageList list) {
     pBeverageNode p;
     p = list;
+    int i = 1;
     if (!p) //如果head指针为空说明链表为空
     {
         printf("\n链表为空！\n\n");
     }
     else
     {
-        printf("\n链表的各个节点的值为：\n");
+        printf("\n链表的各个结点的值为：\n");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%s %s %s %d %d %s\n", p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%d: %s %s %s %d %d %s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            i++;
         }
     }
 }
 
-pBeverageList sortBeverage(pBeverageList list, char* key) {
+pBeverageList sortBeverageBrand(pBeverageList list, int key) {
+    // 新建一个储存排序后结点的链表
+    pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
+    retList = (pBeverageList)malloc(sizeof(BeverageList));
+    retList->next = NULL;
+    insertPos = retList;
+    p = maxNode = list->next;
+    prevP = prevMaxNode = NULL;
+    while (p) {
+        maxNode = p;
+        prevP = prevMaxNode = NULL;
+        if (p->next == NULL) {
+            // 如果此时待排序链表里面只有p一个结点，就直接把p插入
+            insertPos->next = p;
+            p->next = NULL;
+            p = p->next;
+        } else {
+            pBeverageNode cur = p;
+            while (cur->next) {
+                if (strcmp(cur->next->brand, maxNode->brand) * key > 0) {
+                    maxNode = cur->next;
+                    prevMaxNode = cur;
+                }
+                cur = cur->next;
+                // 找到最大结点，令maxNode指向它，prevMaxNode指向它的前一个结点
+            }
+            // 插入步骤
+            // 如果prevMaxNode == NULL，说明最大结点就是p结点，此时直接将p插入链表，并且让p指向下一个结点
+            if (prevMaxNode == NULL) {
+                pBeverageNode nextP = p->next;
+                p->next = NULL;
+                insertPos->next = p;
+                p = nextP;
+            } else {
+                // 如果prevMaxNode != NULL，将maxNode插入链表，不用将p后移
+                prevMaxNode->next = maxNode->next;
+                maxNode->next = NULL;
+                insertPos->next = maxNode;
+            }
+            // 将p和insertPos后移一位
+            insertPos = insertPos->next;
+        }
+    }
+    return retList;
+}
 
-    return NULL;
+void deleteBeverage(pBeverageList list, int pos) {
+    int i = 0;
+    pBeverageNode tarNode = list;
+    pBeverageNode prevTarNode = NULL;
+    while (i < pos && tarNode->next) {
+        if (prevTarNode == NULL) prevTarNode = tarNode;
+        tarNode = tarNode->next;
+        i++;
+    }
+    // 删除tarNode结点
+    prevTarNode->next = tarNode->next;
+    free(tarNode);
 }
