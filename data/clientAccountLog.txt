@@ -1,0 +1,6 @@
+      账号    用户名      行为      时间
+     user1     name1      注册     2023.3.10
+     user2     name2      注册     2023.3.10
+     user3     name3      注册     2023.3.10
+     user1     name1      登录     2023.3.10
+     user3     name3      注销     2023.3.10

@@ -120,10 +120,14 @@ void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之�
 
 void recordInit();//初始化购买记录
 
-void recordClient(clientNode client, pBeverageList list, int number);//记录商户操作并记录导入文件
+void recordClientBuy(clientNode client, pBeverageList list, int number);//记录商户操作并记录导入文件
+
+void recordClientAccount(clientNode client,const char behavior[]);
 
 void showStaff(pBeverageList list); // 就是printStaff输出整个链表
 
 void showClientRecord();
+
+void printTime(char*  file);
 
 #endif // MERCHANTANDCLIENT_H

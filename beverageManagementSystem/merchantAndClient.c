@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+#include <time.h>
 #include "merchantAndClient.h"
-
 int isEmpty(pBeverageList list) {
     if (list->next == NULL) return 1;
     else return 0;
@@ -28,7 +29,7 @@ pBeverageNode find(pBeverageList head, int i) {
     pBeverageNode p = head;
 
     if (i < 1) {
-        printf("\né“¾è¡¨é•¿åº¦è¦å¤§äºé›¶\n");
+        printf("\nÁ´±í³¤¶ÈÒª´óÓÚÁã\n");
         return NULL;
     }
 
@@ -46,7 +47,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     p = find(list, i);
 
     if (!p && i != 0) {
-        printf("æ‰¾ä¸åˆ°ç¬¬%dä¸ªæ•°æ®ï¼Œæ— æ³•æ’å…¥æ•°æ®\n", i);
+        printf("ÕÒ²»µ½µÚ%d¸öÊı¾İ£¬ÎŞ·¨²åÈëÊı¾İ\n", i);
     } else {
         if (i == 0) {
             node->next = list;
@@ -82,10 +83,10 @@ pBeverageList createFromFile(char* file) {
     head->next = NULL;
 
     if (fp == NULL) {
-        printf("\nè¯»å–æ–‡ä»¶å¤±è´¥\n");
+        printf("\nfail\n");
         exit(0);
     } else {
-        printf("\nè¯»å–æ–‡ä»¶æˆåŠŸ\n");
+        printf("\nnice\n");
     }
 
     int insertPos = 1;
@@ -99,14 +100,14 @@ pBeverageList createFromFile(char* file) {
                 continue;
             }
         }
-        // å¯¹chè¿›è¡Œåˆ†å‰²
+        // ¶Ôch½øĞĞ·Ö¸î
 
         char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; char info[100] = {0};
 
         int i = 0;
 
         char *p = strtok(ch, " ");
-        while(p=strtok(NULL, " ")){//ä½¿ç”¨ç¬¬ä¸€ä¸ªå‚æ•°ä¸ºNULLæ¥æå–å­ä¸²
+        while(p=strtok(NULL, " ")){//Ê¹ÓÃµÚÒ»¸ö²ÎÊıÎªNULLÀ´ÌáÈ¡×Ó´®
             switch(i) {
                 case 0:
                     strcpy(brand, p);
@@ -144,25 +145,25 @@ void showStaff(pBeverageList list) {
     pBeverageNode p;
     p = list;
     int i = 1;
-    if (!p) //å¦‚æœheadæŒ‡é’ˆä¸ºç©ºè¯´æ˜é“¾è¡¨ä¸ºç©º
+    if (!p) //Èç¹ûheadÖ¸ÕëÎª¿ÕËµÃ÷Á´±íÎª¿Õ
     {
-        printf("\nåº“å­˜ä¸ºç©º\n");
+        printf("\n¿â´æÎª¿Õ\n");
     }
     else
     {
-        printf("\nå½“å‰åº“å­˜å¦‚ä¸‹:\n");
-        printf("\tå“ç‰Œ\té…’æ°´å\tè¿›è´§æ—¶é—´\tå­˜é‡\tä»·æ ¼\tä¿¡æ¯\n");
-        while (p)  //å¾ªç¯å°†å„ä¸ªèŠ‚ç‚¹å€¼è¾“å‡º
+        printf("\nµ±Ç°¿â´æÈçÏÂ:\n");
+        printf("\tÆ·ÅÆ\t¾ÆË®Ãû\t½ø»õÊ±¼ä\t´æÁ¿\t¼Û¸ñ\tĞÅÏ¢\n");
+        while (p)  //Ñ­»·½«¸÷¸ö½ÚµãÖµÊä³ö
         {
-            p = p->next;//ç¬¬ä¸€æ˜¯åƒåœ¾å€¼   è·³è¿‡
+            p = p->next;//µÚÒ»ÊÇÀ¬»øÖµ   Ìø¹ı
             if(p) printf("%d:\t%s\t%s\t%s\t%d\t%d\t%s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             i++;
         }
     }
 }
-
+//*************************************ÒÔÏÂÊÇ°´¸÷ÖÖÊôĞÔÅÅĞò************************************************************
 pBeverageList sortBeverageTime(pBeverageList list, int key) {
-    // æ–°å»ºä¸€ä¸ªå‚¨å­˜æ’åºåç»“ç‚¹çš„é“¾è¡¨
+    // ĞÂ½¨Ò»¸ö´¢´æÅÅĞòºó½áµãµÄÁ´±í
     pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
     retList = (pBeverageList)malloc(sizeof(BeverageList));
     retList->next = NULL;
@@ -173,7 +174,7 @@ pBeverageList sortBeverageTime(pBeverageList list, int key) {
         maxNode = p;
         prevP = prevMaxNode = NULL;
         if (p->next == NULL) {
-            // å¦‚æœæ­¤æ—¶å¾…æ’åºé“¾è¡¨é‡Œé¢åªæœ‰pä¸€ä¸ªç»“ç‚¹ï¼Œå°±ç›´æ¥æŠŠpæ’å…¥
+            // Èç¹û´ËÊ±´ıÅÅĞòÁ´±íÀïÃæÖ»ÓĞpÒ»¸ö½áµã£¬¾ÍÖ±½Ó°Ñp²åÈë
             insertPos->next = p;
             p->next = NULL;
             p = p->next;
@@ -185,37 +186,37 @@ pBeverageList sortBeverageTime(pBeverageList list, int key) {
                     prevMaxNode = cur;
                 }
                 cur = cur->next;
-                // æ‰¾åˆ°æœ€å¤§ç»“ç‚¹ï¼Œä»¤maxNodeæŒ‡å‘å®ƒï¼ŒprevMaxNodeæŒ‡å‘å®ƒçš„å‰ä¸€ä¸ªç»“ç‚¹
+                // ÕÒµ½×î´ó½áµã£¬ÁîmaxNodeÖ¸ÏòËü£¬prevMaxNodeÖ¸ÏòËüµÄÇ°Ò»¸ö½áµã
             }
-            // æ’å…¥æ­¥éª¤
-            // å¦‚æœprevMaxNode == NULLï¼Œè¯´æ˜æœ€å¤§ç»“ç‚¹å°±æ˜¯pç»“ç‚¹ï¼Œæ­¤æ—¶ç›´æ¥å°†pæ’å…¥é“¾è¡¨ï¼Œå¹¶ä¸”è®©pæŒ‡å‘ä¸‹ä¸€ä¸ªç»“ç‚¹
+            // ²åÈë²½Öè
+            // Èç¹ûprevMaxNode == NULL£¬ËµÃ÷×î´ó½áµã¾ÍÊÇp½áµã£¬´ËÊ±Ö±½Ó½«p²åÈëÁ´±í£¬²¢ÇÒÈÃpÖ¸ÏòÏÂÒ»¸ö½áµã
             if (prevMaxNode == NULL) {
                 pBeverageNode nextP = p->next;
                 p->next = NULL;
                 insertPos->next = p;
                 p = nextP;
             } else {
-                // å¦‚æœprevMaxNode != NULLï¼Œå°†maxNodeæ’å…¥é“¾è¡¨ï¼Œä¸ç”¨å°†påç§»
+                // Èç¹ûprevMaxNode != NULL£¬½«maxNode²åÈëÁ´±í£¬²»ÓÃ½«pºóÒÆ
                 prevMaxNode->next = maxNode->next;
                 maxNode->next = NULL;
                 insertPos->next = maxNode;
             }
-            // å°†på’ŒinsertPosåç§»ä¸€ä½
+            // ½«pºÍinsertPosºóÒÆÒ»Î»
             insertPos = insertPos->next;
         }
     }
     char* outStr = {0};
     if (key > 0) {
-        outStr = "é™åº";
+        outStr = "½µĞò";
     } else {
-        outStr = "å‡åº";
+        outStr = "ÉıĞò";
     }
-    printf("\næ ¹æ®è¿›è´§æ—¶é—´å…³é”®è¯å¯¹é…’æ°´è¿›è¡Œäº†%sæ’åº\n", outStr);
+    printf("\n¸ù¾İ½ø»õÊ±¼ä¹Ø¼ü´Ê¶Ô¾ÆË®½øĞĞÁË%sÅÅĞò\n", outStr);
     return retList;
 }
 
 pBeverageList sortBeverageBrand(pBeverageList list, int key) {
-    // æ–°å»ºä¸€ä¸ªå‚¨å­˜æ’åºåç»“ç‚¹çš„é“¾è¡¨
+    // ĞÂ½¨Ò»¸ö´¢´æÅÅĞòºó½áµãµÄÁ´±í
     pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
     retList = (pBeverageList)malloc(sizeof(BeverageList));
     retList->next = NULL;
@@ -226,7 +227,7 @@ pBeverageList sortBeverageBrand(pBeverageList list, int key) {
         maxNode = p;
         prevP = prevMaxNode = NULL;
         if (p->next == NULL) {
-            // å¦‚æœæ­¤æ—¶å¾…æ’åºé“¾è¡¨é‡Œé¢åªæœ‰pä¸€ä¸ªç»“ç‚¹ï¼Œå°±ç›´æ¥æŠŠpæ’å…¥
+            // Èç¹û´ËÊ±´ıÅÅĞòÁ´±íÀïÃæÖ»ÓĞpÒ»¸ö½áµã£¬¾ÍÖ±½Ó°Ñp²åÈë
             insertPos->next = p;
             p->next = NULL;
             p = p->next;
@@ -238,37 +239,37 @@ pBeverageList sortBeverageBrand(pBeverageList list, int key) {
                     prevMaxNode = cur;
                 }
                 cur = cur->next;
-                // æ‰¾åˆ°æœ€å¤§ç»“ç‚¹ï¼Œä»¤maxNodeæŒ‡å‘å®ƒï¼ŒprevMaxNodeæŒ‡å‘å®ƒçš„å‰ä¸€ä¸ªç»“ç‚¹
+                // ÕÒµ½×î´ó½áµã£¬ÁîmaxNodeÖ¸ÏòËü£¬prevMaxNodeÖ¸ÏòËüµÄÇ°Ò»¸ö½áµã
             }
-            // æ’å…¥æ­¥éª¤
-            // å¦‚æœprevMaxNode == NULLï¼Œè¯´æ˜æœ€å¤§ç»“ç‚¹å°±æ˜¯pç»“ç‚¹ï¼Œæ­¤æ—¶ç›´æ¥å°†pæ’å…¥é“¾è¡¨ï¼Œå¹¶ä¸”è®©pæŒ‡å‘ä¸‹ä¸€ä¸ªç»“ç‚¹
+            // ²åÈë²½Öè
+            // Èç¹ûprevMaxNode == NULL£¬ËµÃ÷×î´ó½áµã¾ÍÊÇp½áµã£¬´ËÊ±Ö±½Ó½«p²åÈëÁ´±í£¬²¢ÇÒÈÃpÖ¸ÏòÏÂÒ»¸ö½áµã
             if (prevMaxNode == NULL) {
                 pBeverageNode nextP = p->next;
                 p->next = NULL;
                 insertPos->next = p;
                 p = nextP;
             } else {
-                // å¦‚æœprevMaxNode != NULLï¼Œå°†maxNodeæ’å…¥é“¾è¡¨ï¼Œä¸ç”¨å°†påç§»
+                // Èç¹ûprevMaxNode != NULL£¬½«maxNode²åÈëÁ´±í£¬²»ÓÃ½«pºóÒÆ
                 prevMaxNode->next = maxNode->next;
                 maxNode->next = NULL;
                 insertPos->next = maxNode;
             }
-            // å°†på’ŒinsertPosåç§»ä¸€ä½
+            // ½«pºÍinsertPosºóÒÆÒ»Î»
             insertPos = insertPos->next;
         }
     }
     char* outStr = {0};
     if (key > 0) {
-        outStr = "é™åº";
+        outStr = "½µĞò";
     } else {
-        outStr = "å‡åº";
+        outStr = "ÉıĞò";
     }
-    printf("\næ ¹æ®å“ç‰Œå…³é”®è¯å¯¹é…’æ°´è¿›è¡Œäº†%sæ’åº\n", outStr);
+    printf("\n¸ù¾İÆ·ÅÆ¹Ø¼ü´Ê¶Ô¾ÆË®½øĞĞÁË%sÅÅĞò\n", outStr);
     return retList;
 }
 
 pBeverageList sortBeverageStoreNum(pBeverageList list, int key) {
-    // æ–°å»ºä¸€ä¸ªå‚¨å­˜æ’åºåç»“ç‚¹çš„é“¾è¡¨
+    // ĞÂ½¨Ò»¸ö´¢´æÅÅĞòºó½áµãµÄÁ´±í
     pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
     retList = (pBeverageList)malloc(sizeof(BeverageList));
     retList->next = NULL;
@@ -279,7 +280,7 @@ pBeverageList sortBeverageStoreNum(pBeverageList list, int key) {
         maxNode = p;
         prevP = prevMaxNode = NULL;
         if (p->next == NULL) {
-            // å¦‚æœæ­¤æ—¶å¾…æ’åºé“¾è¡¨é‡Œé¢åªæœ‰pä¸€ä¸ªç»“ç‚¹ï¼Œå°±ç›´æ¥æŠŠpæ’å…¥
+            // Èç¹û´ËÊ±´ıÅÅĞòÁ´±íÀïÃæÖ»ÓĞpÒ»¸ö½áµã£¬¾ÍÖ±½Ó°Ñp²åÈë
             insertPos->next = p;
             p->next = NULL;
             p = p->next;
@@ -291,37 +292,37 @@ pBeverageList sortBeverageStoreNum(pBeverageList list, int key) {
                     prevMaxNode = cur;
                 }
                 cur = cur->next;
-                // æ‰¾åˆ°æœ€å¤§ç»“ç‚¹ï¼Œä»¤maxNodeæŒ‡å‘å®ƒï¼ŒprevMaxNodeæŒ‡å‘å®ƒçš„å‰ä¸€ä¸ªç»“ç‚¹
+                // ÕÒµ½×î´ó½áµã£¬ÁîmaxNodeÖ¸ÏòËü£¬prevMaxNodeÖ¸ÏòËüµÄÇ°Ò»¸ö½áµã
             }
-            // æ’å…¥æ­¥éª¤
-            // å¦‚æœprevMaxNode == NULLï¼Œè¯´æ˜æœ€å¤§ç»“ç‚¹å°±æ˜¯pç»“ç‚¹ï¼Œæ­¤æ—¶ç›´æ¥å°†pæ’å…¥é“¾è¡¨ï¼Œå¹¶ä¸”è®©pæŒ‡å‘ä¸‹ä¸€ä¸ªç»“ç‚¹
+            // ²åÈë²½Öè
+            // Èç¹ûprevMaxNode == NULL£¬ËµÃ÷×î´ó½áµã¾ÍÊÇp½áµã£¬´ËÊ±Ö±½Ó½«p²åÈëÁ´±í£¬²¢ÇÒÈÃpÖ¸ÏòÏÂÒ»¸ö½áµã
             if (prevMaxNode == NULL) {
                 pBeverageNode nextP = p->next;
                 p->next = NULL;
                 insertPos->next = p;
                 p = nextP;
             } else {
-                // å¦‚æœprevMaxNode != NULLï¼Œå°†maxNodeæ’å…¥é“¾è¡¨ï¼Œä¸ç”¨å°†påç§»
+                // Èç¹ûprevMaxNode != NULL£¬½«maxNode²åÈëÁ´±í£¬²»ÓÃ½«pºóÒÆ
                 prevMaxNode->next = maxNode->next;
                 maxNode->next = NULL;
                 insertPos->next = maxNode;
             }
-            // å°†på’ŒinsertPosåç§»ä¸€ä½
+            // ½«pºÍinsertPosºóÒÆÒ»Î»
             insertPos = insertPos->next;
         }
     }
     char* outStr = {0};
     if (key > 0) {
-        outStr = "é™åº";
+        outStr = "½µĞò";
     } else {
-        outStr = "å‡åº";
+        outStr = "ÉıĞò";
     }
-    printf("\næ ¹æ®å­˜é‡å…³é”®è¯å¯¹é…’æ°´è¿›è¡Œäº†%sæ’åº\n", outStr);
+    printf("\n¸ù¾İ´æÁ¿¹Ø¼ü´Ê¶Ô¾ÆË®½øĞĞÁË%sÅÅĞò\n", outStr);
     return retList;
 }
 
 pBeverageList sortBeveragePrice(pBeverageList list, int key) {
-    // æ–°å»ºä¸€ä¸ªå‚¨å­˜æ’åºåç»“ç‚¹çš„é“¾è¡¨
+    // ĞÂ½¨Ò»¸ö´¢´æÅÅĞòºó½áµãµÄÁ´±í
     pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
     retList = (pBeverageList)malloc(sizeof(BeverageList));
     retList->next = NULL;
@@ -332,7 +333,7 @@ pBeverageList sortBeveragePrice(pBeverageList list, int key) {
         maxNode = p;
         prevP = prevMaxNode = NULL;
         if (p->next == NULL) {
-            // å¦‚æœæ­¤æ—¶å¾…æ’åºé“¾è¡¨é‡Œé¢åªæœ‰pä¸€ä¸ªç»“ç‚¹ï¼Œå°±ç›´æ¥æŠŠpæ’å…¥
+            // Èç¹û´ËÊ±´ıÅÅĞòÁ´±íÀïÃæÖ»ÓĞpÒ»¸ö½áµã£¬¾ÍÖ±½Ó°Ñp²åÈë
             insertPos->next = p;
             p->next = NULL;
             p = p->next;
@@ -344,32 +345,32 @@ pBeverageList sortBeveragePrice(pBeverageList list, int key) {
                     prevMaxNode = cur;
                 }
                 cur = cur->next;
-                // æ‰¾åˆ°æœ€å¤§ç»“ç‚¹ï¼Œä»¤maxNodeæŒ‡å‘å®ƒï¼ŒprevMaxNodeæŒ‡å‘å®ƒçš„å‰ä¸€ä¸ªç»“ç‚¹
+                // ÕÒµ½×î´ó½áµã£¬ÁîmaxNodeÖ¸ÏòËü£¬prevMaxNodeÖ¸ÏòËüµÄÇ°Ò»¸ö½áµã
             }
-            // æ’å…¥æ­¥éª¤
-            // å¦‚æœprevMaxNode == NULLï¼Œè¯´æ˜æœ€å¤§ç»“ç‚¹å°±æ˜¯pç»“ç‚¹ï¼Œæ­¤æ—¶ç›´æ¥å°†pæ’å…¥é“¾è¡¨ï¼Œå¹¶ä¸”è®©pæŒ‡å‘ä¸‹ä¸€ä¸ªç»“ç‚¹
+            // ²åÈë²½Öè
+            // Èç¹ûprevMaxNode == NULL£¬ËµÃ÷×î´ó½áµã¾ÍÊÇp½áµã£¬´ËÊ±Ö±½Ó½«p²åÈëÁ´±í£¬²¢ÇÒÈÃpÖ¸ÏòÏÂÒ»¸ö½áµã
             if (prevMaxNode == NULL) {
                 pBeverageNode nextP = p->next;
                 p->next = NULL;
                 insertPos->next = p;
                 p = nextP;
             } else {
-                // å¦‚æœprevMaxNode != NULLï¼Œå°†maxNodeæ’å…¥é“¾è¡¨ï¼Œä¸ç”¨å°†påç§»
+                // Èç¹ûprevMaxNode != NULL£¬½«maxNode²åÈëÁ´±í£¬²»ÓÃ½«pºóÒÆ
                 prevMaxNode->next = maxNode->next;
                 maxNode->next = NULL;
                 insertPos->next = maxNode;
             }
-            // å°†på’ŒinsertPosåç§»ä¸€ä½
+            // ½«pºÍinsertPosºóÒÆÒ»Î»
             insertPos = insertPos->next;
         }
     }
     char* outStr = {0};
     if (key > 0) {
-        outStr = "é™åº";
+        outStr = "½µĞò";
     } else {
-        outStr = "å‡åº";
+        outStr = "ÉıĞò";
     }
-    printf("\næ ¹æ®ä»·æ ¼å…³é”®è¯å¯¹é…’æ°´è¿›è¡Œäº†%sæ’åº\n", outStr);
+    printf("\n¸ù¾İ¼Û¸ñ¹Ø¼ü´Ê¶Ô¾ÆË®½øĞĞÁË%sÅÅĞò\n", outStr);
     return retList;
 }
 
@@ -382,14 +383,14 @@ void deleteBeverage(pBeverageList list, int pos) {
         tarNode = tarNode->next;
         i++;
     }
-    // åˆ é™¤tarNodeç»“ç‚¹
+    // É¾³ıtarNode½áµã
     prevTarNode->next = tarNode->next;
     free(tarNode);
-    printf("\nåˆ é™¤äº†ç¼–å·ä¸º%dçš„é…’æ°´\n", i);
+    printf("\nÉ¾³ıÁË±àºÅÎª%dµÄ¾ÆË®\n", i);
 }
-
+//*************************************ÒÔÏÂÊÇ°´¸÷ÖÖÊôĞÔËÑË÷************************************************************
 void searchBeverageInfo(pBeverageList list, char* givenInfo) {
-    printf("\nå¼€å§‹æ£€ç´¢é…’æ°´ä¿¡æ¯\n");
+    printf("\n¿ªÊ¼¼ìË÷¾ÆË®ĞÅÏ¢\n");
     pBeverageNode p = list->next;
     int i = 1;
     int sum = 0;
@@ -401,12 +402,12 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo) {
         i++;
         p = p->next;
     }
-    printf("ä¸ºæ‚¨æœç´¢'%s'å…³é”®å­—ï¼Œå…±æœç´¢åˆ°%dæ¡è®°å½•\n", givenInfo, sum);
+    printf("ÎªÄúËÑË÷'%s'¹Ø¼ü×Ö£¬¹²ËÑË÷µ½%dÌõ¼ÇÂ¼\n", givenInfo, sum);
     return;
 }
 
 void searchBeverageBrand(pBeverageList list, char* givenBrand) {
-    printf("\nå¼€å§‹æ£€ç´¢å“ç‰Œ\n");
+    printf("\n¿ªÊ¼¼ìË÷Æ·ÅÆ\n");
     pBeverageNode p = list->next;
     int i = 1;
     int sum = 0;
@@ -418,12 +419,12 @@ void searchBeverageBrand(pBeverageList list, char* givenBrand) {
         i++;
         p = p->next;
     }
-    printf("ä¸ºæ‚¨æœç´¢'%s'å…³é”®å­—ï¼Œå…±æœç´¢åˆ°%dæ¡è®°å½•\n", givenBrand, sum);
+    printf("ÎªÄúËÑË÷'%s'¹Ø¼ü×Ö£¬¹²ËÑË÷µ½%dÌõ¼ÇÂ¼\n", givenBrand, sum);
     return;
 }
 
 void searchBeverageName(pBeverageList list, char* givenName) {
-    printf("\nå¼€å§‹æ£€ç´¢åç§°\n");
+    printf("\n¿ªÊ¼¼ìË÷Ãû³Æ\n");
     pBeverageNode p = list->next;
     int i = 1;
     int sum = 0;
@@ -435,27 +436,27 @@ void searchBeverageName(pBeverageList list, char* givenName) {
         i++;
         p = p->next;
     }
-    printf("ä¸ºæ‚¨æœç´¢'%s'å…³é”®å­—ï¼Œå…±æœç´¢åˆ°%dæ¡è®°å½•\n", givenName, sum);
+    printf("ÎªÄúËÑË÷'%s'¹Ø¼ü×Ö£¬¹²ËÑË÷µ½%dÌõ¼ÇÂ¼\n", givenName, sum);
     return;
 }
 
 void changeBeverageInfo(pBeverageList list, int number, char* givenInfo) {
     pBeverageNode node = find(list, number + 1);
     strcpy(node->info, givenInfo);
-    printf("\nä¿®æ”¹äº†ç¼–å·ä¸º%dçš„é…’æ°´çš„ä¿¡æ¯\n", number);
+    printf("\nĞŞ¸ÄÁË±àºÅÎª%dµÄ¾ÆË®µÄĞÅÏ¢\n", number);
 }
 
 void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
     pBeverageNode node = find(list, number + 1);
     if (node->storeNum < reduceNum) {
-        printf("\né…’æ°´åº“å­˜ä¸è¶³ï¼\n");
+        printf("\n¾ÆË®¿â´æ²»×ã£¡\n");
         return;
     } else {
         node->storeNum -= reduceNum;
     }
 }
 
-
+//***************************************ÒÔÉÏÊÇlinyeµÄbydº¯ÊıÊµÏÖ******************************************************
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     head->next=NULL;
@@ -467,7 +468,7 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     if(p0!=NULL)
     {
         printf("gimmeanothernamebitch");
-        return ;//è¿™ä¸ªåœ°æ–¹å†è°ƒä¸€ä¸‹
+        return ;//Õâ¸öµØ·½ÔÙµ÷Ò»ÏÂ
     }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
@@ -484,7 +485,9 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     NewClientAccount->saving=saving;
     NewClientAccount->cost=cost;
     NewClientAccount->grade=grade;
-}//å·²æµ‹è¯•
+
+    recordClientAccount(NewClientAccount,"×¢²á");
+}//ÒÑ²âÊÔ
 
 clientNode clientSearch(pClientLinkedList list,char *account){
     pClientLinkedList p=list;
@@ -492,39 +495,41 @@ clientNode clientSearch(pClientLinkedList list,char *account){
         p=p->next;
     }
     return p;
-}//å·²æµ‹è¯•
+}//ÒÑ²âÊÔ
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
     pClientLinkedList p;
     p=clientSearch(list,account);
     if(p!=NULL){
         if(strcmp(p->password,password)==0){
-            printf("ç™»é™†æˆåŠŸ ä½ å¥½ï¼Œ%sï¼",p->account);
+            recordClientAccount(p,"µÇÂ¼");
             *status=1;
         }else{
-            printf("å¯†ç é”™è¯¯ è¯·è¾“å…¥æ­£ç¡®çš„å¯†ç \n");
+            printf("ÃÜÂë´íÎó ÇëÊäÈëÕıÈ·µÄÃÜÂë\n");
             *status=0;
         }
     }else{
-        printf("æŠ±æ­‰ æœªèƒ½æ‰¾åˆ°è¾“å…¥çš„ç”¨æˆ·åT^T\n");
-        printf("æ‚¨æ˜¯å¦éœ€è¦ æ³¨å†Œï¼Ÿ");
+        printf("±§Ç¸ Î´ÄÜÕÒµ½ÊäÈëµÄÓÃ»§ÃûT^T\n");
+        printf("ÄúÊÇ·ñĞèÒª ×¢²á\n");
         *status=-1;
     }
     return p;
-}//å·²æµ‹è¯•
+}//ÒÑ²âÊÔ
 
 void changeAccount(pClientLinkedList list,char* account,char*newAccount){
     pClientLinkedList p;
     p=clientSearch(list,account);
     strcpy_s(p->account,strlen(newAccount)+1,newAccount);
-    //è¿™é‡Œæœ‰ä¸€ä¸ªæŠŠæ—¥å¿—ä¹Ÿæ”¹äº†çš„è¿‡ç¨‹ æš‚æ—¶å…ˆæä¸€ä¸‹
-}
+    printf("³É¹¦¸ü¸ÄÕËºÅÎª£º%s\n",p->account);
+    //ÕâÀïÓĞÒ»¸ö°ÑÈÕÖ¾Ò²¸ÄÁËµÄ¹ı³Ì ÔİÊ±ÏÈ¸éÒ»ÏÂ
+}//ÒÑ²âÊÔ
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword){
     pClientLinkedList p;
     p=clientSearch(list,account);
-    strcpy_s(p->account,strlen(newPassword)+1,newPassword);
-}
+    strcpy_s(p->password,strlen(newPassword)+1,newPassword);
+    printf("³É¹¦¸ü¸ÄÃÜÂëÎª£º%s\n",p->password);
+}//ÒÑ²âÊÔ
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
     pClientLinkedList p=list;
@@ -533,7 +538,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
         pClientLinkedList t=p->next;
         //free(p);
         return t;
-    }ä¼¼ä¹ä¸ç”¨ headèŠ‚ç‚¹æ²¡ä¸œè¥¿çš„*/
+    }ËÆºõ²»ÓÃ head½ÚµãÃ»¶«Î÷µÄ*/
     pClientLinkedList p0=p;
     p=p->next;
     while(p!=NULL&&strcmp(p->account,account)!=0){
@@ -550,20 +555,24 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
            // free(p);
             *status=0;
         }
+        printf("×¢Ïú³É¹¦\n");
+        recordClientAccount(p,"×¢Ïú");
     }else
     {
+        printf("²éÎŞ´ËÈË");
         *status=-1;
     }
     return list;
-}
+}//ÒÑ²âÊÔ
 
 void deposit(clientNode client, int money){
     client->saving+=money;
+
 }
 
 void clientUpgradeCheck(pClientLinkedList list)
 {
-    if(list->cost>pow(10,2*p->grade))
+    if(list->cost>pow(10,2*list->grade))
     {
         list->grade++;
     }
@@ -574,20 +583,53 @@ void buy(clientNode client, pBeverageList list, int number){
     client->cost+=number*list->price;
     client->saving-=number*list->price;
     clientUpgradeCheck(client);
-    recordClient(client,list,number);
+    recordClientBuy(client,list,number);
 }
 
 void recordInit()
 {
+    FILE *fp;
+    char file0[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
+    fp = fopen(file0,"w");
+    fprintf(fp,"%10s%11s%10s%11s%10s%10s%9s\n","ÕËºÅ","ÓÃ»§Ãû","»õÎïÆ·ÅÆ","»õÎïÃû³Æ","»õÎï¼Û¸ñ","¹ºÂòÊıÁ¿","Ê±¼ä");
+    fclose(fp);
+    char file1[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientAccountLog.txt";
+    fp = fopen(file1,"w");
+    fprintf(fp,"%10s%10s%10s%10s\n","ÕËºÅ","ÓÃ»§Ãû","ĞĞÎª","Ê±¼ä");
+    fclose(fp);
+}//ÓÃÀ´´ò±íÍ·Äó
 
+void recordClientBuy(clientNode client, pBeverageList list, int number){
+    FILE *fp;
+    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
+    fp = fopen(file,"at+");
+
+    fprintf(fp,"%10s%10s%10s%10s%10d%10d",client->account,client->username,list->brand,list->name,list->price,number);
+    fclose(fp);
+    printTime(file);//Êä³öÒ»ÏÂÊ±¼ä
 }
 
-void recordClient(clientNode client, pBeverageList list, int number)
-{
 
+void recordClientAccount(clientNode client,const char behavior[]){
+    FILE *fp;
+    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientAccountLog.txt";
+    fp = fopen(file,"at+");
+    fprintf(fp,"%10s%10s%10s",client->account,client->username,behavior);
+    fclose(fp);
+    printTime(file);//Êä³öÒ»ÏÂÊ±¼ä
 }
 
-void showClientRecord()
-{
-
+void printTime(char* file){
+    FILE *fp;
+    fp = fopen(file,"at+");
+    time_t tmpcal_ptr;
+    struct tm *tmp_ptr = NULL;
+    time(&tmpcal_ptr);
+    tmp_ptr = localtime(&tmpcal_ptr);
+    fprintf(fp,"     %d.%d.%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//Îå¸ö¿Õ¸ñ
+    fclose(fp);
 }
+//ÊÇ·ñĞèÒªÒ»¸ö¼ÇÂ¼moneyflowµÄlog£¿£¿£¿£¿£¿
+//ÊÇ·ñĞèÒªÒ»¸öÏÔÊ¾È«txtÎÄ¼şµÄ¹¦ÄÜ£¿£¿£¿£¿£¿
+//¶ÔµÈ¼¶¼ÆËãÒÔ¼°ÓÅ»İ»î¶¯µÄ¹¦ÄÜÊµÏÖ^_^
+

@@ -1,25 +1,70 @@
 #include <stdio.h>
+#include <string.h>
 #include "merchantAndClient.h"
-
+#include<time.h>
 int main()
 {
-    pClientLinkedList head;
-    head=initClient();
+    /*
+    pBeverageList testList = createFromFile("D:\\C-Project\\JLU-Program-C-Design\\data\\test.txt");
 
-    signUp(head,"helloworld","123456","zhang",0,0,0);
-    signUp(head,"hhh","123","test",200,0,0);//æ£€æŸ¥é‡å!!åˆ«å¿˜è®°äº†!!
-    signUp(head,"hhh","123","test1",200,0,0);
-    int n;
-    clientNode user=signIn(head,"hhh","123456",&n);
-    printf("\n%d%s",n,user->username);
-    changeAccount(head,"hhh","hh1");
+        showStaff(testList);
 
-    pClientLinkedList user2=clientLogout(head,"aaa",&n);
-    while(user2!=NULL)
-    {
-        printf("%s\n",user2->username);
-        user2=user2->next;
-    }
+        testList = sortBeverageBrand(testList, -1);
+
+        showStaff(testList);
+
+        searchBeverageInfo(testList, "Õ¸ĞÂ");
+
+        searchBeverageBrand(testList, "Ã©Ì¨");
+
+        searchBeverageName(testList, "¿ìÀÖ");
+
+        deleteBeverage(testList, 1);
+
+        showStaff(testList);
+
+        changeBeverageInfo(testList, 4, "âù±¦âù±¦");
+
+        reduceBeverageStoreNum(testList, 4, 12);
+
+        testList = sortBeverageStoreNum(testList, -1);
+
+        showStaff(testList);
+
+        testList = sortBeveragePrice(testList, -1);
+
+        showStaff(testList);
+
+        testList = sortBeverageTime(testList, -1);
+
+        showStaff(testList);
+*/
+//***********************************************ÒÔÉÏÊÇÁÖìÇµÄbyd debug*********************************************************
+   //µ÷ÊÔµÇÂ¼µÇ³ö×¢Ïú
+    recordInit();
+    pClientLinkedList list;
+    list=initClient();
+    signUp(list,"user1","password1","name1",5000,0,1);
+    signUp(list,"user2","password2","name2",5000,0,1);
+    signUp(list,"user3","password3","name3",5000,0,1);
+
+    int status;
+    signIn(list,"user1","password1",&status);
+
+    changeAccount(list,"user2","newuser2");
+
+    NewPassword(list,"newuser2","newpassword2");
+
+    clientLogout(list,"user3",&status);
+   //µ÷ÊÔ´æ¿îÒÔ¼°¹ºÂò
+    pClientLinkedList p=clientSearch(list,"user1");
+
+    deposit(p,20000);
+
+    pBeverageNode test=newBeverageNode("Å©·òÉ½Èª","¿óÈªË®","2023",20000,20,"default");
+
+    buy(p,test,20);
+    buy(p,test,10);
     return 0;
 }
 
