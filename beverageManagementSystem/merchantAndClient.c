@@ -502,9 +502,18 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
     p=clientSearch(list,account);
     if(p!=NULL){
         if(strcmp(p->password,password)==0){
-            recordClientAccount(p,"登录");
-            *status=1;
+            if(p->grade>=0)
+            {
+                recordClientAccount(p,"普通登录");
+                *status=1;
+            }else
+            {
+                recordClientAccount(p,"管理登录");
+                *status=4;
+            }
         }else{
+
+            recordClientAccount(p,"登录失败");
             printf("密码错误 请输入正确的密码\n");
             *status=0;
         }
@@ -580,7 +589,7 @@ void clientUpgradeCheck(pClientLinkedList list)
 
 void buy(clientNode client, pBeverageList list, int number){
     list->storeNum-=number;
-    client->cost+=number*list->price;
+    client->cost+=number*list->price*(1-0.06*client->grade);
     client->saving-=number*list->price;
     clientUpgradeCheck(client);
     recordClientBuy(client,list,number);
@@ -603,12 +612,10 @@ void recordClientBuy(clientNode client, pBeverageList list, int number){
     FILE *fp;
     char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
     fp = fopen(file,"at+");
-
     fprintf(fp,"%10s%10s%10s%10s%10d%10d",client->account,client->username,list->brand,list->name,list->price,number);
     fclose(fp);
     printTime(file);//输出一下时间
 }
-
 
 void recordClientAccount(clientNode client,const char behavior[]){
     FILE *fp;
@@ -629,7 +636,76 @@ void printTime(char* file){
     fprintf(fp,"     %d.%d.%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//五个空格
     fclose(fp);
 }
-//是否需要一个记录moneyflow的log？？？？？
-//是否需要一个显示全txt文件的功能？？？？？
-//对等级计算以及优惠活动的功能实现^_^
+
+int searchClientBuy(char *info)
+{
+
+    FILE *fp;
+    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
+
+    int line_len=0;
+    char buf[1024]={0};
+    char Info[20];
+    strcpy_s(Info,strlen(info)+1,info);
+    fp=fopen(file,"r");
+    int sum=0;
+    int sum0=0;
+    char *token=strtok(Info," ");
+    char s[10][20];
+    while( token != NULL ) {
+        sum0++;
+        strcpy_s(s[sum0],strlen(token)+1,token);
+        token = strtok(NULL," ");
+    }
+    while(fgets(buf,1024,fp)){
+
+        line_len=strlen(buf);
+        //
+        if('\n'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //空行
+                continue;
+            }
+        }
+        if('\r'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //空行
+                continue;
+            }
+        }
+        //]
+        int p=1;
+        int flag=1;
+        while(p<=sum0)
+        {
+            char *ptr=strstr(buf,s[p]);
+            if(ptr==NULL)
+                flag=0;
+            p++;
+        }
+        if(flag)
+        {
+            printf("%s\n", buf);
+            sum++;
+        }
+    }
+    if(0== feof ){
+        printf("fgets error\n");
+        return -1;
+    }
+
+    fclose(fp);
+
+    return sum;
+}
+
+//做一个查找购买记录的功能即可“我的-->”
+
+//基本信息显示
+
+
 

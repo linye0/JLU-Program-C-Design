@@ -5,6 +5,7 @@
 int main()
 {
     /*
+
     pBeverageList testList = createFromFile("D:\\C-Project\\JLU-Program-C-Design\\data\\test.txt");
 
         showStaff(testList);
@@ -64,7 +65,11 @@ int main()
     pBeverageNode test=newBeverageNode("农夫山泉","矿泉水","2023",20000,20,"default");
 
     buy(p,test,20);
+    p=clientSearch(list,"newuser2");
     buy(p,test,10);
+
+    int i=searchClientBuy("农夫山泉 user1");
+    printf("总共有%d条记录",i);
     return 0;
 }
 

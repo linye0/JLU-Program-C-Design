@@ -87,7 +87,7 @@ typedef struct clientLinkedList {
 
     int saving;
 
-    int grade;//0123对应 administrator 和客户等级一二三
+    int grade;//-1/123对应 administrator 和客户等级一二三
 
     struct clientLinkedList* next;
 
@@ -129,5 +129,7 @@ void showStaff(pBeverageList list); // 就是printStaff输出整个链表
 void showClientRecord();
 
 void printTime(char*  file);
+
+int searchClientBuy(char *info);
 
 #endif // MERCHANTANDCLIENT_H
