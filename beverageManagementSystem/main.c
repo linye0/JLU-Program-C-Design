@@ -4,7 +4,7 @@
 #include<time.h>
 int main()
 {
-    /*
+
 
     pBeverageList testList = createFromFile("D:\\C-Project\\JLU-Program-C-Design\\data\\test.txt");
 
@@ -39,7 +39,7 @@ int main()
         testList = sortBeverageTime(testList, -1);
 
         showStaff(testList);
-*/
+
 //***********************************************以上是林烨的byd debug*********************************************************
    //调试登录登出注销
     recordInit();

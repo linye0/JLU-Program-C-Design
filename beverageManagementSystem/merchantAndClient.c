@@ -152,11 +152,11 @@ void showStaff(pBeverageList list) {
     else
     {
         printf("\n当前库存如下:\n");
-        printf("\t品牌\t酒水名\t进货时间\t存量\t价格\t信息\n");
+        printf("        品牌        酒水名        进货时间        存量        价格         信息\n");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%d:\t%s\t%s\t%s\t%d\t%d\t%s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%d：%10s%13s%16s%12d%11d%17s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             i++;
         }
     }
