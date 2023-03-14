@@ -45,12 +45,14 @@ int main()
     recordInit();
     pClientLinkedList list;
     list=initClient();
-    signUp(list,"user1","password1","name1",5000,0,1);
+    signUp(list,"user1","password1","name1",5000,0,-1);
     signUp(list,"user2","password2","name2",5000,0,1);
     signUp(list,"user3","password3","name3",5000,0,1);
 
     int status;
+
     signIn(list,"user1","password1",&status);
+printf("%d",status);
 
     changeAccount(list,"user2","newuser2");
 
@@ -68,7 +70,7 @@ int main()
     p=clientSearch(list,"newuser2");
     buy(p,test,10);
 
-    int i=searchClientBuy("农夫山泉 user1");
+    int i=searchClientBuy("user1 农夫山泉 ");
     printf("总共有%d条记录",i);
     return 0;
 }
