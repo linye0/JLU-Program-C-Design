@@ -633,7 +633,7 @@ void printTime(char* file){
     struct tm *tmp_ptr = NULL;
     time(&tmpcal_ptr);
     tmp_ptr = localtime(&tmpcal_ptr);
-    fprintf(fp,"     %d.%d.%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//五个空格
+    fprintf(fp,"     %d.%d.%d %d:%d:%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday,tmp_ptr->tm_hour,tmp_ptr->tm_min,tmp_ptr->tm_sec);//五个空格
     fclose(fp);
 }
 
