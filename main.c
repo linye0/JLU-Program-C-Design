@@ -1,108 +1,172 @@
+#include <string.h>
+#include "merchantAndClient.h"
+#include<time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
-kehu(){system("cls");
+#include <string.h>
+
+int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list){
+    pBeverageList p;
+    system("cls");
     printf("  登录成功\n");
     printf("请选择功能列表\n");
-    printf("1.存款\n");
+    printf("1.查询存款\n");
     printf("2.查询商品\n");
     printf("3.订购\n");
+    printf("4.充值\n");
+    printf("5.更改用户名或密码\n");
+    printf("6.查询购买记录\n");
+    printf("7.注销账户\n");
+    printf("8.退出\n");
     char f=_getch();
     switch(f)
     {
     case'1':
     system("cls");
-    printf("存款函数\n");
+   printf("您的存款为:\n");
+   printf("%d\n",a->saving);
     system("pause");
     system("cls");
+    kehu(a,testList,list);
     break;
     case'2':
     system("cls");
-    printf("查询商品函数\n");
-    system("pause");
-    system("cls");
+    printf("请选择\n");
+    printf("1、查看所有商品\n");
+    printf("2、根据品牌查找商品\n");
+    printf("3、根据名称商品\n");
+    printf("4、根据酒水信息查找商品\n");
+    char m=_getch();
+    switch(m){
+    case'1':
+        system("cls");
+        showStaff(testList);
+        system("pause");
+      kehu(a,testList,list);
+        break;
+    case'2':
+        system("cls");
+        showStaff(testList);
+        printf("请输入品牌：\n");
+        char o[20];
+        gets_s(o,19);
+        searchBeverageBrand(testList,o);
+        system("pause");
+     kehu(a,testList,list);
+        break;
+    case'3':
+        system("cls");
+        showStaff(testList);
+        printf("请输入名称：\n");
+        char p[20];
+        gets_s(p,19);
+        searchBeverageName(testList,p);
+        system("pause");
+     kehu(a,testList,list);
+        break;
+    case'4':
+        system("cls");
+        showStaff(testList);
+        printf("请输入信息：\n");
+        char j[20];
+        gets_s(j,19);
+        searchBeverageInfo(testList,j);
+        system("pause");
+       kehu(a,testList,list);
+        break;
+    default:
+        printf("输入有误，请重新输入\n");
+        system("pause");
+       kehu(a,testList,list);
+        break;
+    }
     break;
     case'3':
     system("cls");
-    printf("订购函数\n");
-    system("pause");
-    system("cls");
+    showStaff(testList);
+    printf("请选择酒水编号\n");
+    int h;
+    scanf_s("%d",&h);
+    h=h+1;
+    p=find(testList, h);
+    printf("请选择订购数量\n");
+    int nm;
+    scanf_s("%d",&nm);
+    char o[20]=" ";
+    gets_s(o,19);
+    if(nm>0&&strlen(o) == 0){
+    if(a->saving>=(p->price*nm))
+    {
+    buy(a, p, nm);
+    printf("订购成功\n");
+    system("pause");}
+    else
+    {printf("余额不足\n");
+     system("pause");}}
+    else
+        printf("请输入正确的数量\n");
+       system("pause");
+  kehu(a,testList,list);
     break;
+    case '4':
+        system("cls");
+        printf("请输入充值金额：\n");
+        int g;
+        char c[20];
+        if(scanf_s("%d",&g)>0)
+            {deposit(a, g);
+            printf("充值成功\n");
+            system("pause");
+            kehu(a,testList,list);}
+        else{gets_s(c,19);
+            printf("请输入正确的金额\n");
+             system("pause");
+            kehu(a,testList,list);}
+        break;
+    case'5':
+        system("cls");
+        printf("请输入新密码：\n");
+        char y[20];
+        gets_s(y,19);
+        NewPassword(a,a->account,y);
+        system("pause");
+       kehu(a,testList,list);
+        break;
+    case'6':
+        system("cls");
+        printf("%10s%11s%10s%11s%10s%10s%9s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","时间");
+        int i=searchClientBuy(a->account);
+           printf("总共有%d条记录\n",i);
+        system("pause");
+        kehu(a,testList,list);
+        break;
+    case'7':
+        system("cls");
+        int status;
+        clientLogout(list,a->account,&status);
+        if(status==0)
+            printf("删除成功\n");
+        else
+            printf("删除失败，请重试\n");
+        system("pause");
+        break;
+
+    case'8':
+         system("cls");
+        break;
     default:
     printf("输入有误，请重新输入\n");
     system("pause");
     system("cls");
-    kehu();
+  kehu(a,testList,list);
+    break;
     }return 0;
 }
-int main()
-{
- while(1)
-{
- printf("欢迎进入酒水管理系统\n");
- printf("   请选择您的身份\n");
- printf("1.商户       2.客户\n");
- char ch =_getch();
- switch(ch)
- {case'1':
- {system("cls");
-  printf("请选择功能列表\n");
-  printf("1.进货\n");
-  printf("2.查询进货信息\n");
-  printf("3.查询库存\n");
-  printf("4.商品排序\n");
-  printf("5.删除库存\n");
-  printf("6.修改商品信息\n");
-  char d =_getch();
-  switch(d)
-
-  {case'1':
-  {system("cls");
-      printf("进货函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  case'2':
-  {system("cls");
-      printf("查询进货信息函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  case'3':
-  {system("cls");
-      printf("查询库存函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  case'4':
-  {system("cls");
-      printf("商品排序函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  case'5':
-  {system("cls");
-      printf("删除库存函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  case'6':
-  {system("cls");
-      printf("修改商品信息函数\n");
-      system("pause");
-      system("cls");
-      break;}
-  default:
-      printf("输入有误，请重新输入\n");
-      system("pause");
-      system("cls");
-      break;
-  }
-  break;
-}
- case'2':
- {system("cls");
-  printf("    欢迎光临\n");
+int denglu(pClientLinkedList list ,pBeverageList testList){
+    pClientLinkedList p;
+    int status;
+    system("cls");
   printf("     请选择\n");
   printf("1.登录     2.注册\n");
   char c=_getch();
@@ -110,32 +174,292 @@ int main()
   {
   case'1':
   {system("cls");
-      printf("登录函数\n");
-      system("pause");
-     kehu();
+  printf("请输入账号\n");
+  char zh[20];
+  gets_s(zh,19);
+  printf("请输入密码\n");
+  char mi[20];
+  gets_s(mi,19);
+ p=signIn(list, zh, mi, &status);
+ switch (status) {
+ case 1:
+    kehu(p,testList,list);
+    break;
+ case 0:
+     system("pause");
+  denglu(list,testList);
+     break;
+ case 4:
+  shanghu(testList);
+  break;
+ case -1:
+    system("pause");
+   denglu(list,testList);
+     break;
+ }
      break;}
   case'2':
   {system("cls");
-      printf("注册函数\n");
-      system("pause");
-      system("cls");
+
+  printf("请输入用户名\n");
+  char yh[20];
+  gets_s(yh,19);
+  printf("请输入账号\n");
+  char hz[20];
+  gets_s(hz,19);
+  printf("请输入密码\n");
+  char im[20];
+  gets_s(im,19);
+  signUp(list, hz, im, yh,0,0,1);
+  printf("注册成功");
+  system("pause");
+  system("cls");
       break;}
   default:
       printf("输入有误，请重新输入\n");
       system("pause");
       system("cls");
+      denglu(list,testList);
+      break;
+  }return 0;
+}
+int shanghu(pBeverageList testList){
+    system("cls");
+printf("请选择功能列表\n");
+  printf("1.进货\n");
+  printf("2.查询库存\n");
+  printf("3.商品排序\n");
+  printf("4.删除库存\n");
+  printf("5.修改商品信息\n");
+  printf("6.返回\n");
+  char d =_getch();
+  switch(d)
+
+  {case'1':
+  {system("cls");
+      printf("请输入品牌\n");
+      char fe[20];
+      gets_s(fe,19);
+      printf("请输入商品名\n");
+      char fd[20];
+      gets_s(fd,19);
+      printf("请输入进货时间\n");
+      char fg[20];
+      gets_s(fg,19);
+      printf("请输入商品数量\n");
+      int k;
+      scanf_s("%d",&k);
+      printf("请输入商品价格\n");
+      int l;
+      scanf_s("%d",&l);
+      printf("请输入商品信息\n");
+      char fs[20];
+      gets_s(fs,19);
+       newBeverageNode(fe, fd, fg, k, l, fs);
+       printf("进货成功");
+      system("pause");
+      system("cls");
+      shanghu(testList);
+      break;}
+  case'2':
+  {system("cls");
+      showStaff(testList);
+      system("pause");
+      system("cls");
+      shanghu(testList);
+      break;}
+  case'3':
+  {system("cls");
+      system("cls");
+      printf("请选择\n");
+      printf("1、对酒水以进货时间为关键词进行排序\n");
+      printf("2、对酒水以品牌为关键词进行排序\n");
+      printf("3、对酒水以库存量为关键词进行排序\n");
+      printf("4、对酒水以价格为关键词进行排序\n");
+      char m=_getch();
+      switch(m){
+      case'1':
+          system("cls");
+          printf("请选择排序方式：\n");
+          printf("1、正序\n");
+          printf("2、倒序\n");
+          char l=_getch();
+          switch (l) {
+          case'1':
+              testList = sortBeverageTime(testList, 1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          case'2':
+              testList = sortBeverageTime(testList, -1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          default:
+              printf("输入有误");
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          }
+          system("pause");
+          shanghu(testList);
+          break;
+      case'2':
+          system("cls");
+          printf("请选择排序方式：\n");
+          printf("1、正序\n");
+          printf("2、倒序\n");
+          char r=_getch();
+          switch (r) {
+          case'1':
+              testList = sortBeverageBrand(testList, 1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          case'2':
+              testList = sortBeverageBrand(testList, -1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          default:
+              printf("输入有误");
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          }
+          system("pause");
+          shanghu(testList);
+          break;
+      case'3':
+          system("cls");
+          printf("请选择排序方式：\n");
+          printf("1、正序\n");
+          printf("2、倒序\n");
+          char t=_getch();
+          switch (t) {
+          case'1':
+              testList = sortBeverageStoreNum(testList, 1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          case'2':
+              testList = sortBeverageStoreNum(testList, -1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          default:
+              printf("输入有误");
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          }
+          system("pause");
+          shanghu(testList);
+          break;
+      case'4':
+          system("cls");
+          printf("请选择排序方式：\n");
+          printf("1、正序\n");
+          printf("2、倒序\n");
+          char y=_getch();
+          switch (y) {
+          case'1':
+              testList = sortBeveragePrice(testList, 1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          case'2':
+              testList = sortBeveragePrice(testList, -1);
+              showStaff(testList);
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          default:
+              printf("输入有误");
+              system("pause");
+              system("cls");
+              shanghu(testList);
+              break;
+          }
+          system("pause");
+          shanghu(testList);
+          break;
+      }
+      system("pause");
+
+      shanghu(testList);
       break;
   }
-
-  break;
- }
- default:
-     printf("输入有误，请重新输入\n");
-     system("pause");
-     system("cls");
-     break;
- }
+  case'4':
+  {system("cls");
+      showStaff(testList);
+      printf("请输入删除的产品编号\n");
+      int bh ;
+      scanf_s("%d",&bh);
+      printf("%d", bh);
+      deleteBeverage(testList, bh);
+      printf("成功删除\n");
+      system("cls");
+      showStaff(testList);
+      system("pause");
+      shanghu(testList);
+      break;}
+  case'5':
+  {system("cls");
+      showStaff(testList);
+      printf("请输入产品编号\n");
+      int bi=_getch()-'0';
+      printf("请输入产品信息\n");
+      char ke[20];
+      gets_s(ke,19);
+      changeBeverageInfo(testList, bi, ke);
+      printf("修改成功\n");
+      system("pause");
+      shanghu(testList);
+      break;}
+  case'6':
+  {system("cls");
+      break;}
+  default:
+      printf("输入有误，请重新输入\n");
+      system("pause");
+      system("cls");
+      shanghu(testList);
+      break;}return 0;
+      }
+int main()
+{
+   init();
+  pBeverageList testList = createFromFile("C:\\Users\\86188\\Desktop\\test.txt");
+   recordInit();
+  pClientLinkedList list=initClient();
+  signUp(list, "111", "111", "shanghu",0,0,-1);
+ while(1)
+{system("cls");
+ printf("欢迎进入酒水管理系统\n");
+ system("pause");
+ system("cls");
+ denglu(list,testList);
 
 }
     return 0;
 }
+
