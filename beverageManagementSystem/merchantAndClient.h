@@ -1,6 +1,10 @@
 #ifndef MERCHANTANDCLIENT_H
 #define MERCHANTANDCLIENT_H
 
+void beverageRecordInit();
+
+void beveragePrintTime(char* file);
+
 typedef struct beverageLinkedList {
 
     char brand[10];
@@ -90,7 +94,7 @@ typedef struct clientLinkedList {
 
     int saving;
 
-    int grade;//0123对应 administrator 和客户等级一二三
+    int grade;//-1/123对应 administrator 和客户等级一二三
 
     struct clientLinkedList* next;
 
@@ -117,7 +121,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
 //*******************************以下是客户进行购买活动*****************************
 void deposit(clientNode client, int money); // 存款
 
-void buy(clientNode client, pBeverageList list, int number, int buyNum); // 订购指定数量的酒水
+void buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
 
 void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
 
@@ -133,6 +137,8 @@ void showClientRecord();
 
 void printTime(char*  file);
 
-// ***************************************交互类**********************************
+int searchClientBuy(char *info);
+
+int getLinkTotalNodeNum(pBeverageList head);
 
 #endif // MERCHANTANDCLIENT_H

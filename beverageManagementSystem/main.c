@@ -5,7 +5,10 @@
 #include<time.h>
 
 int main(void){
-    pBeverageList testList = createFromFile("D:\\JLU-Program-C-Design\\Data\\test.txt");
+
+    beverageRecordInit();
+
+    pBeverageList testList = createFromFile("D:\\JLU-Program-C-Design\\Data\\进货条目.txt");
 
     showStaff(testList);
 
