@@ -74,17 +74,11 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo); // 根据givenInfo对
 
 void searchBeverageName(pBeverageList list, char* givenName); // 根据givenName对酒水的名称进行查询
 
+pBeverageList addFromFile(char* file, pBeverageList list);
+
+//*************************************************************************************
+
 typedef struct clientLinkedList {
-
-    struct clientData* data;
-
-    struct clientLinkedList* next;
-
-}*pClientLinkedList, ClientLinkedList;
-
-typedef pClientLinkedList clientNode;
-
-typedef struct clientData {
 
     char account[20];
 
@@ -92,20 +86,53 @@ typedef struct clientData {
 
     char username[20];
 
+    int cost;
+
     int saving;
 
-}*pClientData, ClientData;
+    int grade;//0123对应 administrator 和客户等级一二三
+
+    struct clientLinkedList* next;
+
+}*pClientLinkedList, ClientLinkedList;
+
+typedef pClientLinkedList clientNode;
+
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username); // 将注册信息写入链表
+void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving,int cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
-clientNode signIn(pClientLinkedList list, char* account, char* password); // 登录，返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作
+clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
+clientNode clientSearch(pClientLinkedList list,char *account);//查用户
+
+void changeAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
+
+void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改密码
+//改用户名
+
+pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status);//删用户 返回头指针避免出现头指针被logout status状态反馈是否成功0/-1
+//*******************************以上是基本登录 增删改查****************************
+//*******************************以下是客户进行购买活动*****************************
 void deposit(clientNode client, int money); // 存款
 
-void showStaff(pBeverageList list); // 就是printStaff
+void buy(clientNode client, pBeverageList list, int number, int buyNum); // 订购指定数量的酒水
 
-void buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
+void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
+
+void recordInit();//初始化购买记录
+
+void recordClientBuy(clientNode client, pBeverageList list, int number);//记录商户操作并记录导入文件
+
+void recordClientAccount(clientNode client,const char behavior[]);
+
+void showStaff(pBeverageList list); // 就是printStaff输出整个链表
+
+void showClientRecord();
+
+void printTime(char*  file);
+
+// ***************************************交互类**********************************
 
 #endif // MERCHANTANDCLIENT_H
