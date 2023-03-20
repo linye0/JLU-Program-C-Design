@@ -703,9 +703,32 @@ int searchClientBuy(char *info)
     return sum;
 }
 
+void printCLientInfo(clientNode p)
+{
+    char account[]="账号";
+    char username[]="用户名";
+    char cost[]="已消费金额";
+    char saving[]="账户储蓄金";
+    char grade[]="用户等级";
+    char grade0[]="管理员";
+    printf("%10s%10s\n",account,p->account);
+    printf("%10s%10s\n",username,p->username);
+    printf("%10s%10d\n",cost,p->cost);
+    printf("%10s%10d\n",saving,p->saving);
+    if(p->grade>0){
+        printf("%10s%10d\n",grade,p->grade);
+    }else{
+        printf("%10s%10s\n",grade,grade0);
+    }
+}
 //做一个查找购买记录的功能即可“我的-->”
 
-//基本信息显示
-
+//库存不够了怎么办
+//写一个退换货的事情 建一个新的链表然后让管理员同意？？这里得考虑一下那个量的事情，。
+pclientRequestList clientRequestListInit(){
+    pclientRequestList head = (pclientRequestList)malloc(sizeof(clientRequestList));
+    head->next=NULL;
+    return head;
+}
 
 

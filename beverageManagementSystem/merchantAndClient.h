@@ -132,4 +132,22 @@ void printTime(char*  file);
 
 int searchClientBuy(char *info);
 
+void printCLientInfo(clientNode p);
+//********************************以上是客户进行购买或者其他活动***********************
+//********************************以下是管理员 客户退换货处理*************************
+typedef struct clientRequest{
+    clientNode pc;
+    pBeverageNode pb;
+    char *request;
+    struct clientRequest* next;
+}*pclientRequestList,clientRequestList;
+
+typedef pclientRequestList clientRequestNode;
+
+pclientRequestList clientRequestListInit();
+
+void clientRequest_Biuld(clientRequestList list);
+
+void clientRequest_return(clientRequestList list,clientRequestNode p);
+
 #endif // MERCHANTANDCLIENT_H

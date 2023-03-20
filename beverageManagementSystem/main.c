@@ -71,7 +71,8 @@ printf("%d",status);
     buy(p,test,10);
 
     int i=searchClientBuy("user1 农夫山泉 ");
-    printf("总共有%d条记录",i);
+    printf("总共有%d条记录\n",i);
+    printCLientInfo(p);
     return 0;
 }
 
