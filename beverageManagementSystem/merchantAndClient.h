@@ -83,9 +83,9 @@ typedef struct clientLinkedList {
 
     char username[20];
 
-    int cost;
+    float cost;
 
-    int saving;
+    float saving;
 
     int grade;//-1/123对应 administrator 和客户等级一二三
 
@@ -98,7 +98,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving,int cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
+void signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
@@ -120,7 +120,7 @@ void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之�
 
 void recordInit();//初始化购买记录
 
-void recordClientBuy(clientNode client, pBeverageList list, int number);//记录商户操作并记录导入文件
+void recordClientBuy(clientNode client, pBeverageList list, int number,float cost);//记录商户操作并记录导入文件
 
 void recordClientAccount(clientNode client,const char behavior[]);
 
@@ -138,7 +138,9 @@ void printCLientInfo(clientNode p);
 typedef struct clientRequest{
     clientNode pc;
     pBeverageNode pb;
-    char *request;
+    int number;
+    float cost;
+    char time[40];
     struct clientRequest* next;
 }*pclientRequestList,clientRequestList;
 
@@ -146,8 +148,14 @@ typedef pclientRequestList clientRequestNode;
 
 pclientRequestList clientRequestListInit();
 
-void clientRequest_Biuld(clientRequestList list);
+void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info);
 
-void clientRequest_return(clientRequestList list,clientRequestNode p);
+void clientRequest_POP(pclientRequestList list,int choice);
+
+void clientRequest_SHOW(pclientRequestList list);
+
+void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
+
+pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
 
 #endif // MERCHANTANDCLIENT_H
