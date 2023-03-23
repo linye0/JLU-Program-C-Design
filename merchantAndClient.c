@@ -622,7 +622,7 @@ void changeAccount(pClientLinkedList list,char* account,char*newAccount){
     p=clientSearch(list,account);
     strcpy_s(p->account,strlen(newAccount)+1,newAccount);
     printf("%s\n",p->account);
-    // 
+    //
 }//
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword){
@@ -876,25 +876,22 @@ pClientshoppingcar deleteshoppingcar(pClientshoppingcar list,char* name,int *sta
     return list;
 }
 
-void showshoppingcar(pClientshoppingcar list){
+void showshoppingcar(pClientshoppingcar list,char* username){
     pClientshoppingcar p;
     p=list;
     int i=1;
-    if(!p)
-    {
-        printf("\n当前购物车为空\n");
-    }
-    else
-    {
+
         printf("\n当前购物车如下:\n");
         printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "信息", "单价","数量","总价");
-        while (p)
-        {
-            p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
-                    i++;
+        while (p != NULL) {
+            if (strcmp(p->username,username)==0) {
+                printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+                i++;
+            }
+
+            p = p->next;
         }
-    }
+
 }
 
 pClientshoppingcar finding(pClientshoppingcar head, int i){
@@ -928,4 +925,3 @@ void searchshoppingcar(pClientshoppingcar list, char* name){
      printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
      return;
 }
-

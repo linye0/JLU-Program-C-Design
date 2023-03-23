@@ -169,7 +169,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         break;
     case'8':
         system("cls");
-     showshoppingcar(car);
+     showshoppingcar(car,a->username);
      printf("\n请选择\n");
      printf("1.添加购物车\n");
      printf("2.修改购物车\n");
@@ -184,51 +184,57 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          printf("请选择添加酒水序号\n");
          int k;
          scanf_s("%d",&k);
+         char b=getchar();
          k++;
          pBeverageNode p0=find(testList, k);
          printf("请选择添加数量\n");
          int r;
          scanf_s("%d",&r);
+         b=getchar();
          addshoppingcar(car,a,p0,r);
          printf("添加成功\n");
-         showshoppingcar(car);
+         showshoppingcar(car,a->username);
          system("pause");
-          kehu(a,testList,list,car);
+         kehu(a,testList,list,car);
          break;
    case '2':
          system("cls");
-         showshoppingcar(car);
+         showshoppingcar(car,a->username);
          printf("请选择要修改的序号\n");
          int j;
          scanf_s("%d",&j);
+         char c=getchar();
          j++;
          pClientshoppingcar p1= finding(car, j);
          printf("请输入要修改的数量\n");
          int y;
          scanf_s("%d",&y);
+         c=getchar();
          changeshoppingcar(car,p1->name,y );
          printf("修改成功\n");
-         showshoppingcar(car);
+         showshoppingcar(car,a->username);
          system("pause");
          kehu(a,testList,list,car);
         break;
     case '3':
          system("cls");
          int status;
-         showshoppingcar(car);
+         showshoppingcar(car,a->username);
          printf("请选择要删除的序号\n");
          int h;
          scanf_s("%d",&h);
+         char d=getchar();
          h++;
          pClientshoppingcar p2=finding(car,h);
          car=deleteshoppingcar(car,p2->name,&status);
          printf("删除成功\n");
-         showshoppingcar(car);
+         showshoppingcar(car,a->username);
          system("pause");
           kehu(a,testList,list,car);
          break;
    case '4':
          system("cls");
+         showshoppingcar(car,a->username);
          printf("请输入要查找的名称\n");
          char ch=getchar();
          char w[20];
@@ -249,8 +255,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          break;
 
      }
-     system("pause");
-     kehu(a,testList,list,car);
+
         break;
     case'9':
          system("cls");

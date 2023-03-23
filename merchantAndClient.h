@@ -155,11 +155,12 @@ pClientshoppingcar deleteshoppingcar(pClientshoppingcar Testlist,char* name,int 
 void changeshoppingcar(pClientshoppingcar Testlist,char* name,int amount);//改变购物车信息
 
 
-void showshoppingcar(pClientshoppingcar list);//打印链表
+void showshoppingcar(pClientshoppingcar list,char* username);//打印链表
 
 pClientshoppingcar finding(pClientshoppingcar head, int i);//查找链表结点
 
 void searchshoppingcar(pClientshoppingcar list, char* name); // 根据名称对购物车进行查询
 
-#endif // MERCHANTANDCLIENT_H
+void searchCarinfo(pClientshoppingcar list, char* username);
 
+#endif // MERCHANTANDCLIENT_H
