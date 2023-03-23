@@ -120,7 +120,7 @@ void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之�
 
 void recordInit();//初始化购买记录
 
-void recordClientBuy(clientNode client, pBeverageList list, int number,float cost);//记录商户操作并记录导入文件
+void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info);//记录商户操作并记录导入文件
 
 void recordClientAccount(clientNode client,const char behavior[]);
 
@@ -141,6 +141,7 @@ typedef struct clientRequest{
     int number;
     float cost;
     char time[40];
+    char info[200];
     struct clientRequest* next;
 }*pclientRequestList,clientRequestList;
 
@@ -148,11 +149,13 @@ typedef pclientRequestList clientRequestNode;
 
 pclientRequestList clientRequestListInit();
 
-void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info);
+void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info,char* excuse);
 
-void clientRequest_POP(pclientRequestList list,int choice);
+void clientRequest_POP(pclientRequestList list,int choice,int operate);
 
 void clientRequest_SHOW(pclientRequestList list);
+
+void clientRequest_SHOWMORE(pclientRequestList list,int choice);
 
 void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
 

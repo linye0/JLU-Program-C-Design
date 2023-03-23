@@ -4,6 +4,8 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
+#define fileClientBuyLog "D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt"
+#define fileClientAccountLog "D:\\C-Project\\JLU-Program-C-Design\\data\\clientAccountLog.txt"
 int isEmpty(pBeverageList list) {
     if (list->next == NULL) return 1;
     else return 0;
@@ -591,39 +593,43 @@ void buy(clientNode client, pBeverageList list, int number){
     list->storeNum-=number;
     client->cost+=number*list->price*(1-0.06*client->grade);
     client->saving-=number*list->price*(1-0.06*client->grade);
-    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade));
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"正常销售");
     clientUpgradeCheck(client);
 }
 
 void recordInit()
 {
     FILE *fp;
-    char file0[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
-    fp = fopen(file0,"w");
-    fprintf(fp,"%10s%11s%10s%11s%10s%10s%10s%9s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间");
+
+    fp = fopen( fileClientBuyLog ,"w");
+    fprintf(fp,"%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
     fclose(fp);
-    char file1[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientAccountLog.txt";
-    fp = fopen(file1,"w");
+    fp = fopen(fileClientAccountLog,"w");
     fprintf(fp,"%10s%10s%10s%10s\n","账号","用户名","行为","时间");
     fclose(fp);
+
 }//用来打表头捏
 
-void recordClientBuy(clientNode client, pBeverageList list, int number,float cost){
+void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info){
     FILE *fp;
-    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
-    fp = fopen(file,"at+");
+    fp = fopen(fileClientBuyLog,"at+");
     fprintf(fp,"%10s%10s%10s%10s%10d%10d%10.2f",client->account,client->username,list->brand,list->name,list->price,number,cost);
     fclose(fp);
-    printTime(file);//输出一下时间
+    printTime(fileClientBuyLog);//输出一下时间
+    fp = fopen(fileClientBuyLog,"at+");
+    fprintf(fp,"%10s\n",info);
+    fclose(fp);
 }
 
 void recordClientAccount(clientNode client,const char behavior[]){
     FILE *fp;
-    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientAccountLog.txt";
-    fp = fopen(file,"at+");
+    fp = fopen(fileClientAccountLog,"at+");
     fprintf(fp,"%10s%10s%10s",client->account,client->username,behavior);
     fclose(fp);
-    printTime(file);//输出一下时间
+    printTime(fileClientAccountLog);//输出一下时间
+    fp = fopen(fileClientAccountLog,"at+");
+    fprintf(fp,"\n");
+    fclose(fp);
 }
 
 void printTime(char* file){
@@ -633,7 +639,7 @@ void printTime(char* file){
     struct tm *tmp_ptr = NULL;
     time(&tmpcal_ptr);
     tmp_ptr = localtime(&tmpcal_ptr);
-    fprintf(fp,"     %d.%d.%d %d:%d:%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday,tmp_ptr->tm_hour,tmp_ptr->tm_min,tmp_ptr->tm_sec);//五个空格
+    fprintf(fp,"     %d.%d.%d_%d:%d:%d", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday,tmp_ptr->tm_hour,tmp_ptr->tm_min,tmp_ptr->tm_sec);//五个空格
     fclose(fp);
 }
 
@@ -641,13 +647,11 @@ int searchClientBuy(char *info)
 {
 
     FILE *fp;
-    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
-
     int line_len=0;
     char buf[1024]={0};
     char Info[20];
     strcpy_s(Info,strlen(info)+1,info);
-    fp=fopen(file,"r");
+    fp=fopen(fileClientBuyLog,"r");
     int sum=0;
     int sum0=0;
     char *token=strtok(Info," ");
@@ -736,13 +740,12 @@ void searchClientBuy_FORREQUEST(char *info,char requestInfo[])
 {
 
     FILE *fp;
-    char file[]="D:\\C-Project\\JLU-Program-C-Design\\data\\clientBuyLog.txt";
 
     int line_len=0;
     char buf[1024]={0};
     char Info[20];
     strcpy_s(Info,strlen(info)+1,info);
-    fp=fopen(file,"r");
+    fp=fopen(fileClientBuyLog,"r");
     int sum0=0;
     char *token=strtok(Info," ");
     char s[10][20];
@@ -807,7 +810,7 @@ pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,cha
     return p;
 }
 
-void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info){
+void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info,char* excuse){
     char Info[100];
     strcpy_s(Info,strlen(info)+1,info);
     searchClientBuy_FORREQUEST(info,Info);
@@ -830,6 +833,7 @@ void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList 
     p->next=NewClientRequest;
     NewClientRequest->next=NULL;
     strcpy_s(NewClientRequest->time,strlen(time)+1,time);
+    strcpy_s(NewClientRequest->info,strlen(excuse)+1,excuse);
     NewClientRequest->pb=pb0;
     NewClientRequest->pc=client;
     NewClientRequest->number=number;
@@ -837,32 +841,33 @@ void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList 
 }
 
 
-void clientRequest_POP(pclientRequestList list,int choice){
-    if(choice!=0){
+void clientRequest_POP(pclientRequestList list,int choice,int operate){
         int i=1;
         pclientRequestList p0=list;
         pclientRequestList p=list->next;
-        //先改数据
-
         while(p!=NULL&&i<choice){
             i++;
             p0=p0->next;
             p=p->next;
          }
-        while(p->pc->cost-p->cost<pow(10,2*p->pc->grade))
-        {
-            p->pc->grade--;
+        if(operate==1){
+            while(p->pc->cost-p->cost<pow(10,2*p->pc->grade))
+            {
+                p->pc->grade--;
+            }
+            p->pc->saving-=p->cost;
+            p->pc->cost+=p->cost;
+            p->pb->storeNum+=p->number;
+            printf("您已成功同意一条退货申请，还剩下这些请求待处理：\n");
+            recordClientBuy(p->pc,p->pb,p->number,-p->cost,"退货成功");
+        }else{
+            printf("您已成功拒绝一条退货申请，还剩下这些请求待处理：\n");
+            recordClientBuy(p->pc,p->pb,p->number,0,"拒绝退货");
         }
-        p->pc->saving-=p->cost;
-        p->pc->cost+=p->cost;
-        p->pb->storeNum+=p->number;
-        recordClientBuy(p->pc,p->pb,p->number,-p->cost);
         p0->next=p->next;
-
-    }
-    printf("你已经同意了一条退货需求！剩下的退货请求还有这些\n");
-    clientRequest_SHOW(list);
+        clientRequest_SHOW(list);
 }
+
 
 void clientRequest_SHOW(pclientRequestList list){
     pclientRequestList p=list->next;
@@ -871,8 +876,22 @@ void clientRequest_SHOW(pclientRequestList list){
     printf("%10s%10s%10s%10s%10s%15s\n","账号","品牌","名称","请求","数量","时间");
     printf("-----------------------------------------------------------------------------------\n");
     while(p!=NULL){
-        printf("%10s%10s%10s%10s%10d%15s\n",p->pc->account,p->pb->brand,p->pb->name,request,p->number,p->time);
+        printf("%10s%10s%10s%10s%10d%25s\n",p->pc->account,p->pb->brand,p->pb->name,request,p->number,p->time);
         p=p->next;
     }
     printf("***********************************************************************************\n");
+}
+
+void clientRequest_SHOWMORE(pclientRequestList list,int choice){
+    int i=1;
+    pclientRequestList p0=list;
+    pclientRequestList p=list->next;
+    while(p!=NULL&&i<choice){
+        i++;
+        p0=p0->next;
+        p=p->next;
+     }
+    printf("*************************************************退货原因说明****************************************************\n");
+    printf("%s\n",p->info);
+    printf("*************************************************退货原因说明****************************************************\n");
 }

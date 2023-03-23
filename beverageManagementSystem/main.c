@@ -77,11 +77,14 @@ int main()
     pclientRequestList list0=clientRequestListInit();
     p=clientSearch(list,"user3");
     printCLientInfo(p);
-    clientRequest_PUSH(list0,p,testList,"user3 Å©·òÉ½Èª ");
+    clientRequest_PUSH(list0,p,testList,"user3 Å©·òÉ½Èª ","ÅäËÍÌ«¾ÃÁË¸ç¸ç");
     p=clientSearch(list,"newuser2");
-    clientRequest_PUSH(list0,p,testList,"name2 Å©·òÉ½Èª ");
+    clientRequest_PUSH(list0,p,testList,"name2 Å©·òÉ½Èª ","²»ºÃºÈ");
     clientRequest_SHOW(list0);
-    clientRequest_POP(list0,2);
+    clientRequest_SHOWMORE(list0,2);
+    clientRequest_POP(list0,2,1);
+    clientRequest_SHOWMORE(list0,1);
+    clientRequest_POP(list0,1,2);
     p=clientSearch(list,"newuser2");
     printCLientInfo(p);
     return 0;
