@@ -1147,3 +1147,11 @@ void searchshoppingcar(pClientshoppingcar list, char* name){
      printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
      return;
 }
+pBeverageNode findname(pBeverageList list, char* name){
+
+    pBeverageNode p = list;
+   while(strcmp(p->name, name)!=0)
+   {p=p->next;
+   }
+    return p;
+}

@@ -64,6 +64,8 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo); // 根据givenInfo
 void searchBeverageName(pBeverageList list, char* givenName); // 根据givenName对酒水的名称进行查询
 
 pBeverageList addFromFile(char* file, pBeverageList list);
+
+pBeverageNode findname(pBeverageList head, char* name);
 //************************************下面都是我的捏******************************************************
 
 typedef struct clientLinkedList {

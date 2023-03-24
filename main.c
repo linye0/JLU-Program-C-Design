@@ -18,7 +18,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
     printf("5.更改用户名或密码\n");
     printf("6.查询购买记录与退换货\n");
     printf("7.注销账户\n");
-    printf("8.查看购物车\n");
+    printf("8.购物车\n");
     printf("9.退出\n");
     char f=_getch();
     switch(f)
@@ -212,7 +212,8 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
      printf("2.修改购物车\n");
      printf("3.删除购物车\n");
      printf("4.查找购物车\n");
-     printf("5.返回\n");
+     printf("5.购买购物车中物品\n");
+     printf("6.返回\n");
      char u=_getch();
      switch (u) {
      case'1':
@@ -281,6 +282,29 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
            kehu(a,testList,list,car, change);
          break;
    case'5':
+         system("cls");
+         showshoppingcar(car,a->username);
+         printf("请输入要购买的编号\n");
+         int p;
+         scanf_s("%d",&p);
+         char de=getchar();
+         p++;
+         pClientshoppingcar p3=finding(car, p);
+         pBeverageNode p4=findname(testList, p3->name);
+         if(a->saving>=(p3->cost))
+         {buy(a,p4,p3->amount);
+             deleteshoppingcar(car,p3->name,&status);
+             printf("购买成功\n");
+         system("pause");
+      kehu(a,testList,list,car, change);
+         break;}
+         else
+         {printf("余额不足\n");
+          system("pause");
+        kehu(a,testList,list,car, change);
+         break;}
+
+   case'6':
          system("cls");
           kehu(a,testList,list,car, change);
          break;
