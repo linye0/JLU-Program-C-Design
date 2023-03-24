@@ -78,6 +78,8 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo); // 根据givenInfo对
 
 void searchBeverageName(pBeverageList list, char* givenName); // 根据givenName对酒水的名称进行查询
 
+void writeIntoFile(pBeverageList list);
+
 pBeverageList addFromFile(char* file, pBeverageList list);
 
 //*************************************************************************************
@@ -140,5 +142,7 @@ void printTime(char*  file);
 int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
+
+//***************************************时间*********************************************
 
 #endif // MERCHANTANDCLIENT_H

@@ -22,6 +22,10 @@ void beverageRecordInit()
     fp = fopen(file0,"w");
     fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
+    char file1[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
+    fp = fopen(file1, "w");
+    fprintf(fp, "%s\n", "写入库存:");
+    fclose(fp);
 }//用来打表头捏
 
 int isEmpty(pBeverageList list) {
@@ -43,6 +47,15 @@ pBeverageList init() {
     head->next = NULL;
     return head;
 }
+
+void insertLast(pBeverageList list, pBeverageNode node) {
+    pBeverageNode p = list;
+    while (p->next != NULL) {
+        p = p->next;
+    }
+    p->next = node;
+}
+
 
 pBeverageNode find(pBeverageList head, int i) {
     int j = 1;
@@ -488,6 +501,20 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
     }
 }
 
+void writeIntoFile(pBeverageList list) {
+    char file0[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
+    beveragePrintTime(file0);
+    FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, ":\n");
+    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+    int writePos = 1;
+    pBeverageNode curNode = list;
+    while (curNode->next != NULL) {
+        curNode = curNode->next;
+        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+    }
+}
+
 pBeverageList addFromFile(char* file, pBeverageList list) {
     FILE*fp;
     fp = fopen(file, "r");
@@ -584,4 +611,268 @@ pBeverageList addFromFile(char* file, pBeverageList list) {
     }
 
     return head;
+}
+
+//***************************************linyebyd******************************************************
+
+pClientLinkedList initClient(){
+    pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    head->next=NULL;
+    return head;
+}
+
+void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving,int cost,int grade){
+    pClientLinkedList p0=clientSearch(list,account);
+    if(p0!=NULL)
+    {
+        printf("用户名已存在，请重新输入\n");
+        return ;//
+    }
+    pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    pClientLinkedList p=list;
+    while(p->next!=NULL){
+        p=p->next;
+    }
+    p->next=NewClientAccount;
+
+    NewClientAccount->next=NULL;
+
+    strcpy_s(NewClientAccount->account,strlen(account)+1,account);
+    strcpy_s(NewClientAccount->password,strlen(password)+1,password);
+    strcpy_s(NewClientAccount->username,strlen(username)+1,username);
+    NewClientAccount->saving=saving;
+    NewClientAccount->cost=cost;
+    NewClientAccount->grade=grade;
+
+    recordClientAccount(NewClientAccount,"");
+}//
+
+clientNode clientSearch(pClientLinkedList list,char *account){
+    pClientLinkedList p=list;
+    while(p!=NULL&&strcmp(p->account,account)!=0){
+        p=p->next;
+    }
+    return p;
+}//
+
+clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    if(p!=NULL){
+        if(strcmp(p->password,password)==0){
+            if(p->grade>=0)
+            {
+                recordClientAccount(p,"普通登录");
+                *status=1;
+            }else
+            {
+                recordClientAccount(p,"管理登录");
+                *status=4;
+            }
+        }else{
+
+            recordClientAccount(p,"登录失败");
+            printf("密码错误 请输入正确的密码\n");
+            *status=0;
+        }
+    }else{
+        printf("抱歉 未能找到输入的账号\n");
+        printf("您是否需要 注册\n");
+        *status=-1;
+    }
+    return p;
+}
+
+void changeAccount(pClientLinkedList list,char* account,char*newAccount){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    strcpy_s(p->account,strlen(newAccount)+1,newAccount);
+    printf("%s\n",p->account);
+    //
+}//
+
+void NewPassword(pClientLinkedList list,char* account,char* newPassword){
+    pClientLinkedList p;
+    p=clientSearch(list,account);
+    strcpy_s(p->password,strlen(newPassword)+1,newPassword);
+    printf("已修改密码为：%s\n",p->password);
+}//
+
+pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
+    pClientLinkedList p=list;
+    /*if(strcmp(p->account,account)==0)
+    {
+        pClientLinkedList t=p->next;
+        //free(p);
+        return t;
+    } head*/
+    pClientLinkedList p0=p;
+    p=p->next;
+    while(p!=NULL&&strcmp(p->account,account)!=0){
+        p0=p;
+        p=p->next;
+    }
+    if(p!=NULL){
+        if(p->next!=NULL){
+            p0->next=p->next;
+           // free(p);
+            *status=0;
+        }else{
+            p0->next=NULL;
+           // free(p);
+            *status=0;
+        }
+        printf("\n");
+        recordClientAccount(p,"");
+    }else
+    {
+        printf("");
+        *status=-1;
+    }
+    return list;
+}//
+
+void deposit(clientNode client, int money){
+    client->saving+=money;
+
+}
+
+void clientUpgradeCheck(pClientLinkedList list)
+{
+    if(list->cost>pow(10,2*list->grade))
+    {
+        list->grade++;
+    }
+}
+
+void buy(clientNode client, pBeverageList list, int number){
+    list->storeNum-=number;
+    client->cost+=number*list->price*(1-0.06*client->grade);
+    client->saving-=number*list->price;
+    clientUpgradeCheck(client);
+    recordClientBuy(client,list,number);
+}
+
+void recordInit()
+{
+    FILE *fp;
+    char file0[]="D:\\JLU-Program-C-Design\\Data\\buy.txt";
+    fp = fopen(file0,"w");
+   fprintf(fp,"%10s%11s%10s%11s%10s%10s%9s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","时间");
+    fclose(fp);
+    char file1[]="D:\\JLU-Program-C-Design\\Data\\client.txt";
+    fp = fopen(file1,"w");
+    fprintf(fp,"%10s%10s%10s%10s\n","账号","用户名","行为","时间");
+    fclose(fp);
+}//
+
+void recordClientBuy(clientNode client, pBeverageList list, int number){
+    FILE *fp;
+    char file[]="D:\\qt\\qt project\\1\\client.txt";
+    fp = fopen(file,"at+");
+    fprintf(fp,"%10s%10s%10s%10s%10d%10d",client->account,client->username,list->brand,list->name,list->price,number);
+    fclose(fp);
+    printTime(file);//
+}
+
+void recordClientAccount(clientNode client,const char behavior[]){
+    FILE *fp;
+    char file[]="D:\\JLU-Program-C-Design\\Data\\client.txt";
+    fp = fopen(file,"at+");
+    fprintf(fp,"%10s%10s%10s",client->account,client->username,behavior);
+    fclose(fp);
+    printTime(file);//
+}
+
+void printTime(char* file){
+    FILE *fp;
+    fp = fopen(file,"at+");
+    time_t tmpcal_ptr;
+    struct tm *tmp_ptr = NULL;
+    time(&tmpcal_ptr);
+    tmp_ptr = localtime(&tmpcal_ptr);
+    fprintf(fp,"     %d.%d.%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//
+    fclose(fp);
+}
+
+int searchClientBuy(char *info)
+{
+
+    FILE *fp;
+    char file[]="D:\\qt\\qt project\\1\\buy.txt";
+
+    int line_len=0;
+    char buf[1024]={0};
+    char Info[20];
+    strcpy_s(Info,strlen(info)+1,info);
+    fp=fopen(file,"r");
+    int sum=0;
+    int sum0=0;
+    char *token=strtok(Info," ");
+    char s[10][20];
+    while( token != NULL ) {
+        sum0++;
+        strcpy_s(s[sum0],strlen(token)+1,token);
+        token = strtok(NULL," ");
+    }
+    while(fgets(buf,1024,fp)){
+
+        line_len=strlen(buf);
+        //
+        if('\n'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //
+                continue;
+            }
+        }
+        if('\r'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //
+                continue;
+            }
+        }
+        //]
+        int p=1;
+        int flag=1;
+        while(p<=sum0)
+        {
+            char *ptr=strstr(buf,s[p]);
+            if(ptr==NULL)
+                flag=0;
+            p++;
+        }
+        if(flag)
+        {
+            printf("%s\n", buf);
+            sum++;
+        }
+    }
+    if(0== feof ){
+        printf("fgets error\n");
+        return -1;
+    }
+
+    fclose(fp);
+
+    return sum;
+}
+
+//ɡ-->
+
+//
+
+
+int getLinkTotalNodeNum(pBeverageList head)
+{
+        int cnt = 0;
+        pBeverageList p = head;
+        while(p != NULL){
+        cnt++;
+        p = p->next;
+}
+        return cnt;
 }
