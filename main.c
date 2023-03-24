@@ -6,7 +6,7 @@
 #include <conio.h>
 #include <string.h>
 
-int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClientshoppingcar car){
+int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list){
     pBeverageList p;
     system("cls");
     printf("  登录成功\n");
@@ -18,8 +18,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
     printf("5.更改用户名或密码\n");
     printf("6.查询购买记录\n");
     printf("7.注销账户\n");
-    printf("8.查看购物车\n");
-    printf("9.退出\n");
+    printf("8.退出\n");
     char f=_getch();
     switch(f)
     {
@@ -29,7 +28,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
    printf("%d\n",a->saving);
     system("pause");
     system("cls");
-    kehu(a,testList,list,car);
+    kehu(a,testList,list);
     break;
     case'2':
     system("cls");
@@ -44,7 +43,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         system("cls");
         showStaff(testList);
         system("pause");
-      kehu(a,testList,list,car);
+      kehu(a,testList,list);
         break;
     case'2':
         system("cls");
@@ -54,7 +53,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(o,19);
         searchBeverageBrand(testList,o);
         system("pause");
-     kehu(a,testList,list,car);
+     kehu(a,testList,list);
         break;
     case'3':
         system("cls");
@@ -64,7 +63,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(p,19);
         searchBeverageName(testList,p);
         system("pause");
-     kehu(a,testList,list,car);
+     kehu(a,testList,list);
         break;
     case'4':
         system("cls");
@@ -74,12 +73,12 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(j,19);
         searchBeverageInfo(testList,j);
         system("pause");
-       kehu(a,testList,list,car);
+       kehu(a,testList,list);
         break;
     default:
         printf("输入有误，请重新输入\n");
         system("pause");
-       kehu(a,testList,list,car);
+       kehu(a,testList,list);
         break;
     }
     break;
@@ -107,22 +106,22 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
     buy(a, p, nm);
     printf("订购成功\n");
     system("pause");
-   kehu(a,testList,list,car);
+   kehu(a,testList,list);
     break;}
     else
     {printf("余额不足\n");
      system("pause");
-    kehu(a,testList,list,car);
+    kehu(a,testList,list);
     break;}}
     else
         printf("请输入正确的数量\n");
        system("pause");
-  kehu(a,testList,list,car);
+  kehu(a,testList,list);
     break;}
     else {
         printf("请输入正确的编号\n");
         system("pause");
-        kehu(a,testList,list,car);
+        kehu(a,testList,list);
         break;
     }
     case '4':
@@ -134,11 +133,11 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
             {deposit(a, g);
             printf("充值成功\n");
             system("pause");
-            kehu(a,testList,list,car);}
+            kehu(a,testList,list);}
         else{gets_s(c,19);
             printf("请输入正确的金额\n");
              system("pause");
-            kehu(a,testList,list,car);}
+            kehu(a,testList,list);}
         break;
     case'5':
         system("cls");
@@ -147,7 +146,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(y,19);
         NewPassword(a,a->account,y);
         system("pause");
-       kehu(a,testList,list,car);
+       kehu(a,testList,list);
         break;
     case'6':
         system("cls");
@@ -155,7 +154,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         int i=searchClientBuy(a->account);
            printf("总共有%d条记录\n",i);
         system("pause");
-        kehu(a,testList,list,car);
+        kehu(a,testList,list);
         break;
     case'7':
         system("cls");
@@ -167,104 +166,15 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
             printf("删除失败，请重试\n");
         system("pause");
         break;
+
     case'8':
-        system("cls");
-     showshoppingcar(car,a->username);
-     printf("\n请选择\n");
-     printf("1.添加购物车\n");
-     printf("2.修改购物车\n");
-     printf("3.删除购物车\n");
-     printf("4.查找购物车\n");
-     printf("5.返回\n");
-     char u=_getch();
-     switch (u) {
-     case'1':
-         system("cls");
-         showStaff(testList);
-         printf("请选择添加酒水序号\n");
-         int k;
-         scanf_s("%d",&k);
-         char b=getchar();
-         k++;
-         pBeverageNode p0=find(testList, k);
-         printf("请选择添加数量\n");
-         int r;
-         scanf_s("%d",&r);
-         b=getchar();
-         addshoppingcar(car,a,p0,r);
-         printf("添加成功\n");
-         showshoppingcar(car,a->username);
-         system("pause");
-         kehu(a,testList,list,car);
-         break;
-   case '2':
-         system("cls");
-         showshoppingcar(car,a->username);
-         printf("请选择要修改的序号\n");
-         int j;
-         scanf_s("%d",&j);
-         char c=getchar();
-         j++;
-         pClientshoppingcar p1= finding(car, j);
-         printf("请输入要修改的数量\n");
-         int y;
-         scanf_s("%d",&y);
-         c=getchar();
-         changeshoppingcar(car,p1->name,y );
-         printf("修改成功\n");
-         showshoppingcar(car,a->username);
-         system("pause");
-         kehu(a,testList,list,car);
-        break;
-    case '3':
-         system("cls");
-         int status;
-         showshoppingcar(car,a->username);
-         printf("请选择要删除的序号\n");
-         int h;
-         scanf_s("%d",&h);
-         char d=getchar();
-         h++;
-         pClientshoppingcar p2=finding(car,h);
-         car=deleteshoppingcar(car,p2->name,&status);
-         printf("删除成功\n");
-         showshoppingcar(car,a->username);
-         system("pause");
-          kehu(a,testList,list,car);
-         break;
-   case '4':
-         system("cls");
-         showshoppingcar(car,a->username);
-         printf("请输入要查找的名称\n");
-         char ch=getchar();
-         char w[20];
-         gets_s(w,19);
-         searchshoppingcar(car, w);
-         system("pause");
-          kehu(a,testList,list,car);
-         break;
-   case'5':
-         system("cls");
-         kehu(a,testList,list,car);
-         break;
-     default:
-         printf("输入有误，请重新输入\n");
-         system("pause");
-         system("cls");
-       kehu(a,testList,list,car);
-         break;
-
-     }
-
-        break;
-    case'9':
          system("cls");
         break;
     default:
     printf("输入有误，请重新输入\n");
     system("pause");
     system("cls");
-  kehu(a,testList,list,car);
+  kehu(a,testList,list);
     break;
     }return 0;
 }
@@ -513,7 +423,7 @@ printf("请选择功能列表\n");
       break;}return 0;
       }
 
-int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car){
+int denglu(pClientLinkedList list ,pBeverageList testList){
     pClientLinkedList p;
     int status;
     system("cls");
@@ -533,7 +443,7 @@ int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car
  p=signIn(list, zh, mi, &status);
  switch (status) {
  case 1:
-    kehu(p,testList,list,car);
+    kehu(p,testList,list);
     break;
  case 0:
      system("pause");
@@ -579,14 +489,14 @@ int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car
       printf("输入有误，请重新输入\n");
       system("pause");
       system("cls");
-      denglu(list,testList,car);
+      denglu(list,testList);
       break;
   }return 0;
 }
 
 int main()
 {
-pClientshoppingcar car= initshoppingcar();
+
   pBeverageList testList = createFromFile("D:\\qt\\qt project\\1\\beverage.txt");
    recordInit();
   pClientLinkedList list=initClient();
@@ -596,8 +506,10 @@ pClientshoppingcar car= initshoppingcar();
  printf("欢迎进入酒水管理系统\n");
  system("pause");
  system("cls");
- denglu(list,testList,car);
+ denglu(list,testList);
 
 }
     return 0;
 }
+
+

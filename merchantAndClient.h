@@ -118,49 +118,7 @@ void showClientRecord();
 void printTime(char*  file);
 
 int searchClientBuy(char *info);
+
 int getLinkTotalNodeNum(pBeverageList head);
-
-
-//*****************************************************************************
-typedef struct clientshoppingcar {
-
-    char account[20];
-
-    char username[20];
-
-    char brand[10];
-
-    char name[100];
-
-    char info[1000];
-
-    int price;
-
-    int amount;
-
-    int cost;
-
-    struct clientshoppingcar* next;
-
-}*pClientshoppingcar, Clientshoppingcar;
-
-typedef pClientshoppingcar shopNode;
-
-pClientshoppingcar initshoppingcar();//初始化，创建链表
-
-void addshoppingcar(pClientshoppingcar Testlist,pClientLinkedList list,pBeverageList testList,int amount);//增加购物车内容
-
-pClientshoppingcar deleteshoppingcar(pClientshoppingcar Testlist,char* name,int *status);//删除购物车内容 返回头指针避免出现头指针被logout status状态反馈是否成功0/-1
-
-void changeshoppingcar(pClientshoppingcar Testlist,char* name,int amount);//改变购物车信息
-
-
-void showshoppingcar(pClientshoppingcar list,char* username);//打印链表
-
-pClientshoppingcar finding(pClientshoppingcar head, int i);//查找链表结点
-
-void searchshoppingcar(pClientshoppingcar list, char* name); // 根据名称对购物车进行查询
-
-void searchCarinfo(pClientshoppingcar list, char* username);
 
 #endif // MERCHANTANDCLIENT_H
