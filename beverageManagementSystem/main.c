@@ -7,9 +7,19 @@
 
 int main(void){
 
+<<<<<<< HEAD
     beverageRecordInit();
 
     pBeverageList testList = createFromFile("D:\\JLU-Program-C-Design\\Data\\进货条目.txt");
+=======
+    pInteractInfo pInfo = initInteractInfo(10000000000);
+
+    printf("剩余存款：%f\n", pInfo->sellerSaving);
+
+    beverageRecordInit();
+
+    pBeverageList testList = createFromFile("D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\进货条目.txt", pInfo);
+>>>>>>> 324d5d8 (InteractInfo)
 
     showStaff(testList);
 
@@ -43,11 +53,20 @@ int main(void){
 
     showStaff(testList);
 
+<<<<<<< HEAD
     testList = addFromFile("D:\\JLU-Program-C-Design\\Data\\进货条目.txt", testList);
+=======
+    testList = addFromFile("D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\进货条目.txt", testList, pInfo);
+>>>>>>> 324d5d8 (InteractInfo)
 
     showStaff(testList);
 
     writeIntoFile(testList);
+<<<<<<< HEAD
+=======
+
+    printf("剩余存款：%f\n", pInfo->sellerSaving);
+>>>>>>> 324d5d8 (InteractInfo)
 }
 
 /*

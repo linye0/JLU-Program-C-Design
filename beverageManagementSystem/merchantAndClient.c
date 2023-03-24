@@ -2,7 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "merchantAndClient.h"
+<<<<<<< HEAD
 #include<time.h>
+=======
+#include <time.h>
+#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\进货记录.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\写入库存.txt"
+>>>>>>> 324d5d8 (InteractInfo)
 
 void beveragePrintTime(char* file){
     FILE *fp;
@@ -18,11 +24,19 @@ void beveragePrintTime(char* file){
 void beverageRecordInit()
 {
     FILE *fp;
+<<<<<<< HEAD
     char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
     fp = fopen(file0,"w");
     fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
     char file1[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
+=======
+    char file0[]=BEVEPATH1;
+    fp = fopen(file0,"w");
+    fprintf(fp,"%s\n", "进货记录:");
+    fclose(fp);
+    char file1[]=BEVEPATH2;
+>>>>>>> 324d5d8 (InteractInfo)
     fp = fopen(file1, "w");
     fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
@@ -94,7 +108,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     return list;
 }
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]) {
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo) {
     pBeverageNode node = malloc(sizeof(BeverageNode));
     strcpy(node->brand, brand);
     strcpy(node->name, name);
@@ -103,10 +117,11 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     node->price = price;
     strcpy(node->info, info);
     node->next = NULL;
+    reduceSaving(pInfo, storeNum * price);
     return node;
 }
 
-pBeverageList createFromFile(char* file) {
+pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     FILE*fp;
     fp = fopen(file, "r");
     int line_len = 0;
@@ -115,7 +130,11 @@ pBeverageList createFromFile(char* file) {
     pBeverageNode head = (pBeverageNode)malloc(sizeof(BeverageNode));
     head->next = NULL;
 
+<<<<<<< HEAD
     char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
+=======
+    char file0[]=BEVEPATH1;
+>>>>>>> 324d5d8 (InteractInfo)
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
     fprintf(fpW, ":\n");
@@ -170,7 +189,9 @@ pBeverageList createFromFile(char* file) {
             i++;
         }
 
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+
+        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", insertPos, brand, name, time, storeNum, price, info);
 
         fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", insertPos, brand, name, time, storeNum, price, info);
 
@@ -197,11 +218,19 @@ void showStaff(pBeverageList list) {
     else
     {
         printf("\n当前库存如下:\n");
+<<<<<<< HEAD
         printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
             if(p) printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+=======
+        printf("%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+        while (p)  //循环将各个节点值输出
+        {
+            p = p->next;//第一是垃圾值   跳过
+            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+>>>>>>> 324d5d8 (InteractInfo)
             i++;
         }
     }
@@ -502,7 +531,11 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
 }
 
 void writeIntoFile(pBeverageList list) {
+<<<<<<< HEAD
     char file0[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
+=======
+    char file0[]=BEVEPATH2;
+>>>>>>> 324d5d8 (InteractInfo)
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
     fprintf(fpW, ":\n");
@@ -515,13 +548,21 @@ void writeIntoFile(pBeverageList list) {
     }
 }
 
+<<<<<<< HEAD
 pBeverageList addFromFile(char* file, pBeverageList list) {
+=======
+pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
+>>>>>>> 324d5d8 (InteractInfo)
     FILE*fp;
     fp = fopen(file, "r");
     int line_len = 0;
     char ch[1000] = {0};
 
+<<<<<<< HEAD
     char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
+=======
+    char file0[]=BEVEPATH1;
+>>>>>>> 324d5d8 (InteractInfo)
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
     fprintf(fpW, ":\n");
@@ -585,7 +626,11 @@ pBeverageList addFromFile(char* file, pBeverageList list) {
 
         writePos++;
 
+<<<<<<< HEAD
         pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
+=======
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+>>>>>>> 324d5d8 (InteractInfo)
 
         // 判断产品是否已在库存中存在
 
@@ -876,3 +921,18 @@ int getLinkTotalNodeNum(pBeverageList head)
 }
         return cnt;
 }
+<<<<<<< HEAD
+=======
+
+pInteractInfo initInteractInfo(float saving) {
+    pInteractInfo ret = (pInteractInfo)malloc(sizeof(InteractInfo));
+    ret->sellerSaving = saving;
+    return ret;
+}
+
+void reduceSaving(pInteractInfo pInfo, float price) {
+    if (pInfo->sellerSaving >= price) pInfo->sellerSaving -= price;
+    else printf("商户存款不足！");
+}
+
+>>>>>>> 324d5d8 (InteractInfo)

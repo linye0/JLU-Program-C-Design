@@ -5,6 +5,22 @@ void beverageRecordInit();
 
 void beveragePrintTime(char* file);
 
+<<<<<<< HEAD
+=======
+//************************************************************
+
+// 新加的
+typedef struct interactInfo {
+    float sellerSaving;
+}InteractInfo, *pInteractInfo;
+
+pInteractInfo initInteractInfo(float saving);
+
+void reduceSaving(pInteractInfo pInfo, float price);
+
+//**************************************************************
+
+>>>>>>> 324d5d8 (InteractInfo)
 typedef struct beverageLinkedList {
 
     char brand[10];
@@ -52,9 +68,9 @@ pBeverageNode find(pBeverageList head, int i); // 找到数据库中编号为i的酒水，fin
 
 pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // 把node插入到list里编号为i的结点前
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]); // 根据参数创建一个新的酒水结点
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
 
-pBeverageList createFromFile(char* file); // 从文件读入进货记录，存入链表中
+pBeverageList createFromFile(char* file, pInteractInfo pInfo); // 从文件读入进货记录，存入链表中
 
 void showStaff(pBeverageList list); // 打印链表，打印时酒水前面会显示从0开始的编号，供后续操作参考
 
@@ -80,7 +96,11 @@ void searchBeverageName(pBeverageList list, char* givenName); // 根据givenName对
 
 void writeIntoFile(pBeverageList list);
 
+<<<<<<< HEAD
 pBeverageList addFromFile(char* file, pBeverageList list);
+=======
+pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
+>>>>>>> 324d5d8 (InteractInfo)
 
 //*************************************************************************************
 
@@ -145,4 +165,10 @@ int getLinkTotalNodeNum(pBeverageList head);
 
 //***************************************时间*********************************************
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 324d5d8 (InteractInfo)
 #endif // MERCHANTANDCLIENT_H
