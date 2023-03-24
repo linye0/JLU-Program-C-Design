@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
-
-int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClientshoppingcar car, pclientRequestList change){
+pBeverageList testList;
+int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pclientRequestList change){
     pBeverageList p;
     system("cls");
     printf("  登录成功\n");
@@ -29,7 +29,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
    printf("%f\n",a->saving);
     system("pause");
     system("cls");
-    kehu(a,testList,list,car, change);
+   kehu(a,list,car, change);
     break;
     case'2':
     system("cls");
@@ -44,7 +44,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         system("cls");
         showStaff(testList);
         system("pause");
-      kehu(a,testList,list,car, change);
+   kehu(a,list,car, change);
         break;
     case'2':
         system("cls");
@@ -54,7 +54,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(o,19);
         searchBeverageBrand(testList,o);
         system("pause");
-     kehu(a,testList,list,car, change);
+    kehu(a,list,car, change);
         break;
     case'3':
         system("cls");
@@ -64,7 +64,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(p,19);
         searchBeverageName(testList,p);
         system("pause");
-   kehu(a,testList,list,car, change);
+  kehu(a,list,car, change);
         break;
     case'4':
         system("cls");
@@ -74,12 +74,12 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(j,19);
         searchBeverageInfo(testList,j);
         system("pause");
-      kehu(a,testList,list,car, change);
+     kehu(a,list,car, change);
         break;
     default:
         printf("输入有误，请重新输入\n");
         system("pause");
-      kehu(a,testList,list,car, change);
+      kehu(a,list,car, change);
         break;
     }
     break;
@@ -107,22 +107,22 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
     buy(a, p, nm);
     printf("订购成功\n");
     system("pause");
- kehu(a,testList,list,car, change);
+ kehu(a,list,car, change);
     break;}
     else
     {printf("余额不足\n");
      system("pause");
-   kehu(a,testList,list,car, change);
+   kehu(a,list,car, change);
     break;}}
     else
         printf("请输入正确的数量\n");
        system("pause");
- kehu(a,testList,list,car, change);
+kehu(a,list,car, change);
     break;}
     else {
         printf("请输入正确的编号\n");
         system("pause");
-      kehu(a,testList,list,car, change);
+     kehu(a,list,car, change);
         break;
     }
     case '4':
@@ -134,11 +134,11 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
             {deposit(a, g);
             printf("充值成功\n");
             system("pause");
-             kehu(a,testList,list,car, change);}
+             kehu(a,list,car, change);}
         else{gets_s(c,19);
             printf("请输入正确的金额\n");
              system("pause");
-             kehu(a,testList,list,car, change);}
+            kehu(a,list,car, change);}
         break;
     case'5':
         system("cls");
@@ -147,7 +147,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
         gets_s(y,19);
         NewPassword(a,a->account,y);
         system("pause");
-        kehu(a,testList,list,car, change);
+       kehu(a,list,car, change);
         break;
     case'6':
         system("cls");
@@ -173,25 +173,25 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
                    clientRequest_PUSH(change,a,testList,s,u );
                    printf("退货申请已提交\n");
                    system("pause");
-                   kehu(a,testList,list,car, change);
+                  kehu(a,list,car, change);
                    break;
                case '2':
                    system("pause");
-                   kehu(a,testList,list,car, change);
+                   kehu(a,list,car, change);
                    break;
                default:
                    system("pause");
-                   kehu(a,testList,list,car, change);
+                  kehu(a,list,car, change);
                    break;
                }
            }
         system("pause");
-        kehu(a,testList,list,car, change);
+        kehu(a,list,car, change);
         break;}
         else
         {
             system("pause");
-            kehu(a,testList,list,car, change);
+            kehu(a,list,car, change);
             break;
         }
     case'7':
@@ -233,7 +233,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          printf("添加成功\n");
          showshoppingcar(car,a->username);
          system("pause");
-          kehu(a,testList,list,car, change);
+          kehu(a,list,car, change);
          break;
    case '2':
          system("cls");
@@ -252,7 +252,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          printf("修改成功\n");
          showshoppingcar(car,a->username);
          system("pause");
-         kehu(a,testList,list,car, change);
+        kehu(a,list,car, change);
         break;
     case '3':
          system("cls");
@@ -268,7 +268,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          printf("删除成功\n");
          showshoppingcar(car,a->username);
          system("pause");
-         kehu(a,testList,list,car, change);
+         kehu(a,list,car, change);
          break;
    case '4':
          system("cls");
@@ -279,7 +279,7 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
          gets_s(w,19);
          searchshoppingcar(car, w);
          system("pause");
-           kehu(a,testList,list,car, change);
+         kehu(a,list,car, change);
          break;
    case'5':
          system("cls");
@@ -296,23 +296,23 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
              deleteshoppingcar(car,p3->name,&status);
              printf("购买成功\n");
          system("pause");
-      kehu(a,testList,list,car, change);
+      kehu(a,list,car, change);
          break;}
          else
          {printf("余额不足\n");
           system("pause");
-        kehu(a,testList,list,car, change);
+        kehu(a,list,car, change);
          break;}
 
    case'6':
          system("cls");
-          kehu(a,testList,list,car, change);
+         kehu(a,list,car, change);
          break;
      default:
          printf("输入有误，请重新输入\n");
          system("pause");
          system("cls");
-      kehu(a,testList,list,car, change);
+      kehu(a,list,car, change);
          break;
 
      }
@@ -325,12 +325,12 @@ int kehu(pClientLinkedList a,pBeverageList testList,pClientLinkedList list,pClie
     printf("输入有误，请重新输入\n");
     system("pause");
     system("cls");
- kehu(a,testList,list,car, change);
+ kehu(a,list,car, change);
     break;
     }return 0;
 }
 
-int shanghu(pBeverageList testList,pclientRequestList change){
+int shanghu(pclientRequestList change){
     system("cls");
 printf("请选择功能列表\n");
   printf("1.进货\n");
@@ -339,7 +339,8 @@ printf("请选择功能列表\n");
   printf("4.删除库存\n");
   printf("5.修改商品信息\n");
   printf("6.审核退货申请\n");
-  printf("7.返回\n");
+  printf("7.初始化库存\n");
+  printf("8.返回\n");
   char d =_getch();
   switch(d)
 
@@ -374,6 +375,7 @@ printf("请选择功能列表\n");
       pBeverageList newNode=newBeverageNode(fe, fd, fg, k, l, fs);
       insertLast(testList, newNode);
        printf("进货成功");
+
           break;
       case'2':
           system("cls");
@@ -382,20 +384,23 @@ printf("请选择功能列表\n");
           gets_s(u,49);
           addFromFile(u, testList);
           printf("进货成功");
+
           break;
       default:printf("输入错误，请重新输入\n");
+          system("pause");
+          shanghu(change);
           break;}
       showStaff(testList);
       system("pause");
       system("cls");
-     shanghu(testList,change);
+     shanghu(change);
       break;}
   case'2':
   {system("cls");
       showStaff(testList);
       system("pause");
       system("cls");
-     shanghu(testList,change);
+     shanghu(change);
       break;}
   case'3':
   {system("cls");
@@ -419,24 +424,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(testList,change);
+             shanghu(change);
               break;
           case'2':
               testList = sortBeverageTime(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(testList,change);
+             shanghu(change);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-            shanghu(testList,change);
+            shanghu(change);
               break;
           }
           system("pause");
-          shanghu(testList,change);
+           shanghu(change);
           break;
       case'2':
           system("cls");
@@ -450,24 +455,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(testList,change);
+             shanghu(change);
               break;
           case'2':
               testList = sortBeverageBrand(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-           shanghu(testList,change);
+           shanghu(change);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-          shanghu(testList,change);
+           shanghu(change);
               break;
           }
           system("pause");
-         shanghu(testList,change);
+         shanghu(change);
           break;
       case'3':
           system("cls");
@@ -481,24 +486,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(testList,change);
+              shanghu(change);
               break;
           case'2':
               testList = sortBeverageStoreNum(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-              shanghu(testList,change);
+               shanghu(change);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-            shanghu(testList,change);
+            shanghu(change);
               break;
           }
           system("pause");
-          shanghu(testList,change);
+          shanghu(change);
           break;
       case'4':
           system("cls");
@@ -512,29 +517,29 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-            shanghu(testList,change);
+             shanghu(change);
               break;
           case'2':
               testList = sortBeveragePrice(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(testList,change);
+              shanghu(change);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-            shanghu(testList,change);
+             shanghu(change);
               break;
           }
           system("pause");
-        shanghu(testList,change);
+        shanghu(change);
           break;
       }
       system("pause");
 
-    shanghu(testList,change);
+     shanghu(change);
       break;
   }
   case'4':
@@ -549,7 +554,7 @@ printf("请选择功能列表\n");
       system("cls");
       showStaff(testList);
       system("pause");
-     shanghu(testList,change);
+      shanghu(change);
       break;}
   case'5':
   {system("cls");
@@ -562,7 +567,7 @@ printf("请选择功能列表\n");
       changeBeverageInfo(testList, bi, ke);
       printf("修改成功\n");
       system("pause");
-      shanghu(testList,change);
+       shanghu(change);
       break;}
    case'6':
       system("cls");
@@ -571,7 +576,7 @@ printf("请选择功能列表\n");
       {
           printf("当前无退货申请\n");
           system("pause");
-          shanghu(testList,change);
+           shanghu(change);
           break;
       }
       else{
@@ -587,20 +592,30 @@ printf("请选择功能列表\n");
       clientRequest_POP(change,v,y);
       printf("操作成功\n");
       system("pause");
-      shanghu(testList,change);
+      shanghu(change);
       break;}
   case'7':
-  {system("cls");
-      break;}
+      system("cls");
+      printf("请输入初始化库存地址\n");
+      char o[50];
+      gets_s(o,49);
+      testList= createFromFile(o);
+      printf("初始化成功\n");
+      system("pause");
+      shanghu(change);
+      break;
+  case'8':
+      break;
   default:
       printf("输入有误，请重新输入\n");
       system("pause");
       system("cls");
-      shanghu(testList,change);
-      break;}return 0;
+       shanghu(change);
+      break;}
+  return 0;
       }
 
-int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car, pclientRequestList change){
+int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList change){
     pClientLinkedList p;
     int status;
     system("cls");
@@ -620,13 +635,13 @@ int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car
  p=signIn(list, zh, mi, &status);
  switch (status) {
  case 1:
- kehu(p,testList,list,car, change);
+ kehu(p, list,car, change);
     break;
  case 0:
      system("pause");
      break;
  case 4:
-  shanghu(testList,change);
+  shanghu(change);
   break;
  case -1:
     system("pause");
@@ -666,7 +681,7 @@ int denglu(pClientLinkedList list ,pBeverageList testList,pClientshoppingcar car
       printf("输入有误，请重新输入\n");
       system("pause");
       system("cls");
-      denglu(list,testList,car,change);
+      denglu(list, car,change);
       break;
   }return 0;
 }
@@ -675,7 +690,6 @@ int main()
 {
     pclientRequestList change=clientRequestListInit();
 pClientshoppingcar car= initshoppingcar();
-  pBeverageList testList = createFromFile("D:\\qt\\qt project\\1\\beverage.txt");
    recordInit();
   pClientLinkedList list=initClient();
   signUp(list, "111", "111", "shanghu",0,0,-1);
@@ -684,7 +698,7 @@ pClientshoppingcar car= initshoppingcar();
  printf("欢迎进入酒水管理系统\n");
  system("pause");
  system("cls");
- denglu(list,testList,car,change);
+ denglu(list, car,change);
 
 }
     return 0;
