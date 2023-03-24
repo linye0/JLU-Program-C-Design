@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -639,7 +639,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
         pClientLinkedList t=p->next;
         //free(p);
         return t;
-    } head*/
+    } head*//*
     pClientLinkedList p0=p;
     p=p->next;
     while(p!=NULL&&strcmp(p->account,account)!=0){
@@ -794,7 +794,7 @@ int searchClientBuy(char *info)
 
     return sum;
 }
-
+*/
 //¨À-->
 
 //
