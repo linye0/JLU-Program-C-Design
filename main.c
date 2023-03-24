@@ -542,7 +542,15 @@ printf("请选择功能列表\n");
       break;}
    case'6':
       system("cls");
-      clientRequest_SHOW(change);
+      int u=clientRequest_SHOW(change);
+      if(u==0)
+      {
+          printf("当前无退货申请\n");
+          system("pause");
+          shanghu(testList,change);
+          break;
+      }
+      else{
       printf("请选择要操作的条目：\n");
       int v;
       scanf_s("%d",&v);
@@ -556,7 +564,7 @@ printf("请选择功能列表\n");
       printf("操作成功\n");
       system("pause");
       shanghu(testList,change);
-      break;
+      break;}
   case'7':
   {system("cls");
       break;}

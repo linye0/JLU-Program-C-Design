@@ -991,8 +991,9 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate){
 }
 
 
-void clientRequest_SHOW(pclientRequestList list){
+int clientRequest_SHOW(pclientRequestList list){
     pclientRequestList p=list->next;
+    int i=0;
     char *request="退货";
     printf("***********************************************************************************\n");
     printf("%10s%10s%10s%10s%10s%15s\n","账号","品牌","名称","请求","数量","时间");
@@ -1000,8 +1001,10 @@ void clientRequest_SHOW(pclientRequestList list){
     while(p!=NULL){
         printf("%10s%10s%10s%10s%10d%25s\n",p->pc->account,p->pb->brand,p->pb->name,request,p->number,p->time);
         p=p->next;
+        i++;
     }
     printf("***********************************************************************************\n");
+    return i;
 }
 
 void clientRequest_SHOWMORE(pclientRequestList list,int choice){

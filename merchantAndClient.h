@@ -153,7 +153,7 @@ void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList 
 
 void clientRequest_POP(pclientRequestList list,int choice,int operate);
 //退换货链表弹出操作。参数是 退换货链表头指针 对第几条进行操作（管理员会先看整个链表） 什么操作 1是同意退货 2是不同意
-void clientRequest_SHOW(pclientRequestList list);
+int clientRequest_SHOW(pclientRequestList list);
 //展示整个退换货链表的基本信息 不展示退货原因
 void clientRequest_SHOWMORE(pclientRequestList list,int choice);
 //展示特定第几条的退货信息的退货原因
