@@ -63,6 +63,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
         printf("请输入名称：\n");
         char p[20];
         gets(p);
+
         searchBeverageName(testList,p);
         system("pause");
   kehu(a,list,car, change);
@@ -89,7 +90,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     showStaff(testList);
     printf("请选择酒水编号\n");
     int h;
-    scanf_s("%d",&h);
+    scanf("%d",&h);
     getchar();
     int b=getLinkTotalNodeNum(testList);
     b=b-1;
@@ -100,17 +101,22 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     p=find(testList, h);
     printf("请选择订购数量\n");
     int nm;
-    scanf_s("%d",&nm);
+    scanf("%d",&nm);
     getchar();
     char o[20]=" ";
     gets(o);
     if(nm>0&&strlen(o) == 0){
     if(a->saving>=(p->price*nm))
     {
-    buy(a, p, nm);
+    int k=buy(a, p, nm);
+    if(k<0){
+        printf("抱歉，库存不够：（\n");
+        system("pause");
+    }else{
     reduceSaving(pInfo, -p->price*nm);
     printf("订购成功\n");
     system("pause");
+    }
  kehu(a,list,car, change);
     break;}
     else
@@ -134,7 +140,7 @@ kehu(a,list,car, change);
         printf("请输入充值金额：\n");
         float g;
         char c[20];
-        if(scanf_s("%f",&g)>0)
+        if(scanf("%f",&g)>0)
             {deposit(a, g);
             printf("充值成功\n");
             getchar();
@@ -147,15 +153,43 @@ kehu(a,list,car, change);
         break;
     case'5':
         system("cls");
-        printf("请输入新密码：\n");
-        char y[20];
-        gets(y);
-        NewPassword(a,a->account,y);
+        printf("请选择实现的功能：\n");
+        printf("1.变更用户名\n");
+        printf("2.变更密码\n");
+        char k=_getch();
+        system("cls");
+        switch(k){
+        case '1':
+            printf("请输入新用户名：\n");
+            char z[20];
+            gets(z);
+            changeUsername(a,a->username,z);
+            printf("已成功更改用户名\n");
+            system("pause");
+            kehu(a,list,car, change);
+            break;
+        case '2':
+            printf("请输入新密码：\n");
+            char y[20];
+            gets(y);
+            NewPassword(a,a->account,y);
+            printf("已成功更改密码\n");
+            system("pause");
+            kehu(a,list,car, change);
+            break;
+        default:
+            system("pause");
+           kehu(a,list,car, change);
+            break;
+        }
+
+
         system("pause");
        kehu(a,list,car, change);
         break;
     case'6':
         system("cls");
+        printf("%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
         searchClientBuy(a->account);
         printf("请输入查找关键词,多个关键词中间用空格分开\n");
         char s[100];
@@ -167,8 +201,11 @@ kehu(a,list,car, change);
             break;
         }
         int x=infoCheck(a,s);
-        if(x==0)
-        {printf("%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
+        if(x==0) {
+            strcat(s," ");
+            strcat(s,a->account);
+        }
+        printf("%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
         int i=searchClientBuy(s);
            printf("总共有%d条记录\n",i);
            if(i==1)
@@ -198,13 +235,7 @@ kehu(a,list,car, change);
            }
         system("pause");
         kehu(a,list,car, change);
-        break;}
-        else
-        {
-            system("pause");
-            kehu(a,list,car, change);
-            break;
-        }
+        break;
     case'7':
         system("cls");
         int status;
@@ -232,14 +263,14 @@ kehu(a,list,car, change);
          showStaff(testList);
          printf("请选择添加酒水序号\n");
          int k;
-         scanf_s("%d",&k);
+         scanf("%d",&k);
          getchar();
          char b=getchar();
          k++;
          pBeverageNode p0=find(testList, k);
          printf("请选择添加数量\n");
          int r;
-         scanf_s("%d",&r);
+         scanf("%d",&r);
          b=getchar();
          addshoppingcar(car,a,p0,r);
          printf("添加成功\n");
@@ -252,13 +283,13 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          printf("请选择要修改的序号\n");
          int j;
-         scanf_s("%d",&j);
+         scanf("%d",&j);
          char c=getchar();
          j++;
          pClientshoppingcar p1= finding(car, j);
          printf("请输入要修改的数量\n");
          int y;
-         scanf_s("%d",&y);
+         scanf("%d",&y);
          c=getchar();
          changeshoppingcar(car,p1->name,y );
          printf("修改成功\n");
@@ -272,7 +303,7 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          printf("请选择要删除的序号\n");
          int h;
-         scanf_s("%d",&h);
+         scanf("%d",&h);
          char d=getchar();
          h++;
          pClientshoppingcar p2=finding(car,h);
@@ -298,7 +329,7 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          printf("请输入要购买的编号\n");
          int p;
-         scanf_s("%d",&p);
+         scanf("%d",&p);
          char de=getchar();
          p++;
          pClientshoppingcar p3=finding(car, p);
@@ -385,10 +416,10 @@ printf("请选择功能列表\n");
       gets(fg);
       printf("请输入商品数量\n");
       int k;
-      scanf_s("%d",&k);
+      scanf("%d",&k);
       printf("请输入商品价格\n");
       int l;
-      scanf_s("%d",&l);
+      scanf("%d",&l);
       char ch=getchar();
       printf("请输入商品信息\n");
       char fs[20];
@@ -586,7 +617,7 @@ printf("请选择功能列表\n");
       showStaff(testList);
       printf("请输入删除的产品编号\n");
       int bh ;
-      scanf_s("%d",&bh);
+      scanf("%d",&bh);
       getchar();
       printf("%d", bh);
       deleteBeverage(testList, bh);
@@ -628,14 +659,14 @@ printf("请选择功能列表\n");
       else{
       printf("请选择要操作的条目：\n");
       int v;
-      scanf_s("%d",&v);
+      scanf("%d",&v);
       getchar();
       printf("该条目退货原因为：\n");
       clientRequest_SHOWMORE(change,v);
       printf("请选择是否批准退货\n");
       printf("1.批准  2.不批准\n");
       int y;
-      scanf_s("%d",&y);
+      scanf("%d",&y);
       getchar();
       clientRequest_POP(change,v,y, pInfo);
       printf("操作成功\n");
@@ -663,7 +694,7 @@ printf("请选择功能列表\n");
       printf("请输入资金：\n");
       float g;
       char c[20];
-      if(scanf_s("%f",&g)>0)
+      if(scanf("%f",&g)>0)
           {pInfo = initInteractInfo(g);
           printf("充值成功\n");
           getchar();
@@ -741,6 +772,12 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      { printf("用户名不能为空\n");
       system("pause");
       break;}
+  if(Check(yh)==-1)
+  {
+      printf("用户名必须由字符和数字组成 请输入正确格式的名称！\n");
+      system("pause");
+      break;
+  }
   printf("请输入账号\n");
   char hz[20];
   gets(hz);
@@ -748,6 +785,12 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      { printf("账号不能为空\n");
       system("pause");
       break;}
+  if(Check(hz)==-1)
+  {
+      printf("账号必须由字符和数字组成 请输入正确格式的名称！\n");
+      system("pause");
+      break;
+  }
   printf("请输入密码\n");
   char im[20];
   gets(im);
