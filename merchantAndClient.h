@@ -117,7 +117,7 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
 
 clientNode clientSearch(pClientLinkedList list,char *account);//查用户
 
-void changeAccount(pClientLinkedList list,char* account,char* newAccount);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
+void changeUsername(pClientLinkedList list,char* username,char* newUsername);//改c账号//改完账号要把日志之类的给改了 有点麻烦先不写后续
 
 void NewPassword(pClientLinkedList list,char* account,char* newPassword);//改密码
 //改用户名
@@ -127,7 +127,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
 //*******************************以下是客户进行购买活动*****************************
 void deposit(clientNode client, float money); // 存款
 
-void buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
+int buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
 
 void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
 
@@ -182,6 +182,8 @@ void clientRequest_SHOWMORE(pclientRequestList list,int choice);
 void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
 //这个以及下面那个不出现在main.c里 内部调用。
 pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
+
+int Check(char* ch);
 
 //*****************************************************************************
 typedef struct clientshoppingcar {
