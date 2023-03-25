@@ -243,7 +243,6 @@ kehu(a,list,car, change);
         char f=_getch();
         switch (f) {
         case '1':
-
         int status;
         clientLogout(list,a->account,&status);
         if(status==0)
@@ -261,6 +260,7 @@ kehu(a,list,car, change);
             kehu(a,list,car, change);
              break;
         }
+        break;
     case'8':
         system("cls");
      showshoppingcar(car,a->username);
@@ -279,9 +279,16 @@ kehu(a,list,car, change);
          printf("请选择添加酒水序号\n");
          int k;
          scanf("%d",&k);
-         getchar();
          char b=getchar();
          k++;
+         if(k>getLinkTotalNodeNum(testList))
+         {
+             printf("请输入正确的编号\n");
+             system("pause");
+              kehu(a,list,car, change);
+             break;
+         }
+         else{
          pBeverageNode p0=find(testList, k);
          printf("请选择添加数量\n");
          int r;
@@ -292,7 +299,7 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          system("pause");
           kehu(a,list,car, change);
-         break;
+         break;}
    case '2':
          system("cls");
          showshoppingcar(car,a->username);
@@ -732,7 +739,6 @@ printf("请选择功能列表\n");
       char o[50];
       gets(o);
       testList= createFromFile(o, pInfo);
-      printf("初始化成功\n");
       system("pause");
       shanghu(change);
       break;
