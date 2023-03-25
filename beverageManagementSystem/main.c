@@ -90,6 +90,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择酒水编号\n");
     int h;
     scanf_s("%d",&h);
+    getchar();
     int b=getLinkTotalNodeNum(testList);
     b=b-1;
     char j[20];
@@ -100,6 +101,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择订购数量\n");
     int nm;
     scanf_s("%d",&nm);
+    getchar();
     char o[20]=" ";
     gets(o);
     if(nm>0&&strlen(o) == 0){
@@ -135,6 +137,7 @@ kehu(a,list,car, change);
         if(scanf_s("%f",&g)>0)
             {deposit(a, g);
             printf("充值成功\n");
+            getchar();
             system("pause");
              kehu(a,list,car, change);}
         else{gets(c);
@@ -230,6 +233,7 @@ kehu(a,list,car, change);
          printf("请选择添加酒水序号\n");
          int k;
          scanf_s("%d",&k);
+         getchar();
          char b=getchar();
          k++;
          pBeverageNode p0=find(testList, k);
@@ -583,6 +587,7 @@ printf("请选择功能列表\n");
       printf("请输入删除的产品编号\n");
       int bh ;
       scanf_s("%d",&bh);
+      getchar();
       printf("%d", bh);
       deleteBeverage(testList, bh);
       printf("成功删除\n");
@@ -624,12 +629,14 @@ printf("请选择功能列表\n");
       printf("请选择要操作的条目：\n");
       int v;
       scanf_s("%d",&v);
+      getchar();
       printf("该条目退货原因为：\n");
       clientRequest_SHOWMORE(change,v);
       printf("请选择是否批准退货\n");
       printf("1.批准  2.不批准\n");
       int y;
       scanf_s("%d",&y);
+      getchar();
       clientRequest_POP(change,v,y, pInfo);
       printf("操作成功\n");
       system("pause");
@@ -659,6 +666,7 @@ printf("请选择功能列表\n");
       if(scanf_s("%f",&g)>0)
           {pInfo = initInteractInfo(g);
           printf("充值成功\n");
+          getchar();
           system("pause");
            shanghu(change);}
       else{gets(c);
@@ -779,4 +787,3 @@ pClientshoppingcar car= initshoppingcar();
 }
     return 0;
 }
-
