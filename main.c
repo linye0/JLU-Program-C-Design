@@ -628,6 +628,14 @@ printf("请选择功能列表\n");
       showStaff(testList);
       printf("请输入产品编号\n");
       int bi=_getch()-'0';
+      if(bi>getLinkTotalNodeNum(testList))
+      {
+          printf("请输入正确的编号\n");
+          system("pause");
+          shanghu(change);
+         break;
+      }
+      else{
       printf("请输入产品信息\n");
       char ke[20];
       gets(ke);
@@ -635,7 +643,7 @@ printf("请选择功能列表\n");
       printf("修改成功\n");
       system("pause");
        shanghu(change);
-      break;}
+      break;}}
    case'6':
       system("cls");
       int u=clientRequest_SHOW(change);

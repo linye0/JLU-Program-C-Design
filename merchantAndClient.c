@@ -4,8 +4,8 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\CSdiy\\JLU Program C Design\\Data\\buy.txt"
-#define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
+#define fileClientBuyLog "D:\\qt\\qt project\\zhujiemian\\buy.txt"
+#define fileClientAccountLog "D:\\qt\\qt project\\zhujiemian\\client.txt"
 #define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
 #define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
 
