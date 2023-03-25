@@ -1,5 +1,23 @@
 ﻿#ifndef MERCHANTANDCLIENT_H
 #define MERCHANTANDCLIENT_H
+
+void beverageRecordInit();
+
+void beveragePrintTime(char* file);
+
+//************************************************************
+// 新加的
+typedef struct interactInfo {
+    float sellerSaving;
+}InteractInfo, *pInteractInfo;
+
+pInteractInfo initInteractInfo(float saving);
+
+int reduceSaving(pInteractInfo pInfo, float price);
+
+void showInfoSaving(pInteractInfo pInfo);
+
+//**************************************************************
 typedef struct beverageLinkedList {
 
     char brand[10];
@@ -37,9 +55,9 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // 把node�
 
 void insertLast(pBeverageList list, pBeverageNode node);
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]); // 根据参数创建一个新的酒水结点
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
 
-pBeverageList createFromFile(char* file); // 从文件读入进货记录，存入链表中
+pBeverageList createFromFile(char* file, pInteractInfo pInfo); // 从文件读入进货记录，存入链表中
 
 void showStaff(pBeverageList list); // 打印链表，打印时酒水前面会显示从0开始的编号，供后续操作参考
 
@@ -63,7 +81,9 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo); // 根据givenInfo
 
 void searchBeverageName(pBeverageList list, char* givenName); // 根据givenName对酒水的名称进行查询
 
-pBeverageList addFromFile(char* file, pBeverageList list);
+void writeIntoFile(pBeverageList list);
+
+pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
 //************************************下面都是我的捏******************************************************
@@ -153,7 +173,7 @@ void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList 
 只能对一条购货记录进行操作
 */
 
-void clientRequest_POP(pclientRequestList list,int choice,int operate);
+void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteractInfo pInfo);
 //退换货链表弹出操作。参数是 退换货链表头指针 对第几条进行操作（管理员会先看整个链表） 什么操作 1是同意退货 2是不同意
 int clientRequest_SHOW(pclientRequestList list);
 //展示整个退换货链表的基本信息 不展示退货原因
@@ -205,4 +225,5 @@ void searchshoppingcar(pClientshoppingcar list, char* name); // 根据名称对�
 
 void searchCarinfo(pClientshoppingcar list, char* username);
 int blank(char judge[]);
+int getNum(pClientshoppingcar head);
 #endif // MERCHANTANDCLIENT_H

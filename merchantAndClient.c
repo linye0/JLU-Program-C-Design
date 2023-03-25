@@ -4,8 +4,11 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\qt\\qt project\\1\\buy.txt"
-#define fileClientAccountLog "D:\\qt\\qt project\\1\\client.txt"
+#define fileClientBuyLog "D:\\CSdiy\\JLU Program C Design\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
+
 void beveragePrintTime(char* file){
     FILE *fp;
     fp = fopen(file,"at+");
@@ -20,9 +23,13 @@ void beveragePrintTime(char* file){
 void beverageRecordInit()
 {
     FILE *fp;
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
+    char file0[]=BEVEPATH1;
     fp = fopen(file0,"w");
     fprintf(fp,"%s\n", "进货记录:");
+    fclose(fp);
+    char file1[]=BEVEPATH2;
+    fp = fopen(file1, "w");
+    fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
 }//用来打表头捏
 
@@ -91,7 +98,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     return list;
 }
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[]) {
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo) {
     pBeverageNode node = malloc(sizeof(BeverageNode));
     strcpy(node->brand, brand);
     strcpy(node->name, name);
@@ -100,10 +107,11 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     node->price = price;
     strcpy(node->info, info);
     node->next = NULL;
+    if (!reduceSaving(pInfo, storeNum * price)) return NULL;
     return node;
 }
 
-pBeverageList createFromFile(char* file) {
+pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     FILE*fp;
     fp = fopen(file, "r");
     int line_len = 0;
@@ -112,9 +120,15 @@ pBeverageList createFromFile(char* file) {
     pBeverageNode head = (pBeverageNode)malloc(sizeof(BeverageNode));
     head->next = NULL;
 
+    char file0[]=BEVEPATH1;
+    //beveragePrintTime(file0);
+    FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "\n");
+    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+
     if (fp == NULL) {
         printf("\n读取文件失败\n");
-        exit(0);
+        return NULL;
     } else {
         printf("\n读取文件成功\n");
     }
@@ -161,12 +175,20 @@ pBeverageList createFromFile(char* file) {
             i++;
         }
 
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+
+        if (newNode == NULL) return head;
+
+        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", insertPos, brand, name, time, storeNum, price, info);
 
         head = insert(head, newNode, insertPos);
 
         insertPos++;
     }
+
+    fprintf(fpW, "\n");
+
+    fclose(fpW);
 
     return head;
 }
@@ -182,15 +204,18 @@ void showStaff(pBeverageList list) {
     else
     {
         printf("\n当前库存如下:\n");
-        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+        printf("%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             i++;
         }
     }
 }
+
+
+
 
 pBeverageList sortBeverageTime(pBeverageList list, int key) {
     // 新建一个储存排序后结点的链表
@@ -409,11 +434,14 @@ void deleteBeverage(pBeverageList list, int pos) {
     pBeverageNode tarNode = list;
     pBeverageNode prevTarNode = NULL;
     while (i < pos && tarNode->next) {
-        if (prevTarNode == NULL) prevTarNode = tarNode;
+        prevTarNode = tarNode;
         tarNode = tarNode->next;
         i++;
     }
     // 删除tarNode结点
+    if (prevTarNode == NULL) {
+        return;
+    }
     prevTarNode->next = tarNode->next;
     free(tarNode);
     printf("\n删除了编号为%d的酒水\n", i);
@@ -486,20 +514,42 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
     }
 }
 
-pBeverageList addFromFile(char* file, pBeverageList list) {
+void writeIntoFile(pBeverageList list) {
+    char file0[]=BEVEPATH2;
+    //beveragePrintTime(file0);
+    FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "\n");
+    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+    int writePos = 1;
+    pBeverageNode curNode = list;
+    while (curNode->next != NULL) {
+        curNode = curNode->next;
+        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+    }
+}
+
+pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     FILE*fp;
     fp = fopen(file, "r");
     int line_len = 0;
     char ch[1000] = {0};
 
+    char file0[]=BEVEPATH1;
+    beveragePrintTime(file0);
+    FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "：：：：：：：：：：：：：：\n");
+    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+
     pBeverageNode head = list;
 
     if (fp == NULL) {
         printf("\n读取文件失败\n");
-        exit(0);
+        return NULL;
     } else {
         printf("\n读取文件成功\n");
     }
+
+    int writePos = 1;
 
     int insertPos = 1;
 
@@ -540,10 +590,17 @@ pBeverageList addFromFile(char* file, pBeverageList list) {
                     strcpy(info, p);
                     break;
             }
+
             i++;
         }
 
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
+        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos, brand, name, time, storeNum, price, info);
+
+        writePos++;
+
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+
+        if (newNode == NULL) return head;
 
         // 判断产品是否已在库存中存在
 
@@ -963,7 +1020,7 @@ void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList 
 }
 
 
-void clientRequest_POP(pclientRequestList list,int choice,int operate){
+void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteractInfo pInfo){
         int i=1;
         pclientRequestList p0=list;
         pclientRequestList p=list->next;
@@ -980,6 +1037,7 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate){
             p->pc->saving-=p->cost;
             p->pc->cost+=p->cost;
             p->pb->storeNum+=p->number;
+            // pInfo->sellerSaving -= p->cost;
             printf("您已成功同意一条退货申请，还剩下这些请求待处理：\n");
             recordClientBuy(p->pc,p->pb,p->number,-p->cost,"退货成功");
         }else{
@@ -1104,10 +1162,10 @@ void showshoppingcar(pClientshoppingcar list,char* username){
     int i=1;
 
         printf("\n当前购物车如下:\n");
-        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "信息", "单价","数量","总价");
+        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "单价", "数量","总价","信息");
         while (p != NULL) {
             if (strcmp(p->username,username)==0) {
-                printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+                printf("%-12d%-12s%-12s%-12s%-12s%-12d%-12d%-12d%-12s\n", i, p->account, p->username, p->brand, p->name, p->price, p->amount,p->cost,p->info);
                 i++;
             }
 
@@ -1171,3 +1229,30 @@ int blank(char judge[]){
     return strlen(true_);
 }
 
+pInteractInfo initInteractInfo(float saving) {
+    pInteractInfo ret = (pInteractInfo)malloc(sizeof(InteractInfo));
+    ret->sellerSaving = saving;
+    return ret;
+}
+
+int reduceSaving(pInteractInfo pInfo, float price) {
+    if (pInfo->sellerSaving >= price) {
+        pInfo->sellerSaving -= price;
+        return 1;
+    }
+    else printf("商户存款不足！\n");
+    return 0;
+}
+
+void showInfoSaving(pInteractInfo pInfo) {
+    printf("当前资金是：%f\n", pInfo->sellerSaving);
+}
+int getNum(pClientshoppingcar head){
+    int cnt = 0;
+    pClientshoppingcar p = head;
+    while(p != NULL){
+    cnt++;
+    p = p->next;
+}
+    return cnt;
+}
