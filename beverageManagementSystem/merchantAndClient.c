@@ -4,10 +4,10 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\C-Project\\JLU-Program-C-Design\\data\\buy.txt"
-#define fileClientAccountLog "D:\\C-Project\\JLU-Program-C-Design\\data\\client.txt"
-#define BEVEPATH1 "D:\\C-Project\\JLU-Program-C-Design\\data\\进货记录.txt"
-#define BEVEPATH2 "D:\\C-Project\\JLU-Program-C-Design\\data\\\写入库存.txt"
+#define fileClientBuyLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\client.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\jinhuojilu.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\xierukucun.txt"
 
 void beveragePrintTime(char* file){
     FILE *fp;
