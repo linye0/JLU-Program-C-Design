@@ -155,6 +155,12 @@ kehu(a,list,car, change);
         printf("请输入查找关键词,多个关键词中间用空格分开\n");
         char s[100];
         gets_s(s,19);
+        if(blank(s)== 0)
+           { printf("关键词不能为空\n");
+            system("pause");
+            kehu(a,list,car, change);
+            break;
+        }
         int x=infoCheck(a,s);
         if(x==0)
         {printf("%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");

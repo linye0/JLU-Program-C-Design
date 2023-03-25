@@ -1155,3 +1155,19 @@ pBeverageNode findname(pBeverageList list, char* name){
    }
     return p;
 }
+int blank(char judge[]){
+    char ch;
+    char true_[20];
+    int i,j;
+    for(i=0,j=0;i<strlen(judge);i++){
+        if(judge[i]==' ')
+         continue;
+        else{
+        true_[j]=judge[i];
+        j++;
+       }
+    }
+    true_[j]='\0';
+    return strlen(true_);
+}
+
