@@ -4,10 +4,10 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\buy.txt"
-#define fileClientAccountLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\client.txt"
-#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\jinhuojilu.txt"
-#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\xierukucun.txt"
+#define fileClientBuyLog "D:\\CSdiy\\JLU Program C Design\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
 
 void beveragePrintTime(char* file){
     FILE *fp;
@@ -434,11 +434,14 @@ void deleteBeverage(pBeverageList list, int pos) {
     pBeverageNode tarNode = list;
     pBeverageNode prevTarNode = NULL;
     while (i < pos && tarNode->next) {
-        if (prevTarNode == NULL) prevTarNode = tarNode;
+        prevTarNode = tarNode;
         tarNode = tarNode->next;
         i++;
     }
     // 删除tarNode结点
+    if (prevTarNode == NULL) {
+        return;
+    }
     prevTarNode->next = tarNode->next;
     free(tarNode);
     printf("\n删除了编号为%d的酒水\n", i);

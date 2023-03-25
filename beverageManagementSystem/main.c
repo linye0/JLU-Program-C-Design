@@ -16,7 +16,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("2.查询商品\n");
     printf("3.订购\n");
     printf("4.充值\n");
-    printf("5.更改用户名或密码\n");
+    printf("5.更改密码\n");
     printf("6.查询购买记录与退换货\n");
     printf("7.注销账户\n");
     printf("8.购物车\n");
@@ -90,7 +90,6 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择酒水编号\n");
     int h;
     scanf_s("%d",&h);
-    getchar();
     int b=getLinkTotalNodeNum(testList);
     b=b-1;
     char j[20];
@@ -101,7 +100,6 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择订购数量\n");
     int nm;
     scanf_s("%d",&nm);
-    getchar();
     char o[20]=" ";
     gets(o);
     if(nm>0&&strlen(o) == 0){
@@ -233,7 +231,6 @@ kehu(a,list,car, change);
          printf("请选择添加酒水序号\n");
          int k;
          scanf_s("%d",&k);
-         getchar();
          char b=getchar();
          k++;
          pBeverageNode p0=find(testList, k);
