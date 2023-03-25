@@ -5,10 +5,7 @@ void beverageRecordInit();
 
 void beveragePrintTime(char* file);
 
-<<<<<<< HEAD
-=======
 //************************************************************
-
 // ĞÂ¼ÓµÄ
 typedef struct interactInfo {
     float sellerSaving;
@@ -16,11 +13,11 @@ typedef struct interactInfo {
 
 pInteractInfo initInteractInfo(float saving);
 
-void reduceSaving(pInteractInfo pInfo, float price);
+int reduceSaving(pInteractInfo pInfo, float price);
+
+void showInfoSaving(pInteractInfo pInfo);
 
 //**************************************************************
-
->>>>>>> 324d5d8 (InteractInfo)
 typedef struct beverageLinkedList {
 
     char brand[10];
@@ -42,21 +39,9 @@ typedef struct beverageLinkedList {
 typedef BeverageList BeverageNode;
 typedef pBeverageList pBeverageNode;
 
-typedef struct beverageData {
+void beverageRecordInit();
 
-    char brand[10]; // Æ·ÅÆ
-
-    char name[100]; // ¾ÆË®Ãû
-
-    int time; // ½ø»õÊ±¼ä
-
-    int storeNum; // ´æÁ¿
-
-    int price; // ¼Û¸ñ
-
-    char info[1000]; // ¾ÆË®ĞÅÏ¢
-
-}*pBeverageData, BeverageData;
+void beveragePrintTime(char* file);
 
 int isEmpty(pBeverageList list); // ÅĞ¶ÏÁ´±íÊÇ·ñÎª¿Õ£¬·µ»ØintÀàĞÍÕæÖµ
 
@@ -67,6 +52,8 @@ pBeverageList init(); // ³õÊ¼»¯£¬´´½¨¿ÕÁ´±í
 pBeverageNode find(pBeverageList head, int i); // ÕÒµ½Êı¾İ¿âÖĞ±àºÅÎªiµÄ¾ÆË®£¬findº¯ÊıµÄ±àºÅÊÇ´Ó0¿ªÊ¼µÄ£¬¶ø²»ÊÇ´Ó1¿ªÊ¼
 
 pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // °Ñnode²åÈëµ½listÀï±àºÅÎªiµÄ½áµãÇ°
+
+void insertLast(pBeverageList list, pBeverageNode node);
 
 pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // ¸ù¾İ²ÎÊı´´½¨Ò»¸öĞÂµÄ¾ÆË®½áµã
 
@@ -96,13 +83,10 @@ void searchBeverageName(pBeverageList list, char* givenName); // ¸ù¾İgivenName¶Ô
 
 void writeIntoFile(pBeverageList list);
 
-<<<<<<< HEAD
-pBeverageList addFromFile(char* file, pBeverageList list);
-=======
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
->>>>>>> 324d5d8 (InteractInfo)
 
-//*************************************************************************************
+pBeverageNode findname(pBeverageList head, char* name);
+//************************************ÏÂÃæ¶¼ÊÇÎÒµÄÄó******************************************************
 
 typedef struct clientLinkedList {
 
@@ -112,9 +96,9 @@ typedef struct clientLinkedList {
 
     char username[20];
 
-    int cost;
+    float cost;
 
-    int saving;
+    float saving;
 
     int grade;//-1/123¶ÔÓ¦ administrator ºÍ¿Í»§µÈ¼¶Ò»¶şÈı
 
@@ -127,7 +111,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // ³õÊ¼»¯£¬´´½¨¿ÕÁ´±í
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username,int saving,int cost,int grade); // ½«×¢²áĞÅÏ¢Ğ´ÈëÁ´±í//¸ü¸ÄÁËÒ»ÏÂ¶àÁËÒ»¸ösaving//ÕâÀï»¹ÓĞÒ»¸öÖØÃûµÄÎÊÌâ ÎÒÏÈÊä³öÁË  µ½Ê±ºò¸úÏÂÃæµÄº¯ÊıÒ»Ñù·µ»ØÒ»¸östatusÀ´ÅĞ¶ÏÊÇ·ñÕË»§´´½¨³É¹¦
+void signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // ½«×¢²áĞÅÏ¢Ğ´ÈëÁ´±í//¸ü¸ÄÁËÒ»ÏÂ¶àÁËÒ»¸ösaving//ÕâÀï»¹ÓĞÒ»¸öÖØÃûµÄÎÊÌâ ÎÒÏÈÊä³öÁË  µ½Ê±ºò¸úÏÂÃæµÄº¯ÊıÒ»Ñù·µ»ØÒ»¸östatusÀ´ÅĞ¶ÏÊÇ·ñÕË»§´´½¨³É¹¦
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// µÇÂ¼£¬ÔËÓÃÁËSearch²éÕÒÕÒÕË»§ ·µ»ØÖµÊ±Êı¾İ¿â£¨Á´±í£©ÖĞ¶ÔÓ¦µÄ½áµã£¬ÔÚµÇÂ½²Ù×÷Ö®ºó£¬ËùÓĞ¿Í»§µÄ²Ù×÷¶¼ÊÇ¶Ô¸Ã½áµã½øĞĞ²Ù×÷//´ø»ØÈıÖÖ×´Ì¬ µÇÂ¼³É¹¦1 ÃÜÂë´íÎó0 ÒÔ¼°ÕÒ²»µ½ÕËºÅ-1//¹ÜÀíÔ±¿ÉÒÔÉèÖÃÒ»¸ö»úÆ÷ÃÜÂë ÓĞÕâ¸ö¶«Î÷²ÅÄÜ×¢²á¹ÜÀíÔ±
 
@@ -141,7 +125,7 @@ void NewPassword(pClientLinkedList list,char* account,char* newPassword);//¸ÄÃÜÂ
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status);//É¾ÓÃ»§ ·µ»ØÍ·Ö¸Õë±ÜÃâ³öÏÖÍ·Ö¸Õë±»logout status×´Ì¬·´À¡ÊÇ·ñ³É¹¦0/-1
 //*******************************ÒÔÉÏÊÇ»ù±¾µÇÂ¼ ÔöÉ¾¸Ä²é****************************
 //*******************************ÒÔÏÂÊÇ¿Í»§½øĞĞ¹ºÂò»î¶¯*****************************
-void deposit(clientNode client, int money); // ´æ¿î
+void deposit(clientNode client, float money); // ´æ¿î
 
 void buy(clientNode client, pBeverageList list, int number); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË®
 
@@ -149,7 +133,7 @@ void clientUpgradeCheck(pClientLinkedList list);//³ıÁËÒ»¸öadministator Ö®ÍâÆäËû¶
 
 void recordInit();//³õÊ¼»¯¹ºÂò¼ÇÂ¼
 
-void recordClientBuy(clientNode client, pBeverageList list, int number);//¼ÇÂ¼ÉÌ»§²Ù×÷²¢¼ÇÂ¼µ¼ÈëÎÄ¼ş
+void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info);//¼ÇÂ¼ÉÌ»§²Ù×÷²¢¼ÇÂ¼µ¼ÈëÎÄ¼ş
 
 void recordClientAccount(clientNode client,const char behavior[]);
 
@@ -159,16 +143,86 @@ void showClientRecord();
 
 void printTime(char*  file);
 
+int infoCheck(clientNode p,char *info);
+
 int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
 
-//***************************************Ê±¼ä*********************************************
+void printCLientInfo(clientNode p);//Êä³ö»ù±¾¿Í»§ĞÅÏ¢
+//********************************ÒÔÉÏÊÇ¿Í»§½øĞĞ¹ºÂò»òÕßÆäËû»î¶¯***********************
+//********************************ÒÔÏÂÊÇ¹ÜÀíÔ± ¿Í»§ÍË»»»õ´¦Àí*************************
+typedef struct clientRequest{
+    clientNode pc;
+    pBeverageNode pb;
+    int number;
+    float cost;
+    char time[40];
+    char info[200];
+    struct clientRequest* next;
+}*pclientRequestList,clientRequestList;//¿Í»§ÍË»»»õÁ´±í½á¹¹
 
-<<<<<<< HEAD
-=======
+typedef pclientRequestList clientRequestNode;
+
+pclientRequestList clientRequestListInit();//Á´±í³õÊ¼»¯ ·µ»ØÍ·Ö¸Õë
+
+void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info,char* excuse);
+/*
+µ±searchLientBuyº¯Êı·µ»ØÖµÎª1Ê±£¬½«´«Èësearchclienbuyº¯ÊıµÄinfo¹Ø¼ü×Ö´«ÈëÕâ¸öº¯ÊıµÄchar*info ÆäËû²ÎÊı·Ö±ğÊÇ
+ÍË»»»õÁ´±í±íÍ·Ö¸Õë µ±Ç°½øĞĞ²Ù×÷µÄÓÃ»§½Úµã  ÒûÁÏ¿â´æÁ´±íµÄÍ·Ö¸Õë info ÒÔ¼°ÍË»»»õÔ­Òò-excuse
+Ö»ÄÜ¶ÔÒ»Ìõ¹º»õ¼ÇÂ¼½øĞĞ²Ù×÷
+*/
+
+void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteractInfo pInfo);
+//ÍË»»»õÁ´±íµ¯³ö²Ù×÷¡£²ÎÊıÊÇ ÍË»»»õÁ´±íÍ·Ö¸Õë ¶ÔµÚ¼¸Ìõ½øĞĞ²Ù×÷£¨¹ÜÀíÔ±»áÏÈ¿´Õû¸öÁ´±í£© Ê²Ã´²Ù×÷ 1ÊÇÍ¬ÒâÍË»õ 2ÊÇ²»Í¬Òâ
+int clientRequest_SHOW(pclientRequestList list);
+//Õ¹Ê¾Õû¸öÍË»»»õÁ´±íµÄ»ù±¾ĞÅÏ¢ ²»Õ¹Ê¾ÍË»õÔ­Òò
+void clientRequest_SHOWMORE(pclientRequestList list,int choice);
+//Õ¹Ê¾ÌØ¶¨µÚ¼¸ÌõµÄÍË»õĞÅÏ¢µÄÍË»õÔ­Òò
+void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
+//Õâ¸öÒÔ¼°ÏÂÃæÄÇ¸ö²»³öÏÖÔÚmain.cÀï ÄÚ²¿µ÷ÓÃ¡£
+pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
+
+//*****************************************************************************
+typedef struct clientshoppingcar {
+
+    char account[20];
+
+    char username[20];
+
+    char brand[10];
+
+    char name[100];
+
+    char info[1000];
+
+    int price;
+
+    int amount;
+
+    int cost;
+
+    struct clientshoppingcar* next;
+
+}*pClientshoppingcar, Clientshoppingcar;
+
+typedef pClientshoppingcar shopNode;
+
+pClientshoppingcar initshoppingcar();//³õÊ¼»¯£¬´´½¨Á´±í
+
+void addshoppingcar(pClientshoppingcar Testlist,pClientLinkedList list,pBeverageList testList,int amount);//Ôö¼Ó¹ºÎï³µÄÚÈİ
+
+pClientshoppingcar deleteshoppingcar(pClientshoppingcar Testlist,char* name,int *status);//É¾³ı¹ºÎï³µÄÚÈİ ·µ»ØÍ·Ö¸Õë±ÜÃâ³öÏÖÍ·Ö¸Õë±»logout status×´Ì¬·´À¡ÊÇ·ñ³É¹¦0/-1
+
+void changeshoppingcar(pClientshoppingcar Testlist,char* name,int amount);//¸Ä±ä¹ºÎï³µĞÅÏ¢
 
 
+void showshoppingcar(pClientshoppingcar list,char* username);//´òÓ¡Á´±í
 
->>>>>>> 324d5d8 (InteractInfo)
+pClientshoppingcar finding(pClientshoppingcar head, int i);//²éÕÒÁ´±í½áµã
+
+void searchshoppingcar(pClientshoppingcar list, char* name); // ¸ù¾İÃû³Æ¶Ô¹ºÎï³µ½øĞĞ²éÑ¯
+
+void searchCarinfo(pClientshoppingcar list, char* username);
+int blank(char judge[]);
 #endif // MERCHANTANDCLIENT_H

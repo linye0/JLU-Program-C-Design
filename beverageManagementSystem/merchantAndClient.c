@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "merchantAndClient.h"
-<<<<<<< HEAD
-#include<time.h>
-=======
+#include <math.h>
 #include <time.h>
-#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\进货记录.txt"
-#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\写入库存.txt"
->>>>>>> 324d5d8 (InteractInfo)
+#include "merchantAndClient.h"
+#define fileClientBuyLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\client.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\jinhuojilu.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-linye\\Data\\xierukucun.txt"
 
 void beveragePrintTime(char* file){
     FILE *fp;
@@ -24,19 +23,11 @@ void beveragePrintTime(char* file){
 void beverageRecordInit()
 {
     FILE *fp;
-<<<<<<< HEAD
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
-    fp = fopen(file0,"w");
-    fprintf(fp,"%s\n", "进货记录:");
-    fclose(fp);
-    char file1[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
-=======
     char file0[]=BEVEPATH1;
     fp = fopen(file0,"w");
     fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
     char file1[]=BEVEPATH2;
->>>>>>> 324d5d8 (InteractInfo)
     fp = fopen(file1, "w");
     fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
@@ -62,15 +53,6 @@ pBeverageList init() {
     return head;
 }
 
-void insertLast(pBeverageList list, pBeverageNode node) {
-    pBeverageNode p = list;
-    while (p->next != NULL) {
-        p = p->next;
-    }
-    p->next = node;
-}
-
-
 pBeverageNode find(pBeverageList head, int i) {
     int j = 1;
     pBeverageNode p = head;
@@ -87,6 +69,14 @@ pBeverageNode find(pBeverageList head, int i) {
 
     return p;
 
+}
+
+void insertLast(pBeverageList list, pBeverageNode node) {
+    pBeverageNode p = list;
+    while (p->next != NULL) {
+        p = p->next;
+    }
+    p->next = node;
 }
 
 pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
@@ -117,7 +107,7 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     node->price = price;
     strcpy(node->info, info);
     node->next = NULL;
-    reduceSaving(pInfo, storeNum * price);
+    if (!reduceSaving(pInfo, storeNum * price)) return NULL;
     return node;
 }
 
@@ -130,19 +120,15 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     pBeverageNode head = (pBeverageNode)malloc(sizeof(BeverageNode));
     head->next = NULL;
 
-<<<<<<< HEAD
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
-=======
     char file0[]=BEVEPATH1;
->>>>>>> 324d5d8 (InteractInfo)
-    beveragePrintTime(file0);
+    //beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, ":\n");
+    fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
     if (fp == NULL) {
         printf("\n读取文件失败\n");
-        exit(0);
+        return NULL;
     } else {
         printf("\n读取文件成功\n");
     }
@@ -191,7 +177,7 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
 
         pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
 
-        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", insertPos, brand, name, time, storeNum, price, info);
+        if (newNode == NULL) return head;
 
         fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", insertPos, brand, name, time, storeNum, price, info);
 
@@ -218,23 +204,18 @@ void showStaff(pBeverageList list) {
     else
     {
         printf("\n当前库存如下:\n");
-<<<<<<< HEAD
-        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
-        while (p)  //循环将各个节点值输出
-        {
-            p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
-=======
         printf("%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
             if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
->>>>>>> 324d5d8 (InteractInfo)
             i++;
         }
     }
 }
+
+
+
 
 pBeverageList sortBeverageTime(pBeverageList list, int key) {
     // 新建一个储存排序后结点的链表
@@ -470,7 +451,7 @@ void searchBeverageInfo(pBeverageList list, char* givenInfo) {
     int sum = 0;
     while (p != NULL) {
         if (strstr(p->info, givenInfo)) {
-            printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            printf("%d: %s %s %s %d %d %s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             sum++;
         }
         i++;
@@ -487,7 +468,7 @@ void searchBeverageBrand(pBeverageList list, char* givenBrand) {
     int sum = 0;
     while (p != NULL) {
         if (strstr(p->brand, givenBrand)) {
-            printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            printf("%d: %s %s %s %d %d %s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             sum++;
         }
         i++;
@@ -504,7 +485,7 @@ void searchBeverageName(pBeverageList list, char* givenName) {
     int sum = 0;
     while (p != NULL) {
         if (strstr(p->name, givenName)) {
-            printf("%-12d%-12s%-12s%-12s%-12d%-12d%-12s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            printf("%d: %s %s %s %d %d %s\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             sum++;
         }
         i++;
@@ -531,14 +512,10 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
 }
 
 void writeIntoFile(pBeverageList list) {
-<<<<<<< HEAD
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\写入库存.txt";
-=======
     char file0[]=BEVEPATH2;
->>>>>>> 324d5d8 (InteractInfo)
-    beveragePrintTime(file0);
+    //beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, ":\n");
+    fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
     int writePos = 1;
     pBeverageNode curNode = list;
@@ -548,31 +525,23 @@ void writeIntoFile(pBeverageList list) {
     }
 }
 
-<<<<<<< HEAD
-pBeverageList addFromFile(char* file, pBeverageList list) {
-=======
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
->>>>>>> 324d5d8 (InteractInfo)
     FILE*fp;
     fp = fopen(file, "r");
     int line_len = 0;
     char ch[1000] = {0};
 
-<<<<<<< HEAD
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\进货记录.txt";
-=======
     char file0[]=BEVEPATH1;
->>>>>>> 324d5d8 (InteractInfo)
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, ":\n");
+    fprintf(fpW, "：：：：：：：：：：：：：：\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
     pBeverageNode head = list;
 
     if (fp == NULL) {
         printf("\n读取文件失败\n");
-        exit(0);
+        return NULL;
     } else {
         printf("\n读取文件成功\n");
     }
@@ -626,11 +595,9 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
 
         writePos++;
 
-<<<<<<< HEAD
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info);
-=======
         pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
->>>>>>> 324d5d8 (InteractInfo)
+
+        if (newNode == NULL) return head;
 
         // 判断产品是否已在库存中存在
 
@@ -657,21 +624,19 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
 
     return head;
 }
-
 //***************************************linyebyd******************************************************
-
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     head->next=NULL;
     return head;
 }
 
-void signUp(pClientLinkedList list, char *account, char* password, char* username,int saving,int cost,int grade){
+void signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
     pClientLinkedList p0=clientSearch(list,account);
     if(p0!=NULL)
     {
-        printf("用户名已存在，请重新输入\n");
-        return ;//
+        printf("gimmeanothernamebitch");
+        return ;
     }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
@@ -689,9 +654,8 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     NewClientAccount->cost=cost;
     NewClientAccount->grade=grade;
 
-    recordClientAccount(NewClientAccount,"");
-}//
-
+    recordClientAccount(NewClientAccount,"注册");
+}//重新复制一下 main.c中传参类型要变 我把花费和存款改成了float，头文件里面struct client那个把连个int也改成float。
 clientNode clientSearch(pClientLinkedList list,char *account){
     pClientLinkedList p=list;
     while(p!=NULL&&strcmp(p->account,account)!=0){
@@ -777,7 +741,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
     return list;
 }//
 
-void deposit(clientNode client, int money){
+void deposit(clientNode client, float money){
     client->saving+=money;
 
 }
@@ -793,40 +757,46 @@ void clientUpgradeCheck(pClientLinkedList list)
 void buy(clientNode client, pBeverageList list, int number){
     list->storeNum-=number;
     client->cost+=number*list->price*(1-0.06*client->grade);
-    client->saving-=number*list->price;
+    client->saving-=number*list->price*(1-0.06*client->grade);
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"正常销售");
     clientUpgradeCheck(client);
-    recordClientBuy(client,list,number);
 }
-
+//传参不用变 直接把这段复制粘贴覆盖原来的函数
 void recordInit()
 {
     FILE *fp;
-    char file0[]="D:\\JLU-Program-C-Design\\Data\\buy.txt";
-    fp = fopen(file0,"w");
-   fprintf(fp,"%10s%11s%10s%11s%10s%10s%9s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","时间");
+
+    fp = fopen( fileClientBuyLog ,"w");
+    fprintf(fp,"%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
     fclose(fp);
-    char file1[]="D:\\JLU-Program-C-Design\\Data\\client.txt";
-    fp = fopen(file1,"w");
+    fp = fopen(fileClientAccountLog,"w");
     fprintf(fp,"%10s%10s%10s%10s\n","账号","用户名","行为","时间");
     fclose(fp);
-}//
 
-void recordClientBuy(clientNode client, pBeverageList list, int number){
+}//用来打表头捏
+//这段也直接复制粘贴 覆盖掉
+
+void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info){
     FILE *fp;
-    char file[]="D:\\qt\\qt project\\1\\client.txt";
-    fp = fopen(file,"at+");
-    fprintf(fp,"%10s%10s%10s%10s%10d%10d",client->account,client->username,list->brand,list->name,list->price,number);
+    fp = fopen(fileClientBuyLog,"at+");
+    fprintf(fp,"%10s%10s%10s%10s%10d%10d%10.2f",client->account,client->username,list->brand,list->name,list->price,number,cost);
     fclose(fp);
-    printTime(file);//
+    printTime(fileClientBuyLog);//输出一下时间
+    fp = fopen(fileClientBuyLog,"at+");
+    fprintf(fp,"%10s\n",info);
+    fclose(fp);
 }
+//这段也复制粘贴覆盖掉（传参变多了 多了一个购买信息  但是是内部函数你不用改main.c）但是头文件声明那里得多加一个info参数
 
 void recordClientAccount(clientNode client,const char behavior[]){
     FILE *fp;
-    char file[]="D:\\JLU-Program-C-Design\\Data\\client.txt";
-    fp = fopen(file,"at+");
+    fp = fopen(fileClientAccountLog,"at+");
     fprintf(fp,"%10s%10s%10s",client->account,client->username,behavior);
     fclose(fp);
-    printTime(file);//
+    printTime(fileClientAccountLog);//输出一下时间
+    fp = fopen(fileClientAccountLog,"at+");
+    fprintf(fp,"\n");
+    fclose(fp);
 }
 
 void printTime(char* file){
@@ -836,21 +806,30 @@ void printTime(char* file){
     struct tm *tmp_ptr = NULL;
     time(&tmpcal_ptr);
     tmp_ptr = localtime(&tmpcal_ptr);
-    fprintf(fp,"     %d.%d.%d\n", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//
+    fprintf(fp,"     %d.%d.%d_%d:%d:%d", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday,tmp_ptr->tm_hour,tmp_ptr->tm_min,tmp_ptr->tm_sec);//五个空格
     fclose(fp);
 }
 
+int infoCheck(clientNode p,char *info){
+    if(p->grade>=0){
+        return 0;
+    }else{
+        if(strstr(info,p->account)==NULL&&strstr(info,p->username)==NULL){
+            printf("您是个体用户 不能查看所有账单 请在关键字前加上自己的用户名或账号\n");
+            return 1;
+        }else
+            return 0;
+    }
+}//这个是新功能， 辅助粘贴 头文件也加上 检验普通用户输入的账单搜索关键字 使其不能查看所有用户的帐单 除非是管理员 return 0关键词没问题 return 1 关键词不够准确；
 int searchClientBuy(char *info)
 {
 
     FILE *fp;
-    char file[]="D:\\qt\\qt project\\1\\buy.txt";
-
     int line_len=0;
     char buf[1024]={0};
     char Info[20];
     strcpy_s(Info,strlen(info)+1,info);
-    fp=fopen(file,"r");
+    fp=fopen(fileClientBuyLog,"r");
     int sum=0;
     int sum0=0;
     char *token=strtok(Info," ");
@@ -868,7 +847,7 @@ int searchClientBuy(char *info)
             buf[line_len-1]='\0';
             line_len--;
             if(0==line_len){
-                //
+                //空行
                 continue;
             }
         }
@@ -876,7 +855,7 @@ int searchClientBuy(char *info)
             buf[line_len-1]='\0';
             line_len--;
             if(0==line_len){
-                //
+                //空行
                 continue;
             }
         }
@@ -896,7 +875,7 @@ int searchClientBuy(char *info)
             sum++;
         }
     }
-    if(0== feof ){
+    if(0== &feof ){
         printf("fgets error\n");
         return -1;
     }
@@ -905,10 +884,197 @@ int searchClientBuy(char *info)
 
     return sum;
 }
+//改过了 复制粘贴 传参不变
+void printCLientInfo(clientNode p)
+{
+    char account[]="账号";
+    char username[]="用户名";
+    char cost[]="已消费金额";
+    char saving[]="账户储蓄金";
+    char grade[]="用户等级";
+    char grade0[]="管理员";
+    printf("*********************\n");
+    printf("%10s%10s\n",account,p->account);
+    printf("%10s%10s\n",username,p->username);
+    printf("%10s%10.2f\n",cost,p->cost);
+    printf("%10s%10.2f\n",saving,p->saving);
+    if(p->grade>0){
+        printf("%10s%10d\n",grade,p->grade);
+    }else{
+        printf("%10s%10s\n",grade,grade0);
+    }
+    printf("*********************\n");
+}
 
-//ɡ-->
+pclientRequestList clientRequestListInit(){
+    pclientRequestList head = (pclientRequestList)malloc(sizeof(clientRequestList));
+    head->next=NULL;
+    return head;
+}
 
-//
+void searchClientBuy_FORREQUEST(char *info,char requestInfo[])
+{
+
+    FILE *fp;
+
+    int line_len=0;
+    char buf[1024]={0};
+    char Info[20];
+    strcpy_s(Info,strlen(info)+1,info);
+    fp=fopen(fileClientBuyLog,"r");
+    int sum0=0;
+    char *token=strtok(Info," ");
+    char s[10][20];
+    while( token != NULL ) {
+        sum0++;
+        strcpy_s(s[sum0],strlen(token)+1,token);
+        token = strtok(NULL," ");
+    }
+    while(fgets(buf,1024,fp)){
+
+        line_len=strlen(buf);
+        //
+        if('\n'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //空行
+                continue;
+            }
+        }
+        if('\r'==buf[line_len-1]){
+            buf[line_len-1]='\0';
+            line_len--;
+            if(0==line_len){
+                //空行
+                continue;
+            }
+        }
+        //]
+        int p=1;
+        int flag=1;
+        while(p<=sum0)
+        {
+            char *ptr=strstr(buf,s[p]);
+            if(ptr==NULL)
+                flag=0;
+            p++;
+        }
+        if(flag)
+        {
+            strcpy_s(requestInfo,strlen(buf)+1,buf);
+
+        }
+    }
+    if(0== &feof ){
+        printf("fgets error\n");
+    }
+
+    fclose(fp);
+
+
+}
+
+pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName) {
+    pBeverageNode p = list->next;
+    while (p != NULL) {
+        if (strstr(p->name, giveName)&&strstr(p->brand, giveBrand)) {
+            return p;
+        }
+        p = p->next;
+    }
+    return p;
+}
+
+void clientRequest_PUSH(pclientRequestList list,clientNode client,pBeverageList listb,char *info,char* excuse){
+    char Info[100];
+    strcpy_s(Info,strlen(info)+1,info);
+    searchClientBuy_FORREQUEST(info,Info);
+    strtok(Info," ");
+    strtok(NULL," ");
+    char *tokenBrand=strtok(NULL," ");
+    char *tokenName=strtok(NULL," ");
+    strtok(NULL," ");
+    int number=atoi(strtok(NULL," "));
+    float cost=atof(strtok(NULL," "));
+
+    char *time=strtok(NULL," ");
+
+    pBeverageNode pb0=searchBeverage_FORREQUEST(listb,tokenBrand,tokenName);
+    pclientRequestList NewClientRequest = (pclientRequestList)malloc(sizeof(clientRequestList));
+    pclientRequestList p=list;
+    while(p->next!=NULL){
+        p=p->next;
+    }
+    p->next=NewClientRequest;
+    NewClientRequest->next=NULL;
+    strcpy_s(NewClientRequest->time,strlen(time)+1,time);
+    strcpy_s(NewClientRequest->info,strlen(excuse)+1,excuse);
+    NewClientRequest->pb=pb0;
+    NewClientRequest->pc=client;
+    NewClientRequest->number=number;
+    NewClientRequest->cost=cost;
+}
+
+
+void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteractInfo pInfo){
+        int i=1;
+        pclientRequestList p0=list;
+        pclientRequestList p=list->next;
+        while(p!=NULL&&i<choice){
+            i++;
+            p0=p0->next;
+            p=p->next;
+         }
+        if(operate==1){
+            while(p->pc->cost-p->cost<pow(10,2*p->pc->grade))
+            {
+                p->pc->grade--;
+            }
+            p->pc->saving-=p->cost;
+            p->pc->cost+=p->cost;
+            p->pb->storeNum+=p->number;
+            // pInfo->sellerSaving -= p->cost;
+            printf("您已成功同意一条退货申请，还剩下这些请求待处理：\n");
+            recordClientBuy(p->pc,p->pb,p->number,-p->cost,"退货成功");
+        }else{
+            printf("您已成功拒绝一条退货申请，还剩下这些请求待处理：\n");
+            recordClientBuy(p->pc,p->pb,p->number,0,"拒绝退货");
+        }
+        p0->next=p->next;
+        clientRequest_SHOW(list);
+}
+
+
+int clientRequest_SHOW(pclientRequestList list){
+    pclientRequestList p=list->next;
+    int i=0;
+    char *request="退货";
+    printf("***********************************************************************************\n");
+    printf("%10s%10s%10s%10s%10s%15s\n","账号","品牌","名称","请求","数量","时间");
+    printf("-----------------------------------------------------------------------------------\n");
+    while(p!=NULL){
+        printf("%10s%10s%10s%10s%10d%25s\n",p->pc->account,p->pb->brand,p->pb->name,request,p->number,p->time);
+        p=p->next;
+        i++;
+    }
+    printf("***********************************************************************************\n");
+    return i;
+}
+
+void clientRequest_SHOWMORE(pclientRequestList list,int choice){
+    int i=1;
+    pclientRequestList p0=list;
+    pclientRequestList p=list->next;
+    while(p!=NULL&&i<choice){
+        i++;
+        p0=p0->next;
+        p=p->next;
+     }
+    printf("*************************************************退货原因说明****************************************************\n");
+    printf("%s\n",p->info);
+    printf("*************************************************退货原因说明****************************************************\n");
+}
 
 
 int getLinkTotalNodeNum(pBeverageList head)
@@ -921,8 +1087,144 @@ int getLinkTotalNodeNum(pBeverageList head)
 }
         return cnt;
 }
-<<<<<<< HEAD
-=======
+
+pClientshoppingcar initshoppingcar()
+{   pClientshoppingcar head = (pClientshoppingcar)malloc(sizeof(Clientshoppingcar));
+    head->next=NULL;
+    return head;
+}
+
+
+shopNode shoppingcarSearch(pClientshoppingcar list,char *name){
+    pClientshoppingcar p=list;
+    while(p!=NULL&&strcmp(p->name,name)!=0){
+        p=p->next;
+    }
+    return p;
+}
+
+void addshoppingcar(pClientshoppingcar Testlist,pClientLinkedList list,pBeverageList testList,int amount){
+    pClientshoppingcar NewClientshoppingcar = (pClientshoppingcar)malloc(sizeof(Clientshoppingcar));
+    pClientshoppingcar p=Testlist;
+    while(p->next!=NULL){
+        p=p->next;
+    }
+    p->next=NewClientshoppingcar;
+
+    NewClientshoppingcar->next=NULL;
+    strcpy_s(NewClientshoppingcar->account,strlen(list->account)+1,list->account);
+    strcpy_s(NewClientshoppingcar->username,strlen(list->username)+1,list->username);
+    strcpy_s(NewClientshoppingcar->name,strlen(testList->name)+1,testList->name);
+    strcpy_s(NewClientshoppingcar->brand,strlen(testList->brand)+1,testList->brand);
+    strcpy_s(NewClientshoppingcar->info,strlen(testList->info)+1,testList->info);
+    NewClientshoppingcar->price=testList->price;
+    NewClientshoppingcar->amount=amount;
+    NewClientshoppingcar->cost=testList->price*amount;
+
+}
+void changeshoppingcar(pClientshoppingcar Testlist,char* name,int amount){
+    pClientshoppingcar p;
+    p=shoppingcarSearch(Testlist,name);
+    p->amount=amount;
+    p->cost=p->price*amount;
+}
+
+pClientshoppingcar deleteshoppingcar(pClientshoppingcar list,char* name,int *status){
+    pClientshoppingcar p=list;
+    pClientshoppingcar p0=p;
+    p=p->next;
+    while(p!=NULL&&strcmp(p->name,name)!=0){
+        p0=p;
+        p=p->next;
+    }
+    if(p!=NULL){
+        if(p->next!=NULL){
+            p0->next=p->next;
+            *status=0;
+        }else{
+            p0->next=NULL;
+            *status=0;
+        }
+    }else
+    {
+        printf("");
+        *status=-1;
+    }
+    return list;
+}
+
+void showshoppingcar(pClientshoppingcar list,char* username){
+    pClientshoppingcar p;
+    p=list;
+    int i=1;
+
+        printf("\n当前购物车如下:\n");
+        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "信息", "单价","数量","总价");
+        while (p != NULL) {
+            if (strcmp(p->username,username)==0) {
+                printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+                i++;
+            }
+
+            p = p->next;
+        }
+
+}
+
+pClientshoppingcar finding(pClientshoppingcar head, int i){
+    int j = 1;
+    pClientshoppingcar p=head;
+    if (i < 1) {
+        printf("\n链表长度要大于零\n");
+        return NULL;
+    }
+
+    while (p && i != j) {
+        p = p->next;
+        j++;
+    }
+
+    return p;
+}
+void searchshoppingcar(pClientshoppingcar list, char* name){
+     printf("\n开始检索名称\n");
+     pClientshoppingcar p=list->next;
+     int i=1;
+     int sum=0;
+     while (p != NULL) {
+         if (strstr(p->name, name)) {
+             printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+             sum++;
+         }
+         i++;
+         p = p->next;
+     }
+     printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
+     return;
+}
+pBeverageNode findname(pBeverageList list, char* name){
+
+    pBeverageNode p = list;
+   while(strcmp(p->name, name)!=0)
+   {p=p->next;
+   }
+    return p;
+}
+int blank(char judge[]){
+    char ch;
+    char true_[20];
+    int i,j;
+    for(i=0,j=0;i<strlen(judge);i++){
+        if(judge[i]==' ')
+         continue;
+        else{
+        true_[j]=judge[i];
+        j++;
+       }
+    }
+    true_[j]='\0';
+    return strlen(true_);
+}
 
 pInteractInfo initInteractInfo(float saving) {
     pInteractInfo ret = (pInteractInfo)malloc(sizeof(InteractInfo));
@@ -930,9 +1232,15 @@ pInteractInfo initInteractInfo(float saving) {
     return ret;
 }
 
-void reduceSaving(pInteractInfo pInfo, float price) {
-    if (pInfo->sellerSaving >= price) pInfo->sellerSaving -= price;
-    else printf("商户存款不足！");
+int reduceSaving(pInteractInfo pInfo, float price) {
+    if (pInfo->sellerSaving >= price) {
+        pInfo->sellerSaving -= price;
+        return 1;
+    }
+    else printf("商户存款不足！\n");
+    return 0;
 }
 
->>>>>>> 324d5d8 (InteractInfo)
+void showInfoSaving(pInteractInfo pInfo) {
+    printf("当前资金是：%f\n", pInfo->sellerSaving);
+}
