@@ -7,7 +7,7 @@
 #include <string.h>
 pBeverageList testList = NULL;
 pInteractInfo pInfo = NULL;
-int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pclientRequestList change){
+int kehu(pClientLinkedList a,pClientLinkedList list, pClientshoppingcar car, pclientRequestList change){
     pBeverageList p;
     system("cls");
     printf("  登录成功\n");
@@ -54,7 +54,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
         gets(o);
         searchBeverageBrand(testList,o);
         system("pause");
-    kehu(a,list,car, change);
+        kehu(a,list,car, change);
         break;
     case'3':
         system("cls");
@@ -550,6 +550,13 @@ printf("请选择功能列表\n");
       break;}
   case'2':
   {system("cls");
+      // 新加的
+      if (testList == NULL || isEmpty(testList)) {
+          printf("当前库存为空！\n");
+          system("pause");
+          shanghu(change);
+          break;
+      }
       showStaff(testList);
       printf("\n是否保存当前库存？（1：是 0：否）\n");
       int a = 0;
