@@ -25,11 +25,9 @@ void beverageRecordInit()
     FILE *fp;
     char file0[]=BEVEPATH1;
     fp = fopen(file0,"w");
-    fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
     char file1[]=BEVEPATH2;
     fp = fopen(file1, "w");
-    fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
 }//用来打表头捏
 
@@ -121,8 +119,9 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     head->next = NULL;
 
     char file0[]=BEVEPATH1;
-    //beveragePrintTime(file0);
+    beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "\n");
     fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
@@ -517,15 +516,19 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
 void writeIntoFile(pBeverageList list) {
     char file0[]=BEVEPATH2;
     //beveragePrintTime(file0);
-    FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "\n");
-    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+    FILE* fpW = fopen(file0, "w");
+    if (!fpW) {
+        printf("++++\n");
+        return;
+    }
     int writePos = 1;
     pBeverageNode curNode = list;
+    if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
+    fclose(fpW);
 }
 
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
@@ -537,7 +540,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     char file0[]=BEVEPATH1;
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "：：：：：：：：：：：：：：\n");
+    fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
     pBeverageNode head = list;
@@ -624,6 +627,8 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
 
         }
     }
+
+    fclose(fpW);
 
     return head;
 }
@@ -894,7 +899,7 @@ void printCLientInfo(clientNode p)
     printf("%10s%10s\n",username,p->username);
     printf("%10s%10.2f\n",cost,p->cost);
     printf("%10s%10.2f\n",saving,p->saving);
-    if(p->grade>0){
+    if(p->grade>=0){
         printf("%10s%10d\n",grade,p->grade);
     }else{
         printf("%10s%10s\n",grade,grade0);
@@ -1198,6 +1203,22 @@ void searchshoppingcar(pClientshoppingcar list, char* name){
      printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
      return;
 }
+void searchshoppingcar2(pClientshoppingcar list, char* name){
+     printf("\n开始检索名称\n");
+     pClientshoppingcar p=list->next;
+     int i=1;
+     int sum=0;
+     while (p != NULL) {
+         if (strstr(p->brand, name)) {
+             printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+             sum++;
+         }
+         i++;
+         p = p->next;
+     }
+     printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
+     return;
+}
 pBeverageNode findname(pBeverageList list, char* name){
 
     pBeverageNode p = list;
@@ -1238,7 +1259,7 @@ int reduceSaving(pInteractInfo pInfo, float price) {
 }
 
 void showInfoSaving(pInteractInfo pInfo) {
-    printf("当前资金是：%f\n", pInfo->sellerSaving);
+    printf("当前资金是：%.2f\n", pInfo->sellerSaving);
 }
 
 int getNum(pClientshoppingcar head){
