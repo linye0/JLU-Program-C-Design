@@ -8,7 +8,6 @@
 #define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
 #define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
 #define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
-
 void beveragePrintTime(char* file){
     FILE *fp;
     fp = fopen(file,"at+");
@@ -25,11 +24,9 @@ void beverageRecordInit()
     FILE *fp;
     char file0[]=BEVEPATH1;
     fp = fopen(file0,"w");
-    fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
     char file1[]=BEVEPATH2;
     fp = fopen(file1, "w");
-    fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
 }//用来打表头捏
 
@@ -121,8 +118,9 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     head->next = NULL;
 
     char file0[]=BEVEPATH1;
-    //beveragePrintTime(file0);
+    beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "\n");
     fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
@@ -434,12 +432,12 @@ void deleteBeverage(pBeverageList list, int pos) {
     pBeverageNode tarNode = list;
     pBeverageNode prevTarNode = NULL;
     while (i < pos && tarNode->next) {
-        prevTarNode = tarNode;
-        tarNode = tarNode->next;
+        prevTarNode=tarNode;
+        tarNode=tarNode->next;
         i++;
     }
     // 删除tarNode结点
-    if (prevTarNode == NULL) {
+    if(prevTarNode==NULL){
         return;
     }
     prevTarNode->next = tarNode->next;
@@ -517,15 +515,19 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
 void writeIntoFile(pBeverageList list) {
     char file0[]=BEVEPATH2;
     //beveragePrintTime(file0);
-    FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "\n");
-    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+    FILE* fpW = fopen(file0, "w");
+    if (!fpW) {
+        printf("++++\n");
+        return;
+    }
     int writePos = 1;
     pBeverageNode curNode = list;
+    if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
+    fclose(fpW);
 }
 
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
@@ -537,7 +539,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     char file0[]=BEVEPATH1;
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "：：：：：：：：：：：：：：\n");
+    fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
     pBeverageNode head = list;
@@ -625,6 +627,8 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
         }
     }
 
+    fclose(fpW);
+
     return head;
 }
 //***************************************linyebyd******************************************************
@@ -634,11 +638,21 @@ pClientLinkedList initClient(){
     return head;
 }
 
+int Check(char* ch){
+    if(strspn(ch,"0123456789")==strlen(ch))
+        return -1;
+    int num=0;
+    for(int i=0;i<strlen(ch);i++)
+        if(ch[i]>='0'&&ch[i]<='9')
+            num++;
+    if (num==0) return -1;
+    return 0;
+}
 void signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
     pClientLinkedList p0=clientSearch(list,account);
     if(p0!=NULL)
     {
-        printf("gimmeanothernamebitch");
+        printf("用户名重名：（请重新输入");
         return ;
     }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
@@ -649,7 +663,6 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     p->next=NewClientAccount;
 
     NewClientAccount->next=NULL;
-
     strcpy_s(NewClientAccount->account,strlen(account)+1,account);
     strcpy_s(NewClientAccount->password,strlen(password)+1,password);
     strcpy_s(NewClientAccount->username,strlen(username)+1,username);
@@ -695,11 +708,11 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
     return p;
 }
 
-void changeAccount(pClientLinkedList list,char* account,char*newAccount){
+void changeUsername(pClientLinkedList list,char* username,char*newUsername){
     pClientLinkedList p;
-    p=clientSearch(list,account);
-    strcpy_s(p->account,strlen(newAccount)+1,newAccount);
-    printf("%s\n",p->account);
+    p=clientSearch(list,username);
+    strcpy_s(p->username,strlen(newUsername)+1,newUsername);
+    printf("用户名已改为%s\n",p->username);
     //
 }//
 
@@ -757,12 +770,15 @@ void clientUpgradeCheck(pClientLinkedList list)
     }
 }
 
-void buy(clientNode client, pBeverageList list, int number){
+int buy(clientNode client, pBeverageList list, int number){
+    if(list->storeNum<number)
+        return -1;
     list->storeNum-=number;
     client->cost+=number*list->price*(1-0.06*client->grade);
     client->saving-=number*list->price*(1-0.06*client->grade);
-    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"正常销售");
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"卖出");
     clientUpgradeCheck(client);
+    return 0;
 }
 //传参不用变 直接把这段复制粘贴覆盖原来的函数
 void recordInit()
@@ -814,11 +830,10 @@ void printTime(char* file){
 }
 
 int infoCheck(clientNode p,char *info){
-    if(p->grade>=0){
+    if(p->grade<0){
         return 0;
     }else{
-        if(strstr(info,p->account)==NULL&&strstr(info,p->username)==NULL){
-            printf("您是个体用户 不能查看所有账单 请在关键字前加上自己的用户名或账号\n");
+        if(strstr(info,p->account)==NULL){
             return 1;
         }else
             return 0;
@@ -844,25 +859,7 @@ int searchClientBuy(char *info)
     }
     while(fgets(buf,1024,fp)){
 
-        line_len=strlen(buf);
-        //
-        if('\n'==buf[line_len-1]){
-            buf[line_len-1]='\0';
-            line_len--;
-            if(0==line_len){
-                //空行
-                continue;
-            }
-        }
-        if('\r'==buf[line_len-1]){
-            buf[line_len-1]='\0';
-            line_len--;
-            if(0==line_len){
-                //空行
-                continue;
-            }
-        }
-        //]
+
         int p=1;
         int flag=1;
         while(p<=sum0)
@@ -901,7 +898,7 @@ void printCLientInfo(clientNode p)
     printf("%10s%10s\n",username,p->username);
     printf("%10s%10.2f\n",cost,p->cost);
     printf("%10s%10.2f\n",saving,p->saving);
-    if(p->grade>0){
+    if(p->grade>=0){
         printf("%10s%10d\n",grade,p->grade);
     }else{
         printf("%10s%10s\n",grade,grade0);
@@ -1162,10 +1159,10 @@ void showshoppingcar(pClientshoppingcar list,char* username){
     int i=1;
 
         printf("\n当前购物车如下:\n");
-        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "信息", "单价","数量","总价");
+        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "单价", "数量","总价","信息");
         while (p != NULL) {
             if (strcmp(p->username,username)==0) {
-                printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+                printf("%-12d%-12s%-12s%-12s%-12s%-12d%-12d%-12d%-12s\n", i, p->account, p->username, p->brand, p->name, p->price, p->amount,p->cost,p->info);
                 i++;
             }
 
@@ -1245,5 +1242,15 @@ int reduceSaving(pInteractInfo pInfo, float price) {
 }
 
 void showInfoSaving(pInteractInfo pInfo) {
-    printf("当前资金是：%f\n", pInfo->sellerSaving);
+    printf("当前资金是：%.2f\n", pInfo->sellerSaving);
+}
+
+int getNum(pClientshoppingcar head){
+    int cnt = 0;
+    pClientshoppingcar p = head;
+    while(p != NULL){
+    cnt++;
+    p = p->next;
+}
+    return cnt;
 }
