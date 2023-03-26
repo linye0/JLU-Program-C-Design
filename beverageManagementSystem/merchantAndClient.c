@@ -6,8 +6,8 @@
 #include "merchantAndClient.h"
 #define fileClientBuyLog "D:\\C-Project\\JLU-Program-C-Design\\data\\buy.txt"
 #define fileClientAccountLog "D:\\C-Project\\JLU-Program-C-Design\\data\\client.txt"
-#define BEVEPATH1 "D:\\C-Project\\JLU-Program-C-Design\\data\\进货记录.txt"
-#define BEVEPATH2 "D:\\C-Project\\JLU-Program-C-Design\\data\\写入库存.txt"
+#define BEVEPATH1 "D:\\qt\\qt project\\zhujiemian\\进货记录.txt"
+#define BEVEPATH2 "D:\\qt\\qt project\\zhujiemian\\写入库存.txt"
 
 void beveragePrintTime(char* file){
     FILE *fp;
@@ -894,7 +894,7 @@ void printCLientInfo(clientNode p)
     printf("%10s%10s\n",username,p->username);
     printf("%10s%10.2f\n",cost,p->cost);
     printf("%10s%10.2f\n",saving,p->saving);
-    if(p->grade>0){
+    if(p->grade>=0){
         printf("%10s%10d\n",grade,p->grade);
     }else{
         printf("%10s%10s\n",grade,grade0);
@@ -1155,10 +1155,10 @@ void showshoppingcar(pClientshoppingcar list,char* username){
     int i=1;
 
         printf("\n当前购物车如下:\n");
-        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "信息", "单价","数量","总价");
+        printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "序号", "账号", "用户名", "品牌", "名称", "单价", "数量","总价","信息");
         while (p != NULL) {
             if (strcmp(p->username,username)==0) {
-                printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+                printf("%-12d%-12s%-12s%-12s%-12s%-12d%-12d%-12d%-12s\n", i, p->account, p->username, p->brand, p->name, p->price, p->amount,p->cost,p->info);
                 i++;
             }
 
@@ -1238,5 +1238,15 @@ int reduceSaving(pInteractInfo pInfo, float price) {
 }
 
 void showInfoSaving(pInteractInfo pInfo) {
-    printf("当前资金是：%f\n", pInfo->sellerSaving);
+    printf("当前资金是：%.2f\n", pInfo->sellerSaving);
+}
+
+int getNum(pClientshoppingcar head){
+    int cnt = 0;
+    pClientshoppingcar p = head;
+    while(p != NULL){
+    cnt++;
+    p = p->next;
+}
+    return cnt;
 }

@@ -226,5 +226,8 @@ pClientshoppingcar finding(pClientshoppingcar head, int i);//查找链表结点
 void searchshoppingcar(pClientshoppingcar list, char* name); // 根据名称对购物车进行查询
 
 void searchCarinfo(pClientshoppingcar list, char* username);
+
 int blank(char judge[]);
+
+int getNum(pClientshoppingcar head);
 #endif // MERCHANTANDCLIENT_H

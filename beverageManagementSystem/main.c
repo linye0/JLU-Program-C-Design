@@ -12,7 +12,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     system("cls");
     printf("  登录成功\n");
     printf("请选择功能列表\n");
-    printf("1.查询存款\n");
+    printf("1.查询用户基本信息\n");
     printf("2.查询商品\n");
     printf("3.订购\n");
     printf("4.充值\n");
@@ -26,8 +26,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     {
     case'1':
     system("cls");
-   printf("您的存款为:\n");
-   printf("%f\n",a->saving);
+    printCLientInfo(a);//输出基本客户信息
     system("pause");
     system("cls");
    kehu(a,list,car, change);
@@ -91,7 +90,6 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择酒水编号\n");
     int h;
     scanf("%d",&h);
-    getchar();
     int b=getLinkTotalNodeNum(testList);
     b=b-1;
     char j[20];
@@ -102,7 +100,6 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     printf("请选择订购数量\n");
     int nm;
     scanf("%d",&nm);
-    getchar();
     char o[20]=" ";
     gets(o);
     if(nm>0&&strlen(o) == 0){
@@ -238,13 +235,30 @@ kehu(a,list,car, change);
         break;
     case'7':
         system("cls");
-        int status;
+        printf("您是否确定注销账户？\n");
+        printf("1.确定     2.取消\n");
+        //有点问题；
+        char f=_getch();
+            int status;
+        switch (f) {
+        case '1':
+
         clientLogout(list,a->account,&status);
         if(status==0)
             printf("删除成功\n");
         else
             printf("删除失败，请重试\n");
         system("pause");
+            break;
+        case '2':
+           kehu(a,list,car, change);
+            break;
+        default:
+            printf("请输入正确的选项\n");
+            system("pause");
+            kehu(a,list,car, change);
+             break;
+        }
         break;
     case'8':
         system("cls");
@@ -264,9 +278,16 @@ kehu(a,list,car, change);
          printf("请选择添加酒水序号\n");
          int k;
          scanf("%d",&k);
-         getchar();
          char b=getchar();
          k++;
+         if(k>getLinkTotalNodeNum(testList))
+         {
+             printf("请输入正确的编号\n");
+             system("pause");
+              kehu(a,list,car, change);
+             break;
+         }
+         else{
          pBeverageNode p0=find(testList, k);
          printf("请选择添加数量\n");
          int r;
@@ -277,7 +298,7 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          system("pause");
           kehu(a,list,car, change);
-         break;
+         break;}
    case '2':
          system("cls");
          showshoppingcar(car,a->username);
@@ -286,6 +307,14 @@ kehu(a,list,car, change);
          scanf("%d",&j);
          char c=getchar();
          j++;
+         if(j>getNum(car))
+         {
+             printf("请输入正确的编号\n");
+             system("pause");
+            kehu(a,list,car, change);
+            break;
+         }
+         else{
          pClientshoppingcar p1= finding(car, j);
          printf("请输入要修改的数量\n");
          int y;
@@ -296,7 +325,7 @@ kehu(a,list,car, change);
          showshoppingcar(car,a->username);
          system("pause");
         kehu(a,list,car, change);
-        break;
+        break;}
     case '3':
          system("cls");
          int status;
@@ -306,13 +335,21 @@ kehu(a,list,car, change);
          scanf("%d",&h);
          char d=getchar();
          h++;
+         if(h>getNum(car))
+         {
+             printf("请输入正确的编号\n");
+             system("pause");
+            kehu(a,list,car, change);
+            break;
+         }
+         else{
          pClientshoppingcar p2=finding(car,h);
          car=deleteshoppingcar(car,p2->name,&status);
          printf("删除成功\n");
          showshoppingcar(car,a->username);
          system("pause");
          kehu(a,list,car, change);
-         break;
+         break;}
    case '4':
          system("cls");
          showshoppingcar(car,a->username);
@@ -332,6 +369,14 @@ kehu(a,list,car, change);
          scanf("%d",&p);
          char de=getchar();
          p++;
+         if(p>getNum(car))
+         {
+             printf("请输入正确的编号\n");
+             system("pause");
+            kehu(a,list,car, change);
+            break;
+         }
+         else{
          pClientshoppingcar p3=finding(car, p);
          pBeverageNode p4=findname(testList, p3->name);
          if(a->saving>=(p3->cost))
@@ -346,7 +391,7 @@ kehu(a,list,car, change);
          {printf("余额不足\n");
           system("pause");
         kehu(a,list,car, change);
-         break;}
+         break;}}
 
    case'6':
          system("cls");
@@ -638,6 +683,14 @@ printf("请选择功能列表\n");
       showStaff(testList);
       printf("请输入产品编号\n");
       int bi=_getch()-'0';
+      if(bi>getLinkTotalNodeNum(testList))
+           {
+               printf("请输入正确的编号\n");
+               system("pause");
+               shanghu(change);
+              break;
+           }
+           else{
       printf("请输入产品信息\n");
       char ke[20];
       gets(ke);
@@ -645,7 +698,7 @@ printf("请选择功能列表\n");
       printf("修改成功\n");
       system("pause");
        shanghu(change);
-      break;}
+      break;}}
    case'6':
       system("cls");
       int u=clientRequest_SHOW(change);
@@ -685,7 +738,6 @@ printf("请选择功能列表\n");
       char o[50];
       gets(o);
       testList= createFromFile(o, pInfo);
-      printf("初始化成功\n");
       system("pause");
       shanghu(change);
       break;
@@ -798,7 +850,7 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      { printf("密码不能为空\n");
       system("pause");
       break;}
-  signUp(list, hz, im, yh,0,0,1);
+  signUp(list, hz, im, yh,0,0,0);
   printf("注册成功");
   system("pause");
   system("cls");
@@ -819,7 +871,7 @@ int main()
 pClientshoppingcar car= initshoppingcar();
    recordInit();
   pClientLinkedList list=initClient();
-  signUp(list, "111", "111", "shanghu",0,0,-1);
+  signUp(list, "administer0", "administer0", "administer0",0,0,-1);
  while(1)
 {system("cls");
  printf("欢迎进入酒水管理系统\n");
