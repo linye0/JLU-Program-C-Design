@@ -86,6 +86,8 @@ void writeIntoFile(pBeverageList list);
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
+
+void writeIntoFileAuto(pBeverageList list);
 //************************************ÏÂÃæ¶¼ÊÇÎÒµÄÄó******************************************************
 
 typedef struct clientLinkedList {
@@ -111,7 +113,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // ³õÊ¼»¯£¬´´½¨¿ÕÁ´±í
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // ½«×¢²áĞÅÏ¢Ğ´ÈëÁ´±í//¸ü¸ÄÁËÒ»ÏÂ¶àÁËÒ»¸ösaving//ÕâÀï»¹ÓĞÒ»¸öÖØÃûµÄÎÊÌâ ÎÒÏÈÊä³öÁË  µ½Ê±ºò¸úÏÂÃæµÄº¯ÊıÒ»Ñù·µ»ØÒ»¸östatusÀ´ÅĞ¶ÏÊÇ·ñÕË»§´´½¨³É¹¦
+int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // ½«×¢²áĞÅÏ¢Ğ´ÈëÁ´±í//¸ü¸ÄÁËÒ»ÏÂ¶àÁËÒ»¸ösaving//ÕâÀï»¹ÓĞÒ»¸öÖØÃûµÄÎÊÌâ ÎÒÏÈÊä³öÁË  µ½Ê±ºò¸úÏÂÃæµÄº¯ÊıÒ»Ñù·µ»ØÒ»¸östatusÀ´ÅĞ¶ÏÊÇ·ñÕË»§´´½¨³É¹¦
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// µÇÂ¼£¬ÔËÓÃÁËSearch²éÕÒÕÒÕË»§ ·µ»ØÖµÊ±Êı¾İ¿â£¨Á´±í£©ÖĞ¶ÔÓ¦µÄ½áµã£¬ÔÚµÇÂ½²Ù×÷Ö®ºó£¬ËùÓĞ¿Í»§µÄ²Ù×÷¶¼ÊÇ¶Ô¸Ã½áµã½øĞĞ²Ù×÷//´ø»ØÈıÖÖ×´Ì¬ µÇÂ¼³É¹¦1 ÃÜÂë´íÎó0 ÒÔ¼°ÕÒ²»µ½ÕËºÅ-1//¹ÜÀíÔ±¿ÉÒÔÉèÖÃÒ»¸ö»úÆ÷ÃÜÂë ÓĞÕâ¸ö¶«Î÷²ÅÄÜ×¢²á¹ÜÀíÔ±
 
@@ -131,7 +133,6 @@ int buy(clientNode client, pBeverageList list, int number); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË
 
 void clientUpgradeCheck(pClientLinkedList list);//³ıÁËÒ»¸öadministator Ö®ÍâÆäËû¶¼ÊÇÆÕÍ¨ÉÌ»§¼´¿É
 
-void recordInit();//³õÊ¼»¯¹ºÂò¼ÇÂ¼
 
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info);//¼ÇÂ¼ÉÌ»§²Ù×÷²¢¼ÇÂ¼µ¼ÈëÎÄ¼ş
 
@@ -149,7 +150,11 @@ int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
 
-void printCLientInfo(clientNode p);//Êä³ö»ù±¾¿Í»§ĞÅÏ¢
+void printClientInfo(clientNode p);
+
+void printCLientArchive(clientNode P);
+
+//Êä³ö»ù±¾¿Í»§ĞÅÏ¢
 //********************************ÒÔÉÏÊÇ¿Í»§½øĞĞ¹ºÂò»òÕßÆäËû»î¶¯***********************
 //********************************ÒÔÏÂÊÇ¹ÜÀíÔ± ¿Í»§ÍË»»»õ´¦Àí*************************
 typedef struct clientRequest{
@@ -184,6 +189,8 @@ void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
 pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
 
 int Check(char* ch);
+
+void reprintClient(pClientLinkedList list);
 
 //*****************************************************************************
 typedef struct clientshoppingcar {
@@ -225,6 +232,7 @@ pClientshoppingcar finding(pClientshoppingcar head, int i);//²éÕÒÁ´±í½áµã
 
 void searchshoppingcar(pClientshoppingcar list, char* name); // ¸ù¾İÃû³Æ¶Ô¹ºÎï³µ½øĞĞ²éÑ¯
 
+void searchshoppingcar2(pClientshoppingcar list, char* name);
 void searchCarinfo(pClientshoppingcar list, char* username);
 
 int blank(char judge[]);
