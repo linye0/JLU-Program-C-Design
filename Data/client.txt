@@ -1,6 +1,7 @@
       账号    用户名      行为      时间
-administer0administer0      注册     2023.3.26_18:1:30
-administer0administer0  管理登录     2023.3.26_18:3:2
-     name1     name1      注册     2023.3.26_18:12:51
-     name1     name1  普通登录     2023.3.26_18:14:29
-     name1     name1  普通登录     2023.3.26_18:31:6
+administer0administer0      注册     2023.3.27_8:29:36
+administer0administer0  管理登录     2023.3.27_8:29:45
+     name1     name1      注册     2023.3.27_8:30:6
+     name1     name1  普通登录     2023.3.27_8:30:11
+administer0administer0  管理登录     2023.3.27_8:30:41
+     name1     name1  普通登录     2023.3.27_8:30:52

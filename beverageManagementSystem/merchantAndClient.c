@@ -6,8 +6,8 @@
 #include "merchantAndClient.h"
 #define fileClientBuyLog "D:\\C-Project\\JLU-Program-C-Design\\data\\buy.txt"
 #define fileClientAccountLog "D:\\C-Project\\JLU-Program-C-Design\\data\\client.txt"
-#define BEVEPATH1 "D:\\qt\\qt project\\zhujiemian\\进货记录.txt"
-#define BEVEPATH2 "D:\\qt\\qt project\\zhujiemian\\写入库存.txt"
+#define BEVEPATH1 "D:\C-Project\JLU-Program-C-Design\data\\进货记录.txt"
+#define BEVEPATH2 "D:\C-Project\JLU-Program-C-Design\data\\写入库存.txt"
 
 void beveragePrintTime(char* file){
     FILE *fp;
@@ -25,11 +25,9 @@ void beverageRecordInit()
     FILE *fp;
     char file0[]=BEVEPATH1;
     fp = fopen(file0,"w");
-    fprintf(fp,"%s\n", "进货记录:");
     fclose(fp);
     char file1[]=BEVEPATH2;
     fp = fopen(file1, "w");
-    fprintf(fp, "%s\n", "写入库存:");
     fclose(fp);
 }//用来打表头捏
 
@@ -121,8 +119,9 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     head->next = NULL;
 
     char file0[]=BEVEPATH1;
-    //beveragePrintTime(file0);
+    beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
+    fprintf(fpW, "\n");
     fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
@@ -517,15 +516,19 @@ void reduceBeverageStoreNum(pBeverageList list, int number, int reduceNum) {
 void writeIntoFile(pBeverageList list) {
     char file0[]=BEVEPATH2;
     //beveragePrintTime(file0);
-    FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "\n");
-    fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+    FILE* fpW = fopen(file0, "w");
+    if (!fpW) {
+        printf("++++\n");
+        return;
+    }
     int writePos = 1;
     pBeverageNode curNode = list;
+    if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
+    fclose(fpW);
 }
 
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
@@ -537,7 +540,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     char file0[]=BEVEPATH1;
     beveragePrintTime(file0);
     FILE* fpW = fopen(file0, "at+");
-    fprintf(fpW, "：：：：：：：：：：：：：：\n");
+    fprintf(fpW, "\n");
     fprintf(fpW, "%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
 
     pBeverageNode head = list;
@@ -625,6 +628,8 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
         }
     }
 
+    fclose(fpW);
+
     return head;
 }
 //***************************************linyebyd******************************************************
@@ -644,12 +649,12 @@ int Check(char* ch){
     if (num==0) return -1;
     return 0;
 }
-void signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
+int signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
     pClientLinkedList p0=clientSearch(list,account);
     if(p0!=NULL)
     {
-        printf("用户名重名：（请重新输入");
-        return ;
+        printf("用户名重名：（请重新输入\n");
+        return -1;
     }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
@@ -667,6 +672,7 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     NewClientAccount->grade=grade;
 
     recordClientAccount(NewClientAccount,"注册");
+    return 0;
 }//重新复制一下 main.c中传参类型要变 我把花费和存款改成了float，头文件里面struct client那个把连个int也改成float。
 clientNode clientSearch(pClientLinkedList list,char *account){
     pClientLinkedList p=list;
@@ -760,7 +766,7 @@ void deposit(clientNode client, float money){
 
 void clientUpgradeCheck(pClientLinkedList list)
 {
-    if(list->cost>pow(10,2*list->grade))
+    while(list->cost>pow(10,2*list->grade))
     {
         list->grade++;
     }
@@ -770,9 +776,9 @@ int buy(clientNode client, pBeverageList list, int number){
     if(list->storeNum<number)
         return -1;
     list->storeNum-=number;
-    client->cost+=number*list->price*(1-0.06*client->grade);
-    client->saving-=number*list->price*(1-0.06*client->grade);
-    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"卖出");
+    client->cost+=number*list->price*(1-0.06*(client->grade-1));
+    client->saving-=number*list->price*(1-0.06*(client->grade-1));
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*(client->grade-1)),"卖出");
     clientUpgradeCheck(client);
     return 0;
 }
@@ -1023,7 +1029,7 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteract
             p=p->next;
          }
         if(operate==1){
-            while(p->pc->cost-p->cost<pow(10,2*p->pc->grade))
+            while(p->pc->cost+p->cost<pow(10,2*p->pc->grade)&&p->pc->grade>1)
             {
                 p->pc->grade--;
             }
@@ -1189,6 +1195,22 @@ void searchshoppingcar(pClientshoppingcar list, char* name){
      int sum=0;
      while (p != NULL) {
          if (strstr(p->name, name)) {
+             printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
+             sum++;
+         }
+         i++;
+         p = p->next;
+     }
+     printf("为您搜索'%s'关键字，共搜索到%d条记录\n", name, sum);
+     return;
+}
+void searchshoppingcar2(pClientshoppingcar list, char* name){
+     printf("\n开始检索名称\n");
+     pClientshoppingcar p=list->next;
+     int i=1;
+     int sum=0;
+     while (p != NULL) {
+         if (strstr(p->brand, name)) {
              printf("%-12d%-12s%-12s%-12s%-12s%-12s%-12d%-12d%-12d\n", i, p->account, p->username, p->brand, p->name, p->info, p->price,p->amount,p->cost);
              sum++;
          }
