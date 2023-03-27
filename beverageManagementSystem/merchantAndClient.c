@@ -634,10 +634,79 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     return head;
 }
 //***************************************linyebyd******************************************************
+//*******************************************************************************************************
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     head->next=NULL;
     FILE *fp=fopen(fileClientInfoLog,"at+");
+    int line_len = 0;
+    char ch[1000] = {0};
+    pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    head->next=NewClientAccount;
+
+    NewClientAccount->next=NULL;
+    strcpy(NewClientAccount->account,"administer0");
+    strcpy(NewClientAccount->password,"administer0");
+    strcpy(NewClientAccount->username,"administer0");
+    NewClientAccount->saving=0;
+    NewClientAccount->cost=0;
+    NewClientAccount->grade=-1;
+
+    while(fgets(ch, 1000, fp)) {
+        line_len = strlen(ch);
+        if ('\n' == ch[line_len - 1]) {
+            ch[line_len - 1] = '\0';
+            line_len--;
+            if (0 == line_len) {
+                continue;
+            }
+        }
+        // 对ch进行分割
+
+        char account[100] = {0}; char username[100] = {0};char password[100]={0};float cost=0;float saving=0;int grade=0;
+        int i = 0;
+
+        char *p = strtok(ch, " ");
+        while(p){//使用第一个参数为NULL来提取子串
+            switch(i) {
+                case 0:
+                    strcpy(account, p);
+                    break;
+                case 1:
+                    strcpy(username, p);
+                    break;
+                case 2:
+                    strcpy(password, p);
+                    break;
+                case 3:
+                    cost=atof(p);
+                    break;
+                case 4:
+                    saving=atof(p);
+                    break;
+                case 5:
+                    grade=atoi(p);
+                    break;
+            }
+            i++;
+            p=strtok(NULL," ");
+        }
+        pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+        pClientLinkedList ptr=head;
+        while(ptr->next!=NULL){
+            ptr=ptr->next;
+        }
+        ptr->next=NewClientAccount;
+
+        NewClientAccount->next=NULL;
+        strcpy_s(NewClientAccount->account,strlen(account)+1,account);
+        strcpy_s(NewClientAccount->password,strlen(password)+1,password);
+        strcpy_s(NewClientAccount->username,strlen(username)+1,username);
+        NewClientAccount->saving=saving;
+        NewClientAccount->cost=cost;
+        NewClientAccount->grade=grade;
+
+    }
 
     return head;
 }
@@ -721,12 +790,25 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
     }
     return p;
 }
+void reprintClient(pClientLinkedList list){
+    FILE *fp;
 
+    fp = fopen(fileClientInfoLog,"w");
+    pClientLinkedList p=list;
+    while(p!=NULL)
+    {
+    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    p=p->next;
+    }
+
+    fclose(fp);
+}
 void changeUsername(pClientLinkedList list,char* username,char*newUsername){
     pClientLinkedList p;
     p=clientSearch(list,username);
     strcpy_s(p->username,strlen(newUsername)+1,newUsername);
     printf("用户名已改为%s\n",p->username);
+    reprintClient(list);
     //
 }//
 
@@ -735,6 +817,7 @@ void NewPassword(pClientLinkedList list,char* account,char* newPassword){
     p=clientSearch(list,account);
     strcpy_s(p->password,strlen(newPassword)+1,newPassword);
     printf("已修改密码为：%s\n",p->password);
+    reprintClient(list);
 }//
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
@@ -795,18 +878,7 @@ int buy(clientNode client, pBeverageList list, int number){
     return 0;
 }
 //传参不用变 直接把这段复制粘贴覆盖原来的函数
-void recordInit()
-{
-    FILE *fp;
 
-    fp = fopen( fileClientBuyLog ,"w");
-    fprintf(fp,"%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
-    fclose(fp);
-    fp = fopen(fileClientAccountLog,"w");
-    fprintf(fp,"%10s%10s%10s%10s\n","账号","用户名","行为","时间");
-    fclose(fp);
-
-}//用来打表头捏
 //这段也直接复制粘贴 覆盖掉
 
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info){

@@ -506,6 +506,7 @@ kehu(a,list,car, change);
 
         break;
     case'9':
+
          system("cls");
         break;
     default:
@@ -1056,17 +1057,16 @@ int main()
 {
     beverageRecordInit();
     pclientRequestList change=clientRequestListInit();
-pClientshoppingcar car= initshoppingcar();
-   recordInit();
-  pClientLinkedList list=initClient();
-  signUp(list, "administer0", "administer0", "administer0",0,0,-1);
- while(1)
-{system("cls");
- printf("欢迎进入酒水管理系统\n");
- system("pause");
- system("cls");
- denglu(list, car,change);
+    pClientshoppingcar car= initshoppingcar();
+    pClientLinkedList list=initClient();
 
-}
+    while(1){
+        system("cls");
+        printf("欢迎进入酒水管理系统\n");
+        system("pause");
+        system("cls");
+        denglu(list, car,change);
+
+    }
     return 0;
 }

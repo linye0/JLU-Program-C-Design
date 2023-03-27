@@ -131,7 +131,6 @@ int buy(clientNode client, pBeverageList list, int number); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË
 
 void clientUpgradeCheck(pClientLinkedList list);//³ıÁËÒ»¸öadministator Ö®ÍâÆäËû¶¼ÊÇÆÕÍ¨ÉÌ»§¼´¿É
 
-void recordInit();//³õÊ¼»¯¹ºÂò¼ÇÂ¼
 
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info);//¼ÇÂ¼ÉÌ»§²Ù×÷²¢¼ÇÂ¼µ¼ÈëÎÄ¼ş
 
@@ -188,6 +187,8 @@ void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
 pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
 
 int Check(char* ch);
+
+void reprintClient(pClientLinkedList list);
 
 //*****************************************************************************
 typedef struct clientshoppingcar {
