@@ -9,3 +9,4 @@ SOURCES += \
 
 HEADERS += \
     merchantAndClient.h
+

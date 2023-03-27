@@ -506,7 +506,7 @@ kehu(a,list,car, change);
 
         break;
     case'9':
-
+        reprintClient(list->next->next);
          system("cls");
         break;
     default:
