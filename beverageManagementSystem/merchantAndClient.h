@@ -28,7 +28,7 @@ typedef struct beverageLinkedList {
 
     int storeNum;
 
-    int price;
+    float price;
 
     char info[1000];
 
@@ -55,7 +55,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // 把node插
 
 void insertLast(pBeverageList list, pBeverageNode node);
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
 
 pBeverageList createFromFile(char* file, pInteractInfo pInfo); // 从文件读入进货记录，存入链表中
 

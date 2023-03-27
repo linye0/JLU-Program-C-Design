@@ -101,7 +101,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     return list;
 }
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo) {
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo) {
     pBeverageNode node = malloc(sizeof(BeverageNode));
     strcpy(node->brand, brand);
     strcpy(node->name, name);
@@ -212,7 +212,7 @@ void showStaff(pBeverageList list) {
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16.2f\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             i++;
         }
     }
@@ -531,7 +531,7 @@ void writeIntoFile(pBeverageList list) {
     if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
     fclose(fpW);
 }
@@ -549,13 +549,14 @@ void writeIntoFileAuto(pBeverageList list) {
     if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
     fclose(fpW);
 }
 
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     FILE*fp;
+    char* pEnd;
     fp = fopen(file, "r");
     int line_len = 0;
     char ch[1000] = {0};
@@ -590,7 +591,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
         }
         // 对ch进行分割
 
-        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; char info[100] = {0};
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; float price = 0; char info[100] = {0};
 
         int i = 0;
 
@@ -610,7 +611,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
                     storeNum = atoi(p);
                     break;
                 case 4:
-                    price = atoi(p);
+                    price = strtof(p, &pEnd);
                     break;
                 case 5:
                     strcpy(info, p);

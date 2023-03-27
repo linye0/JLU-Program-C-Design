@@ -572,16 +572,18 @@ printf("请选择功能列表\n");
       char fg[20];
       gets(fg);
       printf("请输入商品数量\n");
+      float k_;
       int k;
-      scanf("%d",&k);
+      scanf("%f",&k_);
+      k = (int)k_;
       if (k < 0) {
           printf("请输入正确的数字!\n");
           system("pause");
           break;
       }
       printf("请输入商品价格\n");
-      int l;
-      scanf("%d",&l);
+      float l;
+      scanf("%f",&l);
       char ch=getchar();
       printf("请输入商品信息\n");
       char fs[20];
