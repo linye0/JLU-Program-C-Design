@@ -149,7 +149,11 @@ int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
 
-void printCLientInfo(clientNode p);//输出基本客户信息
+void printClientInfo(clientNode p);
+
+void printCLientArchive(clientNode P);
+
+//输出基本客户信息
 //********************************以上是客户进行购买或者其他活动***********************
 //********************************以下是管理员 客户退换货处理*************************
 typedef struct clientRequest{

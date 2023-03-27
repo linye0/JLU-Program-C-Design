@@ -6,6 +6,7 @@
 #include "merchantAndClient.h"
 #define fileClientBuyLog "D:\\C-Project\\JLU-Program-C-Design\\data\\buy.txt"
 #define fileClientAccountLog "D:\\C-Project\\JLU-Program-C-Design\\data\\client.txt"
+#define fileClientInfoLog "D:\\C-Project\\JLU-Program-C-Design\\data\\clientInfo.txt"
 #define BEVEPATH1 "D:\C-Project\JLU-Program-C-Design\data\\进货记录.txt"
 #define BEVEPATH2 "D:\C-Project\JLU-Program-C-Design\data\\写入库存.txt"
 
@@ -636,6 +637,8 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     head->next=NULL;
+    FILE *fp=fopen(fileClientInfoLog,"at+");
+
     return head;
 }
 
@@ -672,6 +675,7 @@ int signUp(pClientLinkedList list, char *account, char* password, char* username
     NewClientAccount->grade=grade;
 
     recordClientAccount(NewClientAccount,"注册");
+    printCLientArchive(NewClientAccount);
     return 0;
 }//重新复制一下 main.c中传参类型要变 我把花费和存款改成了float，头文件里面struct client那个把连个int也改成float。
 clientNode clientSearch(pClientLinkedList list,char *account){
@@ -681,6 +685,14 @@ clientNode clientSearch(pClientLinkedList list,char *account){
     }
     return p;
 }//
+
+void printCLientArchive(clientNode p){
+    FILE *fp;
+
+    fp = fopen(fileClientInfoLog,"at+");
+    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    fclose(fp);
+}
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
     pClientLinkedList p;
@@ -887,7 +899,7 @@ int searchClientBuy(char *info)
     return sum;
 }
 //改过了 复制粘贴 传参不变
-void printCLientInfo(clientNode p)
+void printClientInfo(clientNode p)
 {
     char account[]="账号";
     char username[]="用户名";
