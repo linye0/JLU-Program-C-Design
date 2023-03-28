@@ -7,7 +7,29 @@
 #include <string.h>
 pBeverageList testList = NULL;
 pInteractInfo pInfo = NULL;
+
+char shuru(a){
+    while(1){
+         printf("请输入日期:\n");
+
+    gets(a);
+        if(strlen(a)==0)
+      { printf("请输入正确的日期\n");
+            shuru();
+        }
+        int b=is_valid_date(a);
+      system("pause");
+      if(b==0)
+       break;
+ }return a;
+}
+
 int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pclientRequestList change){
+    if (testList == NULL) {
+        printf("请等待酒水商开张！\n");
+        system("pause");
+        return 0;
+    }
     pBeverageList p;
     system("cls");
     printf("  登录成功\n");
@@ -26,17 +48,17 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     {
     case'1':
     system("cls");
-    printCLientInfo(a);//输出基本客户信息
+    printClientInfo(a);//输出基本客户信息
     system("pause");
     system("cls");
-   kehu(a,list,car, change);
+    kehu(a,list,car, change);
     break;
     case'2':
     system("cls");
     printf("请选择\n");
     printf("1、查看所有商品\n");
     printf("2、根据品牌查找商品\n");
-    printf("3、根据名称商品\n");
+    printf("3、根据名称查找商品\n");
     printf("4、根据酒水信息查找商品\n");
     char m=_getch();
     switch(m){
@@ -176,8 +198,12 @@ kehu(a,list,car, change);
             printf("请输入新用户名：\n");
             char z[20];
             gets(z);
+            if(Check(z)==-1){
+                printf("用户名必须由字符和数字组成 请输入正确格式的名称！\n");
+            }else{
             changeUsername(a,a->username,z);
             printf("已成功更改用户名\n");
+            }
             system("pause");
             kehu(a,list,car, change);
             break;
@@ -285,7 +311,8 @@ kehu(a,list,car, change);
      printf("3.删除购物车\n");
      printf("4.查找购物车\n");
      printf("5.购买购物车中物品\n");
-     printf("6.返回\n");
+     printf("6.全部购买\n");
+     printf("7.返回\n");
      char u=_getch();
      switch (u) {
      case'1':
@@ -295,7 +322,7 @@ kehu(a,list,car, change);
          int k;
          scanf("%d",&k);
          char m[50]=" ";
-         gets_s(m,49);
+         gets(m);
          if(k>getLinkTotalNodeNum(testList)-1||k<1)
          {
              printf("请输入正确的编号\n");
@@ -336,7 +363,7 @@ kehu(a,list,car, change);
          int j;
          scanf("%d",&j);
          char c[50]=" ";
-         gets_s(c,49);
+         gets(c);
 
          if(j>getNum(car)-1||j<1)
          {
@@ -359,7 +386,7 @@ kehu(a,list,car, change);
          int y;
          scanf("%d",&y);
          char sa[50]=" ";
-         gets_s(sa,49);
+         gets(sa);
          if (y < 1) {
              printf("请输入正确的数字!\n");
              system("pause");
@@ -387,7 +414,7 @@ kehu(a,list,car, change);
          int h;
          scanf("%d",&h);
          char d[50]=" ";
-         gets_s(d,49);
+         gets(d);
 
          if(h>getNum(car)-1||h<1)
          {
@@ -454,7 +481,7 @@ kehu(a,list,car, change);
          int p;
          scanf("%d",&p);
          char de[50]=" ";
-       gets_s(de,49);
+       gets(de);
          if(p>getNum(car)-1||p<1)
          {
              printf("请输入正确的编号\n");
@@ -486,8 +513,33 @@ kehu(a,list,car, change);
           system("pause");
         kehu(a,list,car, change);
          break;}}
-
    case'6':
+         system("cls");
+         printf("正在购买\n");
+         int ge=getNum(car);
+while(1){
+             pClientshoppingcar p5=finding(car, ge);
+             pBeverageNode p6=findname(testList, p5->name);
+             if(a->saving>=(p5->cost))
+               {buy(a,p6,p5->amount);
+               reduceSaving(pInfo, p5->cost);
+                 deleteshoppingcar(car,p5->name,&status);
+             ge--;}
+              else
+                 {printf("余额不足\n");
+                  system("pause");
+                 kehu(a,list,car, change);
+                 break;}
+                 if(ge==1)
+                 {
+                     printf("购买成功\n");
+                      system("pause");
+                     kehu(a,list,car, change);
+                       break;
+                 }
+}
+         break;
+   case'7':
          system("cls");
          kehu(a,list,car, change);
          break;
@@ -502,6 +554,8 @@ kehu(a,list,car, change);
 
         break;
     case'9':
+        reprintClient(list->next->next);
+        if (testList) writeIntoFileAuto(testList);
          system("cls");
         break;
     default:
@@ -529,7 +583,8 @@ printf("请选择功能列表\n");
   char d =_getch();
   switch(d)
 
-  {case'1':
+  {
+  case'1':
   {system("cls");
       if (pInfo == NULL) {
           printf("请先设定资金！\n");
@@ -558,18 +613,20 @@ printf("请选择功能列表\n");
       gets(fd);
       printf("请输入进货时间\n");
       char fg[20];
-      gets(fg);
+      fg==shuru(fg);
       printf("请输入商品数量\n");
+      float k_;
       int k;
-      scanf("%d",&k);
+      scanf("%f",&k_);
+      k = (int)k_;
       if (k < 0) {
           printf("请输入正确的数字!\n");
           system("pause");
           break;
       }
       printf("请输入商品价格\n");
-      int l;
-      scanf("%d",&l);
+      float l;
+      scanf("%f",&l);
       char ch=getchar();
       printf("请输入商品信息\n");
       char fs[20];
@@ -598,17 +655,77 @@ printf("请选择功能列表\n");
       break;}
   case'2':
   {system("cls");
-      showStaff(testList);
-      printf("\n是否保存当前库存？（1：是 0：否）\n");
-      int a = 0;
-      scanf("%d", &a);
-      getchar();
-      if (a == 1) writeIntoFile(testList);
-      system("pause");
-      system("cls");
-     shanghu(change);
-      break;}
-  case'3':
+      if (testList == NULL) {
+          printf("请先初始化库存！\n");
+          system("pause");
+          shanghu(change);
+          break;
+      }
+
+    system("cls");
+    printf("请选择\n");
+    printf("1、查看所有商品\n");
+    printf("2、根据品牌查找商品\n");
+    printf("3、根据名称查找商品\n");
+    printf("4、根据酒水信息查找商品\n");
+    printf("5、保存库存到本地\n");
+    printf("6、退出\n");
+    char m=_getch();
+    switch(m){
+    case'1':
+        system("cls");
+        showStaff(testList);
+        system("pause");
+        shanghu( change);
+        break;
+    case'2':
+        system("cls");
+        showStaff(testList);
+        printf("请输入品牌：\n");
+        char o[20];
+        gets(o);
+        searchBeverageBrand(testList,o);
+        system("pause");
+        shanghu(change);
+        break;
+    case'3':
+        system("cls");
+        showStaff(testList);
+        printf("请输入名称：\n");
+        char p[20];
+        gets(p);
+        searchBeverageName(testList,p);
+        system("pause");
+        shanghu(change);
+        break;
+    case'4':
+        system("cls");
+        showStaff(testList);
+        printf("请输入信息：\n");
+        char j[20];
+        gets(j);
+        searchBeverageInfo(testList,j);
+        system("pause");
+        shanghu(change);
+        break;
+    case'5':
+        writeIntoFile(testList);
+        printf("已成功保存库存至本地\n");
+        system("pause");
+        shanghu(change);
+        break;
+    case'6':
+           shanghu(change);
+           break;
+    default:
+        printf("输入有误，请重新输入\n");
+        system("pause");
+        shanghu(change);
+        break;
+  }
+    break;
+  }
+  case '3':
   {system("cls");
       if (testList == NULL) {
           printf("请先初始化库存！\n");
@@ -892,6 +1009,7 @@ printf("请选择功能列表\n");
         system("pause");
         shanghu(change);
   case'0':
+      if (testList) writeIntoFileAuto(testList);
       break;
   default:
       printf("输入有误，请重新输入\n");
@@ -975,8 +1093,9 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      { printf("密码不能为空\n");
       system("pause");
       break;}
-  signUp(list, hz, im, yh,0,0,0);
-  printf("注册成功");
+  int k=signUp(list, hz, im, yh,0,0,1);
+  if(k==0)
+  printf("注册成功!\n");
   system("pause");
   system("cls");
       break;}
@@ -993,17 +1112,16 @@ int main()
 {
     beverageRecordInit();
     pclientRequestList change=clientRequestListInit();
-pClientshoppingcar car= initshoppingcar();
-   recordInit();
-  pClientLinkedList list=initClient();
-  signUp(list, "0", "0", "0",0,0,-1);
- while(1)
-{system("cls");
- printf("欢迎进入酒水管理系统\n");
- system("pause");
- system("cls");
- denglu(list, car,change);
+    pClientshoppingcar car= initshoppingcar();
+    pClientLinkedList list=initClient();
 
-}
+    while(1){
+        system("cls");
+        printf("欢迎进入酒水管理系统\n");
+        system("pause");
+        system("cls");
+        denglu(list, car,change);
+
+    }
     return 0;
 }

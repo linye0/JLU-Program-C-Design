@@ -28,7 +28,7 @@ typedef struct beverageLinkedList {
 
     int storeNum;
 
-    int price;
+    float price;
 
     char info[1000];
 
@@ -55,7 +55,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // 把node�
 
 void insertLast(pBeverageList list, pBeverageNode node);
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
 
 pBeverageList createFromFile(char* file, pInteractInfo pInfo); // 从文件读入进货记录，存入链表中
 
@@ -86,6 +86,8 @@ void writeIntoFile(pBeverageList list);
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
+
+void writeIntoFileAuto(pBeverageList list);
 //************************************下面都是我的捏******************************************************
 
 typedef struct clientLinkedList {
@@ -111,7 +113,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-void signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
+int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
@@ -131,7 +133,6 @@ int buy(clientNode client, pBeverageList list, int number); // 订购指定数�
 
 void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
 
-void recordInit();//初始化购买记录
 
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info);//记录商户操作并记录导入文件
 
@@ -149,7 +150,11 @@ int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
 
-void printCLientInfo(clientNode p);//输出基本客户信息
+void printClientInfo(clientNode p);
+
+void printCLientArchive(clientNode P);
+
+//输出基本客户信息
 //********************************以上是客户进行购买或者其他活动***********************
 //********************************以下是管理员 客户退换货处理*************************
 typedef struct clientRequest{
@@ -184,6 +189,8 @@ void searchClientBuy_FORREQUEST(char *info,char requestInfo[]);
 pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,char* giveName);
 
 int Check(char* ch);
+
+void reprintClient(pClientLinkedList list);
 
 //*****************************************************************************
 typedef struct clientshoppingcar {
@@ -231,4 +238,7 @@ void searchCarinfo(pClientshoppingcar list, char* username);
 int blank(char judge[]);
 
 int getNum(pClientshoppingcar head);
+
+int check_date(int year, int month, int day);
+
 #endif // MERCHANTANDCLIENT_H

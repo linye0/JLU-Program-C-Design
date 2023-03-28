@@ -6,6 +6,8 @@
 #include "merchantAndClient.h"
 #define fileClientBuyLog "D:\\qt\\qt project\\zhujiemian\\buy.txt"
 #define fileClientAccountLog "D:\\qt\\qt project\\zhujiemian\\client.txt"
+#define fileClientInfoLog "D:\\qt\\qt project\\zhujiemian\\clientInfo.txt"
+#define autoSaveStore "D:\\qt\\qt project\\zhujiemian\\autoSave.txt"
 #define BEVEPATH1 "D:\\qt\\qt project\\zhujiemian\\进货记录.txt"
 #define BEVEPATH2 "D:\\qt\\qt project\\zhujiemian\\写入库存.txt"
 
@@ -28,6 +30,9 @@ void beverageRecordInit()
     fclose(fp);
     char file1[]=BEVEPATH2;
     fp = fopen(file1, "w");
+    fclose(fp);
+    char file2[]=autoSaveStore;
+    fp = fopen(file2, "at+");
     fclose(fp);
 }//用来打表头捏
 
@@ -96,7 +101,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     return list;
 }
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo) {
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo) {
     pBeverageNode node = malloc(sizeof(BeverageNode));
     strcpy(node->brand, brand);
     strcpy(node->name, name);
@@ -207,7 +212,7 @@ void showStaff(pBeverageList list) {
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16d\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16.2f\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
             i++;
         }
     }
@@ -526,13 +531,32 @@ void writeIntoFile(pBeverageList list) {
     if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16d %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+    }
+    fclose(fpW);
+}
+
+void writeIntoFileAuto(pBeverageList list) {
+    char file0[]=autoSaveStore;
+    //beveragePrintTime(file0);
+    FILE* fpW = fopen(file0, "w");
+    if (!fpW) {
+        printf("++++\n");
+        return;
+    }
+    int writePos = 1;
+    pBeverageNode curNode = list;
+    if (curNode == NULL) return;
+    while (curNode->next != NULL) {
+        curNode = curNode->next;
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
     }
     fclose(fpW);
 }
 
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     FILE*fp;
+    char* pEnd;
     fp = fopen(file, "r");
     int line_len = 0;
     char ch[1000] = {0};
@@ -567,7 +591,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
         }
         // 对ch进行分割
 
-        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; char info[100] = {0};
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; float price = 0; char info[100] = {0};
 
         int i = 0;
 
@@ -587,7 +611,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
                     storeNum = atoi(p);
                     break;
                 case 4:
-                    price = atoi(p);
+                    price = strtof(p, &pEnd);
                     break;
                 case 5:
                     strcpy(info, p);
@@ -633,9 +657,80 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
     return head;
 }
 //***************************************linyebyd******************************************************
+//*******************************************************************************************************
 pClientLinkedList initClient(){
     pClientLinkedList head = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     head->next=NULL;
+    FILE *fp=fopen(fileClientInfoLog,"at+");
+    int line_len = 0;
+    char ch[1000] = {0};
+    pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+    head->next=NewClientAccount;
+
+    NewClientAccount->next=NULL;
+    strcpy(NewClientAccount->account,"administer0");
+    strcpy(NewClientAccount->password,"administer0");
+    strcpy(NewClientAccount->username,"administer0");
+    NewClientAccount->saving=0;
+    NewClientAccount->cost=0;
+    NewClientAccount->grade=-1;
+
+    while(fgets(ch, 1000, fp)) {
+        line_len = strlen(ch);
+        if ('\n' == ch[line_len - 1]) {
+            ch[line_len - 1] = '\0';
+            line_len--;
+            if (0 == line_len) {
+                continue;
+            }
+        }
+        // 对ch进行分割
+
+        char account[100] = {0}; char username[100] = {0};char password[100]={0};float cost=0;float saving=0;int grade=0;
+        int i = 0;
+
+        char *p = strtok(ch, " ");
+        while(p){//使用第一个参数为NULL来提取子串
+            switch(i) {
+                case 0:
+                    strcpy(account, p);
+                    break;
+                case 1:
+                    strcpy(username, p);
+                    break;
+                case 2:
+                    strcpy(password, p);
+                    break;
+                case 3:
+                    cost=atof(p);
+                    break;
+                case 4:
+                    saving=atof(p);
+                    break;
+                case 5:
+                    grade=atoi(p);
+                    break;
+            }
+            i++;
+            p=strtok(NULL," ");
+        }
+        pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
+        pClientLinkedList ptr=head;
+        while(ptr->next!=NULL){
+            ptr=ptr->next;
+        }
+        ptr->next=NewClientAccount;
+
+        NewClientAccount->next=NULL;
+        strcpy_s(NewClientAccount->account,strlen(account)+1,account);
+        strcpy_s(NewClientAccount->password,strlen(password)+1,password);
+        strcpy_s(NewClientAccount->username,strlen(username)+1,username);
+        NewClientAccount->saving=saving;
+        NewClientAccount->cost=cost;
+        NewClientAccount->grade=grade;
+
+    }
+
     return head;
 }
 
@@ -649,12 +744,12 @@ int Check(char* ch){
     if (num==0) return -1;
     return 0;
 }
-void signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
+int signUp(pClientLinkedList list, char *account, char* password, char* username,float saving,float cost,int grade){
     pClientLinkedList p0=clientSearch(list,account);
     if(p0!=NULL)
     {
-        printf("用户名重名：（请重新输入");
-        return ;
+        printf("用户名重名：（请重新输入\n");
+        return -1;
     }
     pClientLinkedList NewClientAccount = (pClientLinkedList)malloc(sizeof(ClientLinkedList));
     pClientLinkedList p=list;
@@ -672,6 +767,8 @@ void signUp(pClientLinkedList list, char *account, char* password, char* usernam
     NewClientAccount->grade=grade;
 
     recordClientAccount(NewClientAccount,"注册");
+    printCLientArchive(NewClientAccount);
+    return 0;
 }//重新复制一下 main.c中传参类型要变 我把花费和存款改成了float，头文件里面struct client那个把连个int也改成float。
 clientNode clientSearch(pClientLinkedList list,char *account){
     pClientLinkedList p=list;
@@ -680,6 +777,14 @@ clientNode clientSearch(pClientLinkedList list,char *account){
     }
     return p;
 }//
+
+void printCLientArchive(clientNode p){
+    FILE *fp;
+
+    fp = fopen(fileClientInfoLog,"at+");
+    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    fclose(fp);
+}
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status){
     pClientLinkedList p;
@@ -708,12 +813,25 @@ clientNode signIn(pClientLinkedList list, char* account, char* password,int *sta
     }
     return p;
 }
+void reprintClient(pClientLinkedList list){
+    FILE *fp;
 
+    fp = fopen(fileClientInfoLog,"w");
+    pClientLinkedList p=list;
+    while(p!=NULL)
+    {
+    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    p=p->next;
+    }
+
+    fclose(fp);
+}
 void changeUsername(pClientLinkedList list,char* username,char*newUsername){
     pClientLinkedList p;
     p=clientSearch(list,username);
     strcpy_s(p->username,strlen(newUsername)+1,newUsername);
     printf("用户名已改为%s\n",p->username);
+    reprintClient(list);
     //
 }//
 
@@ -722,6 +840,7 @@ void NewPassword(pClientLinkedList list,char* account,char* newPassword){
     p=clientSearch(list,account);
     strcpy_s(p->password,strlen(newPassword)+1,newPassword);
     printf("已修改密码为：%s\n",p->password);
+    reprintClient(list);
 }//
 
 pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status){
@@ -765,7 +884,7 @@ void deposit(clientNode client, float money){
 
 void clientUpgradeCheck(pClientLinkedList list)
 {
-    if(list->cost>pow(10,2*list->grade))
+    while(list->cost>pow(10,2*list->grade))
     {
         list->grade++;
     }
@@ -775,25 +894,14 @@ int buy(clientNode client, pBeverageList list, int number){
     if(list->storeNum<number)
         return -1;
     list->storeNum-=number;
-    client->cost+=number*list->price*(1-0.06*client->grade);
-    client->saving-=number*list->price*(1-0.06*client->grade);
-    recordClientBuy(client,list,number,-number*list->price*(1-0.06*client->grade),"卖出");
+    client->cost+=number*list->price*(1-0.06*(client->grade-1));
+    client->saving-=number*list->price*(1-0.06*(client->grade-1));
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*(client->grade-1)),"卖出");
     clientUpgradeCheck(client);
     return 0;
 }
 //传参不用变 直接把这段复制粘贴覆盖原来的函数
-void recordInit()
-{
-    FILE *fp;
 
-    fp = fopen( fileClientBuyLog ,"w");
-    fprintf(fp,"%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
-    fclose(fp);
-    fp = fopen(fileClientAccountLog,"w");
-    fprintf(fp,"%10s%10s%10s%10s\n","账号","用户名","行为","时间");
-    fclose(fp);
-
-}//用来打表头捏
 //这段也直接复制粘贴 覆盖掉
 
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info){
@@ -886,7 +994,7 @@ int searchClientBuy(char *info)
     return sum;
 }
 //改过了 复制粘贴 传参不变
-void printCLientInfo(clientNode p)
+void printClientInfo(clientNode p)
 {
     char account[]="账号";
     char username[]="用户名";
@@ -1028,7 +1136,7 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteract
             p=p->next;
          }
         if(operate==1){
-            while(p->pc->cost-p->cost<pow(10,2*p->pc->grade))
+            while(p->pc->cost+p->cost<pow(10,2*p->pc->grade)&&p->pc->grade>1)
             {
                 p->pc->grade--;
             }
@@ -1270,4 +1378,66 @@ int getNum(pClientshoppingcar head){
     p = p->next;
 }
     return cnt;
+}
+int check_date(int year, int month, int day)
+{
+        int monthDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        if ( year < 0 )
+        {
+                printf("输入的年份[%d]错误\n", year);
+                return -1;
+        }
+
+        if ( month < 1 || month > 12 )
+        {
+                printf("输入的月份[%d]错误\n", month);
+                return -1;
+        }
+
+        if ( month == 2 )
+        {
+                // 判断如果是闰年,则修改二月的monthDays[1]值为29
+                if ( (year % 400 == 0) || \
+                     (year % 100 != 0 && year % 4 == 0)
+                   )
+                {
+                        monthDays[1] = 29;
+                }
+        }
+
+        if ( day < 1 || day > monthDays[month-1] )
+        {
+                printf("输入的日子[%d]错误\n", day);
+                return -1;
+        }
+
+        return 0;
+}
+
+int is_valid_date(const char *startDate)
+{
+        int start_year = 0;
+        int start_month = 0;
+        int start_day = 0;
+
+        if ( strlen(startDate) > 0 )
+        {
+                int count = 0;
+                count = sscanf(startDate, "%4d-%2d-%2d", &start_year, &start_month, &start_day);
+                if ( count != 3 )
+                {
+                        printf("输入格式错误\n");
+                        return -1;
+                }
+
+                if ( 0 != check_date(start_year, start_month, start_day) )
+                {
+                        return -1;
+                }
+
+                printf("输入成功\n");
+        }
+
+        return 0;
 }
