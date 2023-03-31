@@ -8,14 +8,14 @@
 pBeverageList testList = NULL;
 pInteractInfo pInfo = NULL;
 
-char shuru(a){
+char* shuru(char* a){
     while(1){
          printf("请输入日期:\n");
 
     gets(a);
         if(strlen(a)==0)
       { printf("请输入正确的日期\n");
-            shuru();
+
         }
         int b=is_valid_date(a);
       system("pause");
@@ -613,7 +613,7 @@ printf("请选择功能列表\n");
       gets(fd);
       printf("请输入进货时间\n");
       char fg[20];
-      fg==shuru(fg);
+      shuru(fg);
       printf("请输入商品数量\n");
       float k_;
       int k;
