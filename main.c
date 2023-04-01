@@ -23,7 +23,21 @@ char* shuru(char* a){
        break;
  }return a;
 }
+int  check(){
+    int a=0;
+    while(1){
+        printf("请输入数字:\n");
+      scanf_s("%d",&a);
+        char ch[20];
+       gets(ch);
 
+        if(strlen(ch)==0&&a>0)
+         return a;
+        else
+            printf("请输入正确的数字\n");
+      system("pause");
+ }
+}
 int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pclientRequestList change){
     if (testList == NULL) {
         printf("请等待酒水商开张！\n");
@@ -615,15 +629,8 @@ printf("请选择功能列表\n");
       char fg[20];
       shuru(fg);
       printf("请输入商品数量\n");
-      float k_;
-      int k;
-      scanf("%f",&k_);
-      k = (int)k_;
-      if (k < 0) {
-          printf("请输入正确的数字!\n");
-          system("pause");
-          break;
-      }
+int k;
+      k=check();
       printf("请输入商品价格\n");
       float l;
       scanf("%f",&l);
