@@ -32,6 +32,7 @@ typedef struct beverageLinkedList {
 
     char info[1000];
 
+    int sales;
     struct beverageLinkedList* next;
 
 }*pBeverageList, BeverageList;
@@ -100,6 +101,8 @@ typedef struct clientLinkedList {
 
     float saving;
 
+    float costMonthly;
+
     int grade;//-1/123对应 administrator 和客户等级一二三
 
     struct clientLinkedList* next;
@@ -111,7 +114,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
+int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade,int costMonthly); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
@@ -127,7 +130,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
 //*******************************以下是客户进行购买活动*****************************
 void deposit(clientNode client, float money); // 存款
 
-int buy(clientNode client, pBeverageList list, int number); // 订购指定数量的酒水
+int buy(clientNode client, pBeverageList list, int number,pClientLinkedList list0); // 订购指定数量的酒水
 
 void clientUpgradeCheck(pClientLinkedList list);//除了一个administator 之外其他都是普通商户即可
 
@@ -189,6 +192,33 @@ pBeverageList searchBeverage_FORREQUEST(pBeverageList list , char* giveBrand,cha
 int Check(char* ch);
 
 void reprintClient(pClientLinkedList list);
+
+//这里是展示和查找、排序
+void showClientAll(pClientLinkedList list);
+
+void showClientTop(pClientLinkedList list);
+
+int rankClientCost(pClientLinkedList list,int k);
+
+int rankClientCostMonthly(pClientLinkedList list,int k);
+
+int rankClientUsername(pClientLinkedList list,int k);
+
+int rankClientAccount(pClientLinkedList list,int k);
+
+
+int  searchClientCost(pClientLinkedList list,float max,float min);
+
+int  searchClientCostMOnthly(pClientLinkedList list,float max,float min);
+
+int  searchClientGrade(pClientLinkedList list,int max,int min);
+
+int  searchClientName(pClientLinkedList list,char* name);
+
+int  searchClientAccount(pClientLinkedList list,char* account);
+
+//下面是改更新时间的事情
+//先改属性。
 
 //*****************************************************************************
 typedef struct clientshoppingcar {

@@ -115,7 +115,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     if(nm>0&&strlen(o) == 0){
     if(a->saving>=(p->price*nm))
     {
-    int k=buy(a, p, nm);
+    int k=buy(a, p, nm, list);
     if(k<0){
         printf("抱歉，库存不够：（\n");
         system("pause");
@@ -478,7 +478,7 @@ kehu(a,list,car, change);
          pClientshoppingcar p3=finding(car, p);
          pBeverageNode p4=findname(testList, p3->name);
          if(a->saving>=(p3->cost))
-         {buy(a,p4,p3->amount);
+         {buy(a,p4,p3->amount,list);
           reduceSaving(pInfo, p3->cost);
              deleteshoppingcar(car,p3->name,&status);
              printf("购买成功\n");
@@ -518,7 +518,7 @@ kehu(a,list,car, change);
     }return 0;
 }
 
-int shanghu(pclientRequestList change){
+int shanghu(pclientRequestList change,pClientLinkedList list){
     system("cls");
 printf("请选择功能列表\n");
   printf("1.进货\n");
@@ -530,6 +530,7 @@ printf("请选择功能列表\n");
   printf("7.初始化库存\n");
   printf("8.设定资金\n");
   printf("9.查询资金\n");
+  printf("a.查看用户相关数据\n");
   printf("0.返回\n");
   char d =_getch();
   switch(d)
@@ -539,7 +540,7 @@ printf("请选择功能列表\n");
       if (pInfo == NULL) {
           printf("请先设定资金！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       printf("请选择进货方式\n");
@@ -552,7 +553,7 @@ printf("请选择功能列表\n");
           printf("请先初始化库存！\n");
           getchar();
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
       }
       system("cls");
       printf("请输入品牌\n");
@@ -594,19 +595,19 @@ printf("请选择功能列表\n");
           break;
       default:printf("输入错误，请重新输入\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;}
       showStaff(testList);
       system("pause");
       system("cls");
-     shanghu(change);
+     shanghu(change,list);
       break;}
   case'2':
   {system("cls");
       if (testList == NULL) {
           printf("请先初始化库存！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       showStaff(testList);
@@ -625,7 +626,7 @@ printf("请选择功能列表\n");
         system("cls");
         showStaff(testList);
         system("pause");
-        shanghu( change);
+        shanghu( change,list);
          break;
     case'2':
         system("cls");
@@ -635,7 +636,7 @@ printf("请选择功能列表\n");
         gets(o);
         searchBeverageBrand(testList,o);
         system("pause");
-        shanghu(change);
+        shanghu(change,list);
         break;
     case'3':
         system("cls");
@@ -645,7 +646,7 @@ printf("请选择功能列表\n");
         gets(p);
         searchBeverageName(testList,p);
         system("pause");
-        shanghu(change);
+        shanghu(change,list);
         break;
     case'4':
         system("cls");
@@ -655,18 +656,18 @@ printf("请选择功能列表\n");
         gets(j);
         searchBeverageInfo(testList,j);
         system("pause");
-        shanghu(change);
+        shanghu(change,list);
         break;
     case'5':
         writeIntoFile(testList);
         printf("已成功保存库存至本地\n");
     case'6':
-           shanghu(change);
+           shanghu(change,list);
            break;
     default:
         printf("输入有误，请重新输入\n");
         system("pause");
-        shanghu(change);
+        shanghu(change,list);
         break;
   }
 
@@ -676,7 +677,7 @@ printf("请选择功能列表\n");
       if (testList == NULL) {
           printf("请先初始化库存！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       system("cls");
@@ -699,24 +700,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(change);
+             shanghu(change,list);
               break;
           case'2':
               testList = sortBeverageTime(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(change);
+             shanghu(change,list);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-            shanghu(change);
+            shanghu(change,list);
               break;
           }
           system("pause");
-           shanghu(change);
+           shanghu(change,list);
           break;
       case'2':
           system("cls");
@@ -730,24 +731,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(change);
+             shanghu(change,list);
               break;
           case'2':
               testList = sortBeverageBrand(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-           shanghu(change);
+           shanghu(change,list);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-           shanghu(change);
+           shanghu(change,list);
               break;
           }
           system("pause");
-         shanghu(change);
+         shanghu(change,list);
           break;
       case'3':
           system("cls");
@@ -761,24 +762,24 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-              shanghu(change);
+              shanghu(change,list);
               break;
           case'2':
               testList = sortBeverageStoreNum(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-               shanghu(change);
+               shanghu(change,list);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-            shanghu(change);
+            shanghu(change,list);
               break;
           }
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       case'4':
           system("cls");
@@ -792,29 +793,29 @@ printf("请选择功能列表\n");
               showStaff(testList);
               system("pause");
               system("cls");
-             shanghu(change);
+             shanghu(change,list);
               break;
           case'2':
               testList = sortBeveragePrice(testList, -1);
               showStaff(testList);
               system("pause");
               system("cls");
-              shanghu(change);
+              shanghu(change,list);
               break;
           default:
               printf("输入有误");
               system("pause");
               system("cls");
-             shanghu(change);
+             shanghu(change,list);
               break;
           }
           system("pause");
-        shanghu(change);
+        shanghu(change,list);
           break;
       }
       system("pause");
 
-     shanghu(change);
+     shanghu(change,list);
       break;
   }
   case'4':
@@ -822,13 +823,13 @@ printf("请选择功能列表\n");
       if (testList == NULL) {
           printf("请先初始化库存！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       if (isEmpty(testList)) {
           printf("库存为空！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       showStaff(testList);
@@ -847,14 +848,14 @@ printf("请选择功能列表\n");
       system("cls");
       showStaff(testList);
       system("pause");
-      shanghu(change);
+      shanghu(change,list);
       break;}
   case'5':
   {system("cls");
       if (testList == NULL) {
           printf("请先初始化库存！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       showStaff(testList);
@@ -864,7 +865,7 @@ printf("请选择功能列表\n");
            {
                printf("请输入正确的编号\n");
                system("pause");
-               shanghu(change);
+               shanghu(change,list);
               break;
            }
            else{
@@ -874,7 +875,7 @@ printf("请选择功能列表\n");
       changeBeverageInfo(testList, bi, ke);
       printf("修改成功\n");
       system("pause");
-       shanghu(change);
+       shanghu(change,list);
       break;}}
    case'6':
       system("cls");
@@ -883,7 +884,7 @@ printf("请选择功能列表\n");
       {
           printf("当前无退货申请\n");
           system("pause");
-           shanghu(change);
+           shanghu(change,list);
           break;
       }
       else{
@@ -906,14 +907,14 @@ printf("请选择功能列表\n");
       clientRequest_POP(change,v,y, pInfo);
       printf("操作成功\n");
       system("pause");
-      shanghu(change);
+      shanghu(change,list);
       break;}
   case'7':
       system("cls");
       if (pInfo == NULL) {
           printf("请先设定资金！\n");
           system("pause");
-          shanghu(change);
+          shanghu(change,list);
           break;
       }
       printf("请输入初始化库存地址\n");
@@ -921,7 +922,7 @@ printf("请选择功能列表\n");
       gets(o);
       testList= createFromFile(o, pInfo);
       system("pause");
-      shanghu(change);
+      shanghu(change,list);
       break;
   case'8':
       system("cls");
@@ -939,11 +940,11 @@ printf("请选择功能列表\n");
           pInfo = initInteractInfo(g);
           printf("充值成功\n");
           system("pause");
-           shanghu(change);}
+           shanghu(change,list);}
       else{gets(c);
           printf("请输入正确的金额\n");
            system("pause");
-          shanghu(change);}
+          shanghu(change,list);}
       break;
   case'9':
         system("cls");
@@ -953,14 +954,154 @@ printf("请选择功能列表\n");
             printf("请先设定起始资金!\n");
         }
         system("pause");
-        shanghu(change);
+        shanghu(change,list);
   case'0':
+      break;
+  case'a':
+      system("cls");
+      printf("1.对商户进行排序\n");
+      printf("2.对商户进行查询\n");
+      char ch=_getch();
+      switch(ch){
+        case'1':
+            system("cls");
+            printf("1.按历史消费金额排序\n");
+            printf("2.按当月消费金额排序\n");
+            printf("3.按账号字典序排序\n");
+            printf("4.按用户名字典序排序\n");
+            char st=_getch();
+            printf("**************\n");
+            printf("1.正序/2.倒序\n");
+            char t=_getch();
+            int k=0;
+            if(t=='1') k=1; else k=-1;
+            printf("********************\n");
+            printf("1.输出前三项/2.输出全部\n");
+            t=_getch();
+            switch(st){
+                case'1':
+
+                    if(rankClientCost(list,k)==-1)
+                        printf("对不起 暂没有用户注册\n");
+                    else{
+                        if(t=='1') showClientTop(list);else showClientAll(list);
+                    }
+                    system("pause");
+                    break;
+                case'2':
+                    if(rankClientCostMonthly(list,k)==-1)
+                        printf("对不起 暂没有用户注册\n");
+                    else{
+                        if(t=='1') showClientTop(list);else showClientAll(list);
+                    }
+                    system("pause");
+                    break;
+                case'3':
+                    if(rankClientAccount(list,k)==-1)
+                        printf("对不起 暂没有用户注册\n");
+                    else{
+                        if(t=='1') showClientTop(list);else showClientAll(list);
+                    }
+                    system("pause");
+                    break;
+                case'4':
+                    if(rankClientUsername(list,k)==-1)
+                        printf("对不起 暂没有用户注册\n");
+                    else{
+                        if(t=='1') showClientTop(list);else showClientAll(list);
+                    }
+                     system("pause");
+                    break;
+                default:
+                    printf("输入有误，请重新输入\n");
+                    system("pause");
+                    break;
+            }
+
+            break;
+        case'2':
+            system("cls");
+            printf("1.按历史消费范围查询\n");
+            printf("2.按当月消费范围查询\n");
+            printf("3.按等级范围查询\n  （制定单一等级即上下限相同输入）\n");
+            printf("4.按用户名查询\n");
+            printf("5.按账号查询\n");
+            char ch=_getch();
+            switch(ch){
+                case'1':
+                    printf("请输入上下限\n");
+                    float max=0;float min=0;
+                    scanf("%f%f",&max,&min);
+                    if(max<min){
+                        float t=max;
+                        max=min;
+                        min=t;
+                    }
+                    int n=searchClientCost(list,max,min);
+                    printf("共有%d位用户满足需求\n",n);
+                    system("pause");
+                    break;
+                case'2':
+                    printf("请输入上下限\n");
+                    float max1=0;float min1=0;
+                    scanf("%f%f",&max1,&min1);
+                    if(max1<min1){
+                        float t=max1;
+                        max1=min1;
+                        min1=t;
+                    }
+                    int n1=searchClientCostMOnthly(list,max1,min1);
+                    printf("共有%d位用户满足需求\n",n1);
+                     system("pause");
+                    break;
+                case'3':
+                    printf("请输入上下限\n");
+                    float max2=0;float min2=0;
+                    scanf("%f%f",&max2,&min2);
+                    if(max2<min2){
+                        float t=max2;
+                        max2=min2;
+                        min2=t;
+                    }
+                    int n5=searchClientGrade(list,max2,min2);
+                    printf("共有%d位用户满足需求\n",n5);
+                    system("pause");
+                    break;
+                case'4':
+                    printf("请输入关键字\n");
+
+                    char str[200]={0};
+                    gets(str);
+                    int n2=searchClientAccount(list,str);
+                    printf("共有%d位用户满足需求\n",n2);
+                     system("pause");
+                    break;
+                case'5':
+                    printf("请输入关键字\n");
+                    char str1[200]={0};
+                    gets(str1);
+                    int n3=searchClientAccount(list,str1);
+                    printf("共有%d位用户满足需求\n",n3);
+                    system("pause");
+                    break;
+                default:
+                    printf("输入有误，请重新输入\n");
+                     system("pause");
+                    break;
+          }
+        default:
+            printf("输入有误，请重新输入\n");
+
+            break;
+      }
+
+      shanghu(change,list);
       break;
   default:
       printf("输入有误，请重新输入\n");
       system("pause");
       system("cls");
-       shanghu(change);
+       shanghu(change,list);
       break;}
   return 0;
       }
@@ -991,7 +1132,7 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      system("pause");
      break;
  case 4:
-  shanghu(change);
+  shanghu(change,list);
   break;
  case -1:
     system("pause");
@@ -1038,7 +1179,7 @@ int denglu(pClientLinkedList list , pClientshoppingcar car, pclientRequestList c
      { printf("密码不能为空\n");
       system("pause");
       break;}
-  int k=signUp(list, hz, im, yh,0,0,1);
+  int k=signUp(list, hz, im, yh,0,0,1,0);
   if(k==0)
   printf("注册成功!\n");
   system("pause");
