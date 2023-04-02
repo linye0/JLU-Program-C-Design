@@ -28,11 +28,12 @@ typedef struct beverageLinkedList {
 
     int storeNum;
 
-    int price;
+    float price;
 
     char info[1000];
 
     int sales;
+
     struct beverageLinkedList* next;
 
 }*pBeverageList, BeverageList;
@@ -56,7 +57,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // 把node插
 
 void insertLast(pBeverageList list, pBeverageNode node);
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, int price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo); // 根据参数创建一个新的酒水结点
 
 pBeverageList createFromFile(char* file, pInteractInfo pInfo); // 从文件读入进货记录，存入链表中
 
@@ -87,6 +88,8 @@ void writeIntoFile(pBeverageList list);
 pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
+
+void writeIntoFileAuto(pBeverageList list);
 //************************************下面都是我的捏******************************************************
 
 typedef struct clientLinkedList {
@@ -101,9 +104,9 @@ typedef struct clientLinkedList {
 
     float saving;
 
-    float costMonthly;
-
     int grade;//-1/123对应 administrator 和客户等级一二三
+
+    float costMonthly;
 
     struct clientLinkedList* next;
 
@@ -114,7 +117,7 @@ typedef pClientLinkedList clientNode;
 
 pClientLinkedList initClient(); // 初始化，创建空链表
 
-int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade,int costMonthly); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
+int signUp(pClientLinkedList list, char* account, char* password, char* username,float saving,float cost,int grade); // 将注册信息写入链表//更改了一下多了一个saving//这里还有一个重名的问题 我先输出了  到时候跟下面的函数一样返回一个status来判断是否账户创建成功
 
 clientNode signIn(pClientLinkedList list, char* account, char* password,int *status);// 登录，运用了Search查找找账户 返回值时数据库（链表）中对应的结点，在登陆操作之后，所有客户的操作都是对该结点进行操作//带回三种状态 登录成功1 密码错误0 以及找不到账号-1//管理员可以设置一个机器密码 有这个东西才能注册管理员
 
@@ -193,7 +196,6 @@ int Check(char* ch);
 
 void reprintClient(pClientLinkedList list);
 
-//这里是展示和查找、排序
 void showClientAll(pClientLinkedList list);
 
 void showClientTop(pClientLinkedList list);
@@ -217,8 +219,6 @@ int  searchClientName(pClientLinkedList list,char* name);
 
 int  searchClientAccount(pClientLinkedList list,char* account);
 
-//下面是改更新时间的事情
-//先改属性。
 
 //*****************************************************************************
 typedef struct clientshoppingcar {
@@ -245,6 +245,8 @@ typedef struct clientshoppingcar {
 
 typedef pClientshoppingcar shopNode;
 
+int is_valid_date(const char *startDate);
+
 pClientshoppingcar initshoppingcar();//初始化，创建链表
 
 void addshoppingcar(pClientshoppingcar Testlist,pClientLinkedList list,pBeverageList testList,int amount);//增加购物车内容
@@ -266,4 +268,7 @@ void searchCarinfo(pClientshoppingcar list, char* username);
 int blank(char judge[]);
 
 int getNum(pClientshoppingcar head);
+
+int check_date(int year, int month, int day);
+
 #endif // MERCHANTANDCLIENT_H
