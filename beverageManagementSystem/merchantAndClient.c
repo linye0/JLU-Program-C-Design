@@ -4,13 +4,13 @@
 #include <math.h>
 #include <time.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\CSdiy\\Data\\buy.txt"
-#define fileClientAccountLog "D:\\CSdiy\\Data\\client.txt"
-#define fileClientInfoLog "D:\\CSdiy\\Data\\clientInfo.txt"
-#define autoSaveStore "D:\\CSdiy\\Data\\autoSave.txt"
-#define BEVEPATH1 "D:\\CSdiy\\Data\\jinhuojilu.txt"
-#define BEVEPATH2 "D:\\CSdiy\\Data\\xierukucun.txt"
-
+#define fileClientBuyLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\client.txt"
+#define fileClientInfoLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\clientInfo.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\进货记录.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\写入库存.txt"
+#define PINFOPATH "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\pInfo.txt"
+#define autoSaveStore "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\autoSave.txt"
 void beveragePrintTime(char* file){
     FILE *fp;
     fp = fopen(file,"at+");
@@ -33,6 +33,11 @@ void beverageRecordInit()
     fclose(fp);
     char file2[]=autoSaveStore;
     fp = fopen(file2, "at+");
+    fclose(fp);
+    char file3[]=PINFOPATH;
+    fp = fopen(file3, "at+");
+    char ch=fgetc(fp);
+    if(ch==EOF) fprintf(fp, "0");
     fclose(fp);
 }//用来打表头捏
 
@@ -101,7 +106,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i) {
     return list;
 }
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo) {
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo, int sales) {
     pBeverageNode node = malloc(sizeof(BeverageNode));
     strcpy(node->brand, brand);
     strcpy(node->name, name);
@@ -110,6 +115,7 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     node->price = price;
     strcpy(node->info, info);
     node->next = NULL;
+    node->sales = sales;
     if (!reduceSaving(pInfo, storeNum * price)) return NULL;
     return node;
 }
@@ -150,7 +156,7 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
         }
         // 对ch进行分割
 
-        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; char info[100] = {0};
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int price = 0; int sales = 0; char info[100] = {0};
 
         int i = 0;
 
@@ -175,11 +181,13 @@ pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
                 case 5:
                     strcpy(info, p);
                     break;
+                case 6:
+                    sales = atoi(p);
             }
             i++;
         }
 
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo, sales);
 
         if (newNode == NULL) return head;
 
@@ -208,18 +216,191 @@ void showStaff(pBeverageList list) {
     else
     {
         printf("\n当前库存如下:\n");
-        printf("%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息");
+        printf("%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s\t%-16s%-16s%-16s\n", "序号", "品牌", "酒水名", "进货时间", "存量", "价格", "信息", "销量", "销售额");
         while (p)  //循环将各个节点值输出
         {
             p = p->next;//第一是垃圾值   跳过
-            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16.2f\t%-16s\t\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info);
+            if(p) printf("%-16d\t%-16s\t%-16s\t%-16s\t%-16d\t%-16.2f\t%-16s\t%-16d\t%-16.2f\n", i, p->brand, p->name, p->time, p->storeNum, p->price, p->info, p->sales, p->sales * p->price);
             i++;
         }
     }
 }
 
+void showData(pBeverageList list) {
+    pBeverageList showSaleList = sortBeverageSalesNoDisplay(list, 1);
+    int pos = 1;
+    pBeverageNode curNode = showSaleList->next;
+    while (pos <= 3 && curNode != NULL) {
+        printf("本店销量的第%d名是:", pos);
+        printf("%-16s\n", curNode->name);
+        printf("它的销量是：%-8d", curNode->sales);
+        int maxClientLevel = 0;
+        int maxClientNum = 0;
+        for (int i = 0; i < 100; i++) {
+            if ((curNode->level)[i] > maxClientNum) {
+                maxClientNum = (curNode->level)[i];
+                maxClientLevel = i;
+            }
+        }
+        printf("该酒水最受到等级为%d的用户的喜爱\n", maxClientLevel);
+        printf("该类用户对该类酒水的累计购买量是%d\n", maxClientNum);
+        curNode = curNode->next;
+        pos++;
+    }
+}
+
+pBeverageList sortBeverageSales(pBeverageList list, int key) {
+    // 新建一个储存排序后结点的链表
+    pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
+    retList = (pBeverageList)malloc(sizeof(BeverageList));
+    retList->next = NULL;
+    insertPos = retList;
+    p = maxNode = list->next;
+    prevP = prevMaxNode = NULL;
+    while (p) {
+        maxNode = p;
+        prevP = prevMaxNode = NULL;
+        if (p->next == NULL) {
+            // 如果此时待排序链表里面只有p一个结点，就直接把p插入
+            insertPos->next = p;
+            p->next = NULL;
+            p = p->next;
+        } else {
+            pBeverageNode cur = p;
+            while (cur->next) {
+                if ((cur->next->sales - maxNode->sales) * key > 0) {
+                    maxNode = cur->next;
+                    prevMaxNode = cur;
+                }
+                cur = cur->next;
+                // 找到最大结点，令maxNode指向它，prevMaxNode指向它的前一个结点
+            }
+            // 插入步骤
+            // 如果prevMaxNode == NULL，说明最大结点就是p结点，此时直接将p插入链表，并且让p指向下一个结点
+            if (prevMaxNode == NULL) {
+                pBeverageNode nextP = p->next;
+                p->next = NULL;
+                insertPos->next = p;
+                p = nextP;
+            } else {
+                // 如果prevMaxNode != NULL，将maxNode插入链表，不用将p后移
+                prevMaxNode->next = maxNode->next;
+                maxNode->next = NULL;
+                insertPos->next = maxNode;
+            }
+            // 将p和insertPos后移一位
+            insertPos = insertPos->next;
+        }
+    }
+    char* outStr = {0};
+    if (key > 0) {
+        outStr = "降序";
+    } else {
+        outStr = "升序";
+    }
+    printf("\n根据进货时间关键词对酒水进行了%s排序\n", outStr);
+    return retList;
+}
 
 
+pBeverageList sortBeverageSalesNoDisplay(pBeverageList list, int key) {
+    // 新建一个储存排序后结点的链表
+    pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
+    retList = (pBeverageList)malloc(sizeof(BeverageList));
+    retList->next = NULL;
+    insertPos = retList;
+    p = maxNode = list->next;
+    prevP = prevMaxNode = NULL;
+    while (p) {
+        maxNode = p;
+        prevP = prevMaxNode = NULL;
+        if (p->next == NULL) {
+            // 如果此时待排序链表里面只有p一个结点，就直接把p插入
+            insertPos->next = p;
+            p->next = NULL;
+            p = p->next;
+        } else {
+            pBeverageNode cur = p;
+            while (cur->next) {
+                if ((cur->next->sales - maxNode->sales) * key > 0) {
+                    maxNode = cur->next;
+                    prevMaxNode = cur;
+                }
+                cur = cur->next;
+                // 找到最大结点，令maxNode指向它，prevMaxNode指向它的前一个结点
+            }
+            // 插入步骤
+            // 如果prevMaxNode == NULL，说明最大结点就是p结点，此时直接将p插入链表，并且让p指向下一个结点
+            if (prevMaxNode == NULL) {
+                pBeverageNode nextP = p->next;
+                p->next = NULL;
+                insertPos->next = p;
+                p = nextP;
+            } else {
+                // 如果prevMaxNode != NULL，将maxNode插入链表，不用将p后移
+                prevMaxNode->next = maxNode->next;
+                maxNode->next = NULL;
+                insertPos->next = maxNode;
+            }
+            // 将p和insertPos后移一位
+            insertPos = insertPos->next;
+        }
+    }
+    return retList;
+}
+
+pBeverageList sortBeverageSaleMoney(pBeverageList list, int key) {
+    // 新建一个储存排序后结点的链表
+    pBeverageList retList, insertPos, p, maxNode, prevP, prevMaxNode;
+    retList = (pBeverageList)malloc(sizeof(BeverageList));
+    retList->next = NULL;
+    insertPos = retList;
+    p = maxNode = list->next;
+    prevP = prevMaxNode = NULL;
+    while (p) {
+        maxNode = p;
+        prevP = prevMaxNode = NULL;
+        if (p->next == NULL) {
+            // 如果此时待排序链表里面只有p一个结点，就直接把p插入
+            insertPos->next = p;
+            p->next = NULL;
+            p = p->next;
+        } else {
+            pBeverageNode cur = p;
+            while (cur->next) {
+                if ((cur->next->sales * cur->next->price - maxNode->sales * maxNode->price) * key > 0) {
+                    maxNode = cur->next;
+                    prevMaxNode = cur;
+                }
+                cur = cur->next;
+                // 找到最大结点，令maxNode指向它，prevMaxNode指向它的前一个结点
+            }
+            // 插入步骤
+            // 如果prevMaxNode == NULL，说明最大结点就是p结点，此时直接将p插入链表，并且让p指向下一个结点
+            if (prevMaxNode == NULL) {
+                pBeverageNode nextP = p->next;
+                p->next = NULL;
+                insertPos->next = p;
+                p = nextP;
+            } else {
+                // 如果prevMaxNode != NULL，将maxNode插入链表，不用将p后移
+                prevMaxNode->next = maxNode->next;
+                maxNode->next = NULL;
+                insertPos->next = maxNode;
+            }
+            // 将p和insertPos后移一位
+            insertPos = insertPos->next;
+        }
+    }
+    char* outStr = {0};
+    if (key > 0) {
+        outStr = "降序";
+    } else {
+        outStr = "升序";
+    }
+    printf("\n根据进货时间关键词对酒水进行了%s排序\n", outStr);
+    return retList;
+}
 
 pBeverageList sortBeverageTime(pBeverageList list, int key) {
     // 新建一个储存排序后结点的链表
@@ -531,7 +712,7 @@ void writeIntoFile(pBeverageList list) {
     if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s %-16d\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info, curNode->sales);
     }
     fclose(fpW);
 }
@@ -549,7 +730,7 @@ void writeIntoFileAuto(pBeverageList list) {
     if (curNode == NULL) return;
     while (curNode->next != NULL) {
         curNode = curNode->next;
-        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info);
+        fprintf(fpW, "%-16d %-16s %-16s %-16s %-16d %-16.2f %-16s %-16d\n", writePos++, curNode->brand, curNode->name, curNode->time, curNode->storeNum, curNode->price, curNode->info, curNode->sales);
     }
     fclose(fpW);
 }
@@ -591,7 +772,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
         }
         // 对ch进行分割
 
-        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; float price = 0; char info[100] = {0};
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int sales = 0; float price = 0; char info[100] = {0};
 
         int i = 0;
 
@@ -616,6 +797,9 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
                 case 5:
                     strcpy(info, p);
                     break;
+                case 6:
+                    sales = atoi(p);
+                    break;
             }
 
             i++;
@@ -625,7 +809,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo) {
 
         writePos++;
 
-        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo);
+        pBeverageNode newNode = newBeverageNode(brand, name, time, storeNum, price, info, pInfo, sales);
 
         if (newNode == NULL) return head;
 
@@ -818,9 +1002,10 @@ void reprintClient(pClientLinkedList list){
 
     fp = fopen(fileClientInfoLog,"w");
     pClientLinkedList p=list;
+    clientUpgradeCheck(list);
     while(p!=NULL)
     {
-    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    fprintf(fp,"%15s%15s%15s%15.2f%15.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
     p=p->next;
     }
 
@@ -884,20 +1069,91 @@ void deposit(clientNode client, float money){
 
 void clientUpgradeCheck(pClientLinkedList list)
 {
-    while(list->cost>pow(10,2*list->grade))
+    pClientLinkedList p=list;
+    while(p!=NULL)
     {
-        list->grade++;
+        p->costMonthly=0;
+        if(p->grade!=-1)
+        p->grade=1;
+        p=p->next;
+    }//清空
+
+    //从文档中读入
+    FILE *fp=fopen(fileClientBuyLog,"at+");
+    char ch[200]={0};
+    int line_len=0;
+    time_t tmpcal_ptr;
+    struct tm *tmp_ptr = NULL;
+    time(&tmpcal_ptr);
+    tmp_ptr = localtime(&tmpcal_ptr);
+    while(fgets(ch, 1000, fp)) {
+        line_len = strlen(ch);
+        if ('\n' == ch[line_len - 1]) {
+            ch[line_len - 1] = '\0';
+            line_len--;
+            if (0 == line_len) {
+                continue;
+            }
+        }
+        // 对ch进行分割
+
+        char account[100] = {0}; int costMonthly=0;char time1[200]={0};
+        pClientLinkedList ptr=NULL;
+        int i = 0;
+
+        char *str = strtok(ch, " ");
+        while(str){//使用第一个参数为NULL来提取子串
+            switch(i) {
+                case 0:
+                    strcpy(account, str);
+                    ptr=clientSearch(list,account);
+                    break;
+
+                case 6:
+                    costMonthly=atof(str);
+                    break;
+                case 7:
+                    strcpy(time1,str);
+                    break;
+                default:
+                    break;
+            }
+            i++;
+            str=strtok(NULL," ");
+        }
+       int year=atoi(strtok(time1,"."));int month=atoi(strtok(NULL,"."));
+       //gradeCheck;
+       if((year==tmp_ptr->tm_year+1900)&&(month==tmp_ptr->tm_mon+1))
+       {
+           ptr->costMonthly-=costMonthly;
+           if(costMonthly<0){
+                while(ptr->costMonthly>pow(10,2*list->grade))
+                {
+                    list->grade++;
+                }
+           }else{
+               while(ptr->costMonthly<pow(10,2*list->grade)&&(ptr->grade>1))
+               {
+                   list->grade--;
+               }
+           }
+       }
     }
+
 }
 
-int buy(clientNode client, pBeverageList list, int number){
+int buy(clientNode client, pBeverageList list, int number,pClientLinkedList list0){
     if(list->storeNum<number)
         return -1;
+    clientUpgradeCheck(list0);
     list->storeNum-=number;
+    list->sales+=number;
+    (list->level)[client->grade] += number;
+    clientUpgradeCheck(list0);
     client->cost+=number*list->price*(1-0.06*(client->grade-1));
     client->saving-=number*list->price*(1-0.06*(client->grade-1));
     recordClientBuy(client,list,number,-number*list->price*(1-0.06*(client->grade-1)),"卖出");
-    clientUpgradeCheck(client);
+    clientUpgradeCheck(list0);
     return 0;
 }
 //传参不用变 直接把这段复制粘贴覆盖原来的函数
@@ -907,7 +1163,7 @@ int buy(clientNode client, pBeverageList list, int number){
 void recordClientBuy(clientNode client, pBeverageList list, int number,float cost,char* info){
     FILE *fp;
     fp = fopen(fileClientBuyLog,"at+");
-    fprintf(fp,"%10s%10s%10s%10s%10d%10d%10.2f",client->account,client->username,list->brand,list->name,list->price,number,cost);
+    fprintf(fp,"%10s%10s%10s%10s%10.2f%10d%10.2f",client->account,client->username,list->brand,list->name,list->price,number,cost);
     fclose(fp);
     printTime(fileClientBuyLog);//输出一下时间
     fp = fopen(fileClientBuyLog,"at+");
@@ -998,21 +1254,23 @@ void printClientInfo(clientNode p)
 {
     char account[]="账号";
     char username[]="用户名";
-    char cost[]="已消费金额";
+    char cost[]="历史消费金额";
     char saving[]="账户储蓄金";
     char grade[]="用户等级";
+    char costMonthly[]="本月已花销";
     char grade0[]="管理员";
-    printf("*********************\n");
-    printf("%10s%10s\n",account,p->account);
-    printf("%10s%10s\n",username,p->username);
-    printf("%10s%10.2f\n",cost,p->cost);
-    printf("%10s%10.2f\n",saving,p->saving);
+    clientUpgradeCheck(p);//这里有点bug但是bug不多。
+    printf("*****************************\n");
+    printf("%15s%15s\n",account,p->account);
+    printf("%15s%15s\n",username,p->username);
+    printf("%15s%15.2f\n",cost,p->cost);
+    printf("%15s%15.2f\n",saving,p->saving);
     if(p->grade>=0){
-        printf("%10s%10d\n",grade,p->grade);
+        printf("%15s%15d(%s:%.2f,离下一等级还需花费%.2f元)\n",grade,p->grade,costMonthly,p->costMonthly,pow(10,2*(p->grade))-p->costMonthly);
     }else{
-        printf("%10s%10s\n",grade,grade0);
+        printf("%15s%15s\n",grade,grade0);
     }
-    printf("*********************\n");
+    printf("*****************************\n");
 }
 
 pclientRequestList clientRequestListInit(){
@@ -1143,6 +1401,7 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteract
             p->pc->saving-=p->cost;
             p->pc->cost+=p->cost;
             p->pb->storeNum+=p->number;
+            p->pb->sales-=p->number;
             // pInfo->sellerSaving -= p->cost;
             printf("您已成功同意一条退货申请，还剩下这些请求待处理：\n");
             recordClientBuy(p->pc,p->pb,p->number,-p->cost,"退货成功");
@@ -1153,7 +1412,6 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteract
         p0->next=p->next;
         clientRequest_SHOW(list);
 }
-
 
 int clientRequest_SHOW(pclientRequestList list){
     pclientRequestList p=list->next;
@@ -1184,8 +1442,290 @@ void clientRequest_SHOWMORE(pclientRequestList list,int choice){
     printf("%s\n",p->info);
     printf("*************************************************退货原因说明****************************************************\n");
 }
+//**************************************************************************************************************************
+int  searchClientCost(pClientLinkedList list,float max,float min){
+    int i=0;
+    pClientLinkedList p=list->next;
+    rankClientCost(list,1);
+    while(p!=NULL)
+    {
+        if(p->cost>=min&&p->cost<=max&&p->grade>0){
+            if(i==0){
+                printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+            }
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
 
+        p=p->next;
+    }
+    return i;
+}
+int  searchClientCostMOnthly(pClientLinkedList list,float max,float min){
+    int i=0;
+    pClientLinkedList p=list->next;
+    rankClientCostMonthly(list,1);
+    while(p!=NULL)
+    {
+        if(p->costMonthly>=min&&p->costMonthly<=max&&p->grade>0){
+            if(i==0){
+                printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+            }
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
 
+        p=p->next;
+    }
+    return i;
+}
+int  searchClientGrade(pClientLinkedList list,int max,int min){
+    int i=0;
+    pClientLinkedList p=list->next;
+    rankClientCostMonthly(list,1);
+    while(p!=NULL)
+    {
+        if(p->grade>min&&p->grade<max&&p->grade>0){
+            if(i==0){
+                printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+            }
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
+
+        p=p->next;
+    }
+    return i;
+}
+int  searchClientName(pClientLinkedList list,char* name){
+    int i=0;
+    pClientLinkedList p=list->next;
+    rankClientCostMonthly(list,1);
+    while(p!=NULL)
+    {
+        if(strstr(p->username,name)!=NULL&&p->grade>0){
+            if(i==0){
+                printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+            }
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
+
+        p=p->next;
+    }
+    return i;
+}
+int  searchClientAccount(pClientLinkedList list,char* account){
+    int i=0;
+    pClientLinkedList p=list->next;
+    rankClientCostMonthly(list,1);
+    while(p!=NULL)
+    {
+        if(strstr(p->account,account)!=NULL&&p->grade>0){
+            if(i==0){
+                printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+            }
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
+
+        p=p->next;
+    }
+    return i;
+}
+//*****************************************************排序****************************************************
+int rankClientCost(pClientLinkedList list,int k){
+   pClientLinkedList p0=list->next;
+   if(p0->next==NULL) return -1;
+   pClientLinkedList p=p0->next;
+   if(p->next==NULL) return 1;
+   //一些特判。
+   clientUpgradeCheck(list);
+   while(p->next!=NULL){
+            pClientLinkedList ptr=p;
+            while(ptr!=NULL){
+                if(k*ptr->cost>k*p->cost){
+                    char account[200]={0};char username[200]={0};char password[200]={0};
+                    int grade=0;float cost=0;float costMonthly=0;float saving=0;
+                    strcpy(account,ptr->account);
+                    strcpy(username,ptr->username);
+                    strcpy(password,ptr->password);
+                    grade=ptr->grade;
+                    cost=ptr->cost;
+                    costMonthly=ptr->costMonthly;
+                    saving=ptr->saving;
+                    strcpy(ptr->account,p->account);
+                    strcpy(ptr->username,p->username);
+                    strcpy(ptr->password,p->password);
+                    ptr->cost=p->cost;
+                    ptr->costMonthly=p->costMonthly;
+                    ptr->grade=p->grade;
+                    ptr->saving=p->saving;
+                    strcpy(p->account,account);
+                    strcpy(p->username,username);
+                    strcpy(p->password,password);
+                    p->cost=cost;
+                    p->grade=grade;
+                    p->saving=saving;
+                    p->costMonthly=costMonthly;
+                }
+                ptr=ptr->next;
+            }
+            p=p->next;
+   }
+   return 1;
+}
+
+int rankClientCostMonthly(pClientLinkedList list,int k){
+   pClientLinkedList p0=list->next;
+   if(p0->next==NULL) return -1;
+   pClientLinkedList p=p0->next;
+   if(p->next==NULL) return 1;
+   //一些特判。
+   clientUpgradeCheck(list);
+   while(p->next!=NULL){
+            pClientLinkedList ptr=p;
+            while(ptr!=NULL){
+                if(k*ptr->costMonthly>k*p->costMonthly){
+                    char account[200]={0};char username[200]={0};char password[200]={0};
+                    int grade=0;float cost=0;float costMonthly=0;float saving=0;
+                    strcpy(account,ptr->account);
+                    strcpy(username,ptr->username);
+                    strcpy(password,ptr->password);
+                    grade=ptr->grade;
+                    cost=ptr->cost;
+                    costMonthly=ptr->costMonthly;
+                    saving=ptr->saving;
+                    strcpy(ptr->account,p->account);
+                    strcpy(ptr->username,p->username);
+                    strcpy(ptr->password,p->password);
+                    ptr->cost=p->cost;
+                    ptr->costMonthly=p->costMonthly;
+                    ptr->grade=p->grade;
+                    ptr->saving=p->saving;
+                    strcpy(p->account,account);
+                    strcpy(p->username,username);
+                    strcpy(p->password,password);
+                    p->cost=cost;
+                    p->grade=grade;
+                    p->saving=saving;
+                    p->costMonthly=costMonthly;
+                }
+                ptr=ptr->next;
+            }
+            p=p->next;
+   }
+   return 1;
+}
+int rankClientUsername(pClientLinkedList list,int k){
+    pClientLinkedList p0=list->next;
+    if(p0->next==NULL) return -1;
+    pClientLinkedList p=p0->next;
+    if(p->next==NULL) return 1;
+    //一些特判。
+    clientUpgradeCheck(list);
+    while(p->next!=NULL){
+             pClientLinkedList ptr=p;
+             while(ptr!=NULL){
+                 if(k*strcmp(p->username,ptr->username)>0){
+                     char account[200]={0};char username[200]={0};char password[200]={0};
+                     int grade=0;float cost=0;float costMonthly=0;float saving=0;
+                     strcpy(account,ptr->account);
+                     strcpy(username,ptr->username);
+                     strcpy(password,ptr->password);
+                     grade=ptr->grade;
+                     cost=ptr->cost;
+                     costMonthly=ptr->costMonthly;
+                     saving=ptr->saving;
+                     strcpy(ptr->account,p->account);
+                     strcpy(ptr->username,p->username);
+                     strcpy(ptr->password,p->password);
+                     ptr->cost=p->cost;
+                     ptr->costMonthly=p->costMonthly;
+                     ptr->grade=p->grade;
+                     ptr->saving=p->saving;
+                     strcpy(p->account,account);
+                     strcpy(p->username,username);
+                     strcpy(p->password,password);
+                     p->cost=cost;
+                     p->grade=grade;
+                     p->saving=saving;
+                     p->costMonthly=costMonthly;
+                 }
+                 ptr=ptr->next;
+             }
+             p=p->next;
+    }
+    return 1;
+}
+int rankClientAccount(pClientLinkedList list,int k){
+    pClientLinkedList p0=list->next;
+    if(p0->next==NULL) return -1;
+    pClientLinkedList p=p0->next;
+    if(p->next==NULL) return 1;
+    //一些特判。
+    clientUpgradeCheck(list);
+    while(p->next!=NULL){
+             pClientLinkedList ptr=p;
+             while(ptr!=NULL){
+                 if(k*strcmp(p->account,ptr->account)>0){
+                     char account[200]={0};char username[200]={0};char password[200]={0};
+                     int grade=0;float cost=0;float costMonthly=0;float saving=0;
+                     strcpy(account,ptr->account);
+                     strcpy(username,ptr->username);
+                     strcpy(password,ptr->password);
+                     grade=ptr->grade;
+                     cost=ptr->cost;
+                     costMonthly=ptr->costMonthly;
+                     saving=ptr->saving;
+                     strcpy(ptr->account,p->account);
+                     strcpy(ptr->username,p->username);
+                     strcpy(ptr->password,p->password);
+                     ptr->cost=p->cost;
+                     ptr->costMonthly=p->costMonthly;
+                     ptr->grade=p->grade;
+                     ptr->saving=p->saving;
+                     strcpy(p->account,account);
+                     strcpy(p->username,username);
+                     strcpy(p->password,password);
+                     p->cost=cost;
+                     p->grade=grade;
+                     p->saving=saving;
+                     p->costMonthly=costMonthly;
+                 }
+                 ptr=ptr->next;
+             }
+             p=p->next;
+    }
+    return 1;
+}
+
+void showClientAll(pClientLinkedList list){
+    pClientLinkedList p=list->next;
+    printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+    while(p!=NULL){
+        if(p->grade!=-1){
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+        }
+        p=p->next;
+    }
+}
+void showClientTop(pClientLinkedList list){
+    pClientLinkedList p=list->next;
+    printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
+    int i=0;
+    while(p!=NULL&&i<=5){
+        if(p->grade!=-1){
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            i++;
+        }
+        p=p->next;
+    }
+    if(i<3){
+        printf("人数不足，仅有%d条",i);
+    }
+}
+//**************************************************************************************************************************
 int getLinkTotalNodeNum(pBeverageList head)
 {
         int cnt = 0;
@@ -1353,8 +1893,139 @@ int blank(char judge[]){
 
 pInteractInfo initInteractInfo(float saving) {
     pInteractInfo ret = (pInteractInfo)malloc(sizeof(InteractInfo));
+    FILE* fp;
+    char file[] = PINFOPATH;
+    fp = fopen(file, "w");
+    fprintf(fp, "%f", saving);
     ret->sellerSaving = saving;
+    fclose(fp);
     return ret;
+}
+
+pInteractInfo initInteractInfoFromFile() {
+    FILE* fp;
+    float flt = 0;
+    char file[] = PINFOPATH;
+    fp = fopen(file, "r");
+    fscanf(fp, "%f", &flt);
+    if (fabs(flt) < 1e-6) return 0;
+    else {
+        pInteractInfo ret = (pInteractInfo)malloc(sizeof(InteractInfo));
+        ret -> sellerSaving = flt;
+        return ret;
+    }
+}
+
+pBeverageList initBeverageFromFileAuto() {
+    FILE*fp;
+    char* pEnd;
+    fp = fopen(autoSaveStore, "r");
+    int line_len = 0;
+    char ch[1000] = {0};
+
+    char file0[]=BEVEPATH1;
+    beveragePrintTime(file0);
+
+    pBeverageNode head = (pBeverageNode)malloc(sizeof(BeverageNode));
+
+    if (fp == NULL) {
+        printf("\n读取文件失败\n");
+        return NULL;
+    } else {
+        printf("\n读取文件成功\n");
+    }
+
+    int insertPos = 1;
+
+    while(fgets(ch, 1000, fp)) {
+        line_len = strlen(ch);
+        if ('\n' == ch[line_len - 1]) {
+            ch[line_len - 1] = '\0';
+            line_len--;
+            if (0 == line_len) {
+                continue;
+            }
+        }
+        // 对ch进行分割
+
+        char brand[100] = {0}; char name[100] = {0}; char time[100] = {0};  int storeNum = 0; int sales = 0; float price = 0; char info[100] = {0};
+
+        int i = 0;
+
+        char *p = strtok(ch, " ");
+        while(p=strtok(NULL, " ")){//使用第一个参数为NULL来提取子串
+            switch(i) {
+                case 0:
+                    strcpy(brand, p);
+                    break;
+                case 1:
+                    strcpy(name, p);
+                    break;
+                case 2:
+                    strcpy(time, p);
+                    break;
+                case 3:
+                    storeNum = atoi(p);
+                    break;
+                case 4:
+                    price = strtof(p, &pEnd);
+                    break;
+                case 5:
+                    strcpy(info, p);
+                    break;
+                case 6:
+                    sales = atoi(p);
+                    break;
+            }
+
+            i++;
+        }
+
+        pBeverageNode newNode = newBeverageNodeNoReduce(brand, name, time, storeNum, price, info, sales);
+
+        if (newNode == NULL) return head;
+
+        // 判断产品是否已在库存中存在
+
+        pBeverageNode curNode = head->next;
+
+        while(curNode != NULL) {
+            if (strcmp(curNode->brand, brand) == 0 && strcmp(curNode->name, name) == 0 && curNode->price == price) {
+                curNode->storeNum += storeNum;
+
+                strcat(curNode->info, info);
+                break;
+            }
+            curNode = curNode->next;
+        }
+
+        if (curNode == NULL) {
+
+            head = insert(head, newNode, insertPos);
+
+            insertPos++;
+
+        }
+    }
+
+    if (insertPos == 1) {
+        return NULL;
+    }
+
+    return head;
+}
+
+pBeverageNode newBeverageNodeNoReduce(char brand[], char name[], char time[], int storeNum, float price, char info[], int sales) {
+    pBeverageNode node = malloc(sizeof(BeverageNode));
+    strcpy(node->brand, brand);
+    strcpy(node->name, name);
+    strcpy(node->time, time);
+    node->storeNum = storeNum;
+    node->price = price;
+    strcpy(node->info, info);
+    node->next = NULL;
+    node->sales = sales;
+    return node;
 }
 
 int reduceSaving(pInteractInfo pInfo, float price) {
@@ -1378,4 +2049,66 @@ int getNum(pClientshoppingcar head){
     p = p->next;
 }
     return cnt;
+}
+int check_date(int year, int month, int day)
+{
+        int monthDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        if ( year < 0 )
+        {
+                printf("输入的年份[%d]错误\n", year);
+                return -1;
+        }
+
+        if ( month < 1 || month > 12 )
+        {
+                printf("输入的月份[%d]错误\n", month);
+                return -1;
+        }
+
+        if ( month == 2 )
+        {
+                // 判断如果是闰年,则修改二月的monthDays[1]值为29
+                if ( (year % 400 == 0) || \
+                     (year % 100 != 0 && year % 4 == 0)
+                   )
+                {
+                        monthDays[1] = 29;
+                }
+        }
+
+        if ( day < 1 || day > monthDays[month-1] )
+        {
+                printf("输入的日子[%d]错误\n", day);
+                return -1;
+        }
+
+        return 0;
+}
+
+int is_valid_date(const char *startDate)
+{
+        int start_year = 0;
+        int start_month = 0;
+        int start_day = 0;
+
+        if ( strlen(startDate) > 0 )
+        {
+                int count = 0;
+                count = sscanf(startDate, "%4d-%2d-%2d", &start_year, &start_month, &start_day);
+                if ( count != 3 )
+                {
+                        printf("输入格式错误\n");
+                        return -1;
+                }
+
+                if ( 0 != check_date(start_year, start_month, start_day) )
+                {
+                        return -1;
+                }
+
+                printf("输入成功\n");
+        }
+
+        return 0;
 }

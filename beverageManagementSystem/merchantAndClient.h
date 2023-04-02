@@ -32,6 +32,10 @@ typedef struct beverageLinkedList {
 
     char info[1000];
 
+    int sales;
+
+    int level[100];
+
     struct beverageLinkedList* next;
 
 }*pBeverageList, BeverageList;
@@ -55,7 +59,7 @@ pBeverageNode insert(pBeverageList list, pBeverageNode node, int i); // °Ñnode²å
 
 void insertLast(pBeverageList list, pBeverageNode node);
 
-pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo); // ¸ù¾İ²ÎÊı´´½¨Ò»¸öĞÂµÄ¾ÆË®½áµã
+pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeNum, float price, char info[], pInteractInfo pInfo, int sales); // ¸ù¾İ²ÎÊı´´½¨Ò»¸öĞÂµÄ¾ÆË®½áµã
 
 pBeverageList createFromFile(char* file, pInteractInfo pInfo); // ´ÓÎÄ¼ş¶ÁÈë½ø»õ¼ÇÂ¼£¬´æÈëÁ´±íÖĞ
 
@@ -68,6 +72,10 @@ pBeverageList sortBeverageBrand(pBeverageList list, int key); // ¶Ô¾ÆË®ÒÔÆ·ÅÆÎª¹
 pBeverageList sortBeverageStoreNum(pBeverageList list, int key); // ¶Ô¾ÆË®ÒÔ¿â´æÁ¿Îª¹Ø¼ü´Ê½øĞĞÅÅĞò
 
 pBeverageList sortBeveragePrice(pBeverageList list, int key); // ¶Ô¾ÆË®ÒÔ¼Û¸ñÎª¹Ø¼ü´Ê½øĞĞÅÅĞò
+
+pBeverageList sortBeverageSales(pBeverageList List, int key); // ¶Ô¾ÆË®ÒÔÏúÁ¿Îª¹Ø¼ü´Ê½øĞĞÅÅĞò
+
+pBeverageList sortBeverageSaleMoney(pBeverageList List, int key); // ¶Ô¾ÆË®ÒÔÏúÊÛ¶îÎª¹Ø¼ü´Ê½øĞĞÅÅĞò
 
 void deleteBeverage(pBeverageList list, int pos); // ¸ù¾İ±àºÅÉ¾³ıÖ¸¶¨½áµã
 
@@ -87,7 +95,17 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
 
+void showData(pBeverageList list);
+
 void writeIntoFileAuto(pBeverageList list);
+
+pInteractInfo initInteractInfoFromFile();
+
+pBeverageList initBeverageFromFileAuto();
+
+pBeverageNode newBeverageNodeNoReduce(char brand[], char name[], char time[], int storeNum, float price, char info[], int sales);
+
+pBeverageList sortBeverageSalesNoDisplay(pBeverageList list, int key);
 //************************************ÏÂÃæ¶¼ÊÇÎÒµÄÄó******************************************************
 
 typedef struct clientLinkedList {
@@ -103,6 +121,8 @@ typedef struct clientLinkedList {
     float saving;
 
     int grade;//-1/123¶ÔÓ¦ administrator ºÍ¿Í»§µÈ¼¶Ò»¶şÈı
+
+    float costMonthly;
 
     struct clientLinkedList* next;
 
@@ -129,7 +149,7 @@ pClientLinkedList clientLogout(pClientLinkedList list,char* account,int *status)
 //*******************************ÒÔÏÂÊÇ¿Í»§½øĞĞ¹ºÂò»î¶¯*****************************
 void deposit(clientNode client, float money); // ´æ¿î
 
-int buy(clientNode client, pBeverageList list, int number); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË®
+int buy(clientNode client, pBeverageList list, int number,pClientLinkedList list0); // ¶©¹ºÖ¸¶¨ÊıÁ¿µÄ¾ÆË®
 
 void clientUpgradeCheck(pClientLinkedList list);//³ıÁËÒ»¸öadministator Ö®ÍâÆäËû¶¼ÊÇÆÕÍ¨ÉÌ»§¼´¿É
 
@@ -192,6 +212,30 @@ int Check(char* ch);
 
 void reprintClient(pClientLinkedList list);
 
+void showClientAll(pClientLinkedList list);
+
+void showClientTop(pClientLinkedList list);
+
+int rankClientCost(pClientLinkedList list,int k);
+
+int rankClientCostMonthly(pClientLinkedList list,int k);
+
+int rankClientUsername(pClientLinkedList list,int k);
+
+int rankClientAccount(pClientLinkedList list,int k);
+
+
+int  searchClientCost(pClientLinkedList list,float max,float min);
+
+int  searchClientCostMOnthly(pClientLinkedList list,float max,float min);
+
+int  searchClientGrade(pClientLinkedList list,int max,int min);
+
+int  searchClientName(pClientLinkedList list,char* name);
+
+int  searchClientAccount(pClientLinkedList list,char* account);
+
+
 //*****************************************************************************
 typedef struct clientshoppingcar {
 
@@ -217,6 +261,8 @@ typedef struct clientshoppingcar {
 
 typedef pClientshoppingcar shopNode;
 
+int is_valid_date(const char *startDate);
+
 pClientshoppingcar initshoppingcar();//³õÊ¼»¯£¬´´½¨Á´±í
 
 void addshoppingcar(pClientshoppingcar Testlist,pClientLinkedList list,pBeverageList testList,int amount);//Ôö¼Ó¹ºÎï³µÄÚÈİ
@@ -238,4 +284,7 @@ void searchCarinfo(pClientshoppingcar list, char* username);
 int blank(char judge[]);
 
 int getNum(pClientshoppingcar head);
+
+int check_date(int year, int month, int day);
+
 #endif // MERCHANTANDCLIENT_H
