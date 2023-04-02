@@ -596,6 +596,7 @@ printf("请选择功能列表\n");
   printf("a.查看用户相关数据\n");
   printf("b.查看统计信息\n");
   printf("c.从本地文件初始化\n");
+  printf("d.清除过期酒水\n");
   printf("0.返回\n");
 
   char d =_getch();
@@ -1269,7 +1270,22 @@ int k;
       system("pause");
       shanghu(change, list);
       break;
-
+  case 'd':
+      if (testList == NULL) {
+          printf("请先初始化库存！\n");
+          getchar();
+          system("pause");
+          shanghu(change,list);
+      }
+      system("cls");
+      printf("请输入目标日期，会清除进货时间在这之前的酒水：\n");
+      char inDate[1000] = {0};
+      gets(inDate);
+      sweepDate(testList, inDate);
+      printf("成功清除了进货日期为%s之前的库存！", inDate);
+      system("pause");
+      shanghu(change, list);
+      break;
   default:
       printf("输入有误，请重新输入\n");
       system("pause");

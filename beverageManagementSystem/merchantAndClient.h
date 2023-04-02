@@ -106,6 +106,8 @@ pBeverageList initBeverageFromFileAuto();
 pBeverageNode newBeverageNodeNoReduce(char brand[], char name[], char time[], int storeNum, float price, char info[], int sales);
 
 pBeverageList sortBeverageSalesNoDisplay(pBeverageList list, int key);
+
+pBeverageList sweepDate(pBeverageList head, char* date);
 //************************************下面都是我的捏******************************************************
 
 typedef struct clientLinkedList {

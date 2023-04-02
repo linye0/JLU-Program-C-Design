@@ -120,6 +120,25 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     return node;
 }
 
+pBeverageList sweepDate(pBeverageList head, char* date) {
+    int pos = 1;
+    int sweepPos[500] = {0};
+    pBeverageList curNode = head->next;
+    while (curNode != NULL) {
+        if (strcmp(curNode->time, date) < 0) {
+            sweepPos[pos] = 1;
+        }
+        curNode = curNode->next;
+        pos++;
+    }
+    for (int i = 500; i >= 1; i--) {
+        if (sweepPos[i] == 1){
+            deleteBeverage(head, i);
+        }
+    }
+    return head;
+}
+
 pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
     FILE*fp;
     fp = fopen(file, "r");
