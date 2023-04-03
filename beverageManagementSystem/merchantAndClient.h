@@ -95,7 +95,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
 
-void showData(pBeverageList list);
+void showData(pBeverageList list, int Num);
 
 void writeIntoFileAuto(pBeverageList list);
 
@@ -123,6 +123,8 @@ typedef struct clientLinkedList {
     float saving;
 
     int grade;//-1/123对应 administrator 和客户等级一二三
+
+    int gradebonus;
 
     float costMonthly;
 
@@ -216,7 +218,7 @@ void reprintClient(pClientLinkedList list);
 
 void showClientAll(pClientLinkedList list);
 
-void showClientTop(pClientLinkedList list);
+int showClientTop(pClientLinkedList list);
 
 int rankClientCost(pClientLinkedList list,int k);
 
@@ -237,7 +239,9 @@ int  searchClientName(pClientLinkedList list,char* name);
 
 int  searchClientAccount(pClientLinkedList list,char* account);
 
+void clientBonusGrade(pClientLinkedList list,int number ,int grade);
 
+void clientBonusSaving(pClientLinkedList list,int number,float saving);
 //*****************************************************************************
 typedef struct clientshoppingcar {
 

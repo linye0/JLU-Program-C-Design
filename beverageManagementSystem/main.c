@@ -598,7 +598,6 @@ printf("请选择功能列表\n");
   printf("c.从本地文件初始化\n");
   printf("d.清除过期酒水\n");
   printf("0.返回\n");
-
   char d =_getch();
   switch(d)
 
@@ -1035,6 +1034,7 @@ int k;
       getchar();
       clientRequest_POP(change,v,y, pInfo);
       printf("操作成功\n");
+      reprintClient(list->next->next);
       system("pause");
       shanghu(change,list);
       break;}
@@ -1092,6 +1092,7 @@ int k;
         system("cls");
         printf("1.对商户进行排序\n");
         printf("2.对商户进行查询\n");
+        printf("3.直接查看全部商户信息\n");
         printf("0、返回\n");
         char ch=_getch();
         switch(ch){
@@ -1115,13 +1116,42 @@ int k;
               printf("********************\n");
               printf("1.输出前三项/2.输出全部\n");
               t=_getch();
+              int m=0;
               switch(st){
                   case'1':
 
                       if(rankClientCost(list,k)==-1)
                           printf("对不起 暂没有用户注册\n");
                       else{
-                          if(t=='1') showClientTop(list);else showClientAll(list);
+                          if(t=='1')
+                              m=showClientTop(list);else showClientAll(list);
+                           printf("\n************************************************\n");
+                           printf("1.对这些用户进行等级奖励\n");
+                           printf("2.对这些用户进行储蓄金奖励\n");
+                           printf("其他任意输入不执行操作\n");
+                           char bonus=_getch();
+                           int grade=0;
+                           float saving=0;
+                           switch(bonus){
+                               case'1':
+
+                                       printf("您想要提升多少等级？\n");
+                                       scanf("%d",&grade);
+                                       if(m<3) clientBonusGrade(list,m,grade); else clientBonusGrade(list,3,grade);
+                                       reprintClient(list->next->next);
+                               break;
+                               case'2':
+
+                                    printf("您想要奖励多少储蓄金？\n");
+                                    scanf("%f",&saving);
+                                    if(m<3) clientBonusSaving(list,m,saving); else clientBonusSaving(list,3,saving);
+                                    reprintClient(list->next->next);
+                               break;
+                               default:
+                               break;
+                           }
+
+
                       }
                       system("pause");
                       break;
@@ -1129,7 +1159,34 @@ int k;
                       if(rankClientCostMonthly(list,k)==-1)
                           printf("对不起 暂没有用户注册\n");
                       else{
-                          if(t=='1') showClientTop(list);else showClientAll(list);
+                          if(t=='1') m=showClientTop(list);else showClientAll(list);
+                          printf("\n************************************************\n");
+                          printf("1.对这些用户进行等级奖励\n");
+                          printf("2.对这些用户进行储蓄金奖励\n");
+                          printf("其他任意输入不执行操作\n");
+                          char bonus=_getch();
+                          int grade=0;
+                          float saving=0;
+                          switch(bonus){
+                              case'1':
+
+                                      printf("您想要提升多少等级？\n");
+                                      scanf("%d",&grade);
+                                      if(m<3) clientBonusGrade(list,m,grade); else clientBonusGrade(list,3,grade);
+                                      reprintClient(list->next->next);
+                              break;
+                              case'2':
+
+                                   printf("您想要奖励多少储蓄金？\n");
+                                   scanf("%f",&saving);
+                                   if(m<3) clientBonusSaving(list,m,saving); else clientBonusSaving(list,3,saving);
+                                   reprintClient(list->next->next);
+                              break;
+                              default:
+                              break;
+                          }
+
+
                       }
                       system("pause");
                       break;
@@ -1222,14 +1279,21 @@ int k;
                       printf("共有%d位用户满足需求\n",n3);
                       system("pause");
                       break;
+                  case '0':
+                       break;
                   default:
                       printf("输入有误，请重新输入\n");
                        system("pause");
                       break;
             }
+          break;
+          case'3':
+            system("cls");
+            showClientAll(list);
+            system("pause");
+
           default:
               printf("输入有误，请重新输入\n");
-
               break;
         }
 
@@ -1243,7 +1307,11 @@ int k;
           shanghu(change, list);
           break;
       }
-      showData(testList);
+      int num = 0;
+      printf("请问你想查看销量榜前几的统计信息？\n");
+      scanf("%d", &num);
+      getchar();
+      showData(testList, num);
       system("pause");
       shanghu(change, list);
       break;
@@ -1270,22 +1338,24 @@ int k;
       system("pause");
       shanghu(change, list);
       break;
+
   case 'd':
-      if (testList == NULL) {
-          printf("请先初始化库存！\n");
-          getchar();
-          system("pause");
-          shanghu(change,list);
-      }
-      system("cls");
-      printf("请输入目标日期，会清除进货时间在这之前的酒水：\n");
-      char inDate[1000] = {0};
-      gets(inDate);
-      sweepDate(testList, inDate);
-      printf("成功清除了进货日期为%s之前的库存！", inDate);
-      system("pause");
-      shanghu(change, list);
-      break;
+        if (testList == NULL) {
+            printf("请先初始化库存！\n");
+            getchar();
+            system("pause");
+            shanghu(change,list);
+        }
+        system("cls");
+        printf("请输入目标日期，会清除进货时间在这之前的酒水：\n");
+        char inDate[1000] = {0};
+        gets(inDate);
+        sweepDate(testList, inDate);
+        printf("成功清除了进货日期为%s之前的库存！", inDate);
+        system("pause");
+        shanghu(change, list);
+        break;
+
   default:
       printf("输入有误，请重新输入\n");
       system("pause");

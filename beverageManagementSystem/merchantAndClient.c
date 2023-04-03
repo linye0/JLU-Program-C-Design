@@ -3,14 +3,15 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <conio.h>
 #include "merchantAndClient.h"
-#define fileClientBuyLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\buy.txt"
-#define fileClientAccountLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\client.txt"
-#define fileClientInfoLog "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\clientInfo.txt"
-#define BEVEPATH1 "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\进货记录.txt"
-#define BEVEPATH2 "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\写入库存.txt"
-#define PINFOPATH "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\pInfo.txt"
-#define autoSaveStore "D:\\CSdiy\\JLU-Program-C-Design-ZhangFin\\Data\\autoSave.txt"
+#define fileClientBuyLog "D:\\CSdiy\\JLU Program C Design\\Data\\buy.txt"
+#define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
+#define fileClientInfoLog "D:\\CSdiy\\JLU Program C Design\\Data\\clientInfo.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
+#define PINFOPATH "D:\\CSdiy\\JLU Program C Design\\Data\\pInfo.txt"
+#define autoSaveStore "D:\\CSdiy\\JLU Program C Design\\Data\\autoSave.txt"
 void beveragePrintTime(char* file){
     FILE *fp;
     fp = fopen(file,"at+");
@@ -245,13 +246,14 @@ void showStaff(pBeverageList list) {
     }
 }
 
-void showData(pBeverageList list) {
+void showData(pBeverageList list, int num) {
     pBeverageList showSaleList = sortBeverageSalesNoDisplay(list, 1);
     int pos = 1;
     pBeverageNode curNode = showSaleList->next;
-    while (pos <= 3 && curNode != NULL) {
+    while (pos <= num && curNode != NULL) {
+        printf("\n");
         printf("本店销量的第%d名是:", pos);
-        printf("%-16s\n", curNode->name);
+        printf("%s  %s\n", curNode->brand, curNode->name);
         printf("它的销量是：%-8d", curNode->sales);
         int maxClientLevel = 0;
         int maxClientNum = 0;
@@ -265,6 +267,7 @@ void showData(pBeverageList list) {
         printf("该类用户对该类酒水的累计购买量是%d\n", maxClientNum);
         curNode = curNode->next;
         pos++;
+        printf("\n");
     }
 }
 
@@ -891,7 +894,7 @@ pClientLinkedList initClient(){
 
         char account[100] = {0}; char username[100] = {0};char password[100]={0};float cost=0;float saving=0;int grade=0;
         int i = 0;
-
+        int gradebonus=0;
         char *p = strtok(ch, " ");
         while(p){//使用第一个参数为NULL来提取子串
             switch(i) {
@@ -913,6 +916,8 @@ pClientLinkedList initClient(){
                 case 5:
                     grade=atoi(p);
                     break;
+                case 6:
+                    gradebonus=atoi(p);
             }
             i++;
             p=strtok(NULL," ");
@@ -931,7 +936,7 @@ pClientLinkedList initClient(){
         NewClientAccount->saving=saving;
         NewClientAccount->cost=cost;
         NewClientAccount->grade=grade;
-
+        NewClientAccount->gradebonus=gradebonus;
     }
 
     return head;
@@ -968,7 +973,7 @@ int signUp(pClientLinkedList list, char *account, char* password, char* username
     NewClientAccount->saving=saving;
     NewClientAccount->cost=cost;
     NewClientAccount->grade=grade;
-
+    NewClientAccount->gradebonus=0;
     recordClientAccount(NewClientAccount,"注册");
     printCLientArchive(NewClientAccount);
     return 0;
@@ -1024,7 +1029,7 @@ void reprintClient(pClientLinkedList list){
     clientUpgradeCheck(list);
     while(p!=NULL)
     {
-    fprintf(fp,"%15s%15s%15s%15.2f%15.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    fprintf(fp,"%15s%15s%15s%15.2f%15.2f%10d%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->gradebonus);
     p=p->next;
     }
 
@@ -1169,9 +1174,12 @@ int buy(clientNode client, pBeverageList list, int number,pClientLinkedList list
     list->sales+=number;
     (list->level)[client->grade] += number;
     clientUpgradeCheck(list0);
-    client->cost+=number*list->price*(1-0.06*(client->grade-1));
-    client->saving-=number*list->price*(1-0.06*(client->grade-1));
-    recordClientBuy(client,list,number,-number*list->price*(1-0.06*(client->grade-1)),"卖出");
+    int grade=client->grade;
+    if(client->grade+client->gradebonus>=1)
+        grade+=client->gradebonus;
+    client->cost+=number*list->price*(1-0.06*(grade-1));
+    client->saving-=number*list->price*(1-0.06*(grade-1));
+    recordClientBuy(client,list,number,-number*list->price*(1-0.06*(grade-1)),"卖出");
     clientUpgradeCheck(list0);
     return 0;
 }
@@ -1285,7 +1293,10 @@ void printClientInfo(clientNode p)
     printf("%15s%15.2f\n",cost,p->cost);
     printf("%15s%15.2f\n",saving,p->saving);
     if(p->grade>=0){
-        printf("%15s%15d(%s:%.2f,离下一等级还需花费%.2f元)\n",grade,p->grade,costMonthly,p->costMonthly,pow(10,2*(p->grade))-p->costMonthly);
+        int grade0=p->grade;
+        if(grade0+p->gradebonus>=1) grade0+=p->gradebonus;
+        printf("%15s%15d(%s:%.2f,到下一级需再花费%.2f）\n",grade,grade0,costMonthly,p->costMonthly,pow(10,2*p->grade+1)-p->costMonthly);
+
     }else{
         printf("%15s%15s\n",grade,grade0);
     }
@@ -1425,6 +1436,19 @@ void clientRequest_POP(pclientRequestList list,int choice,int operate, pInteract
             printf("您已成功同意一条退货申请，还剩下这些请求待处理：\n");
             recordClientBuy(p->pc,p->pb,p->number,-p->cost,"退货成功");
         }else{
+            {
+                printf("您是否要因为不正当理由退货对当前用户做出等级降一级处理？（当前用户等级为%d）\n若是请输入1\n",p->pc->grade);
+                char punish=_getch();
+                switch(punish){
+                      case'1':
+                      p->pc->gradebonus-=1;
+                      break;
+                      default:
+                      break;
+
+                }
+            }
+
             printf("您已成功拒绝一条退货申请，还剩下这些请求待处理：\n");
             recordClientBuy(p->pc,p->pb,p->number,0,"拒绝退货");
         }
@@ -1460,6 +1484,33 @@ void clientRequest_SHOWMORE(pclientRequestList list,int choice){
     printf("*************************************************退货原因说明****************************************************\n");
     printf("%s\n",p->info);
     printf("*************************************************退货原因说明****************************************************\n");
+}
+
+void clientBonusSaving(pClientLinkedList list,int number,float saving){
+    pClientLinkedList p=list->next;
+    while(p->grade==-1){
+        p=p->next;
+    }
+    int i=1;
+    p->saving+=saving;
+    while(i<number){
+        i++;
+        p=p->next;
+        p->saving+=saving;
+    }
+}
+void clientBonusGrade(pClientLinkedList list,int number ,int grade){
+    pClientLinkedList p=list->next;
+    while(p->grade==-1){
+        p=p->next;
+    }
+    int i=1;
+    p->gradebonus+=grade;
+    while(i<number){
+        i++;
+        p=p->next;
+        p->gradebonus+=grade;
+    }
 }
 //**************************************************************************************************************************
 int  searchClientCost(pClientLinkedList list,float max,float min){
@@ -1729,7 +1780,7 @@ void showClientAll(pClientLinkedList list){
         p=p->next;
     }
 }
-void showClientTop(pClientLinkedList list){
+int showClientTop(pClientLinkedList list){
     pClientLinkedList p=list->next;
     printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
     int i=0;
@@ -1743,6 +1794,7 @@ void showClientTop(pClientLinkedList list){
     if(i<3){
         printf("人数不足，仅有%d条",i);
     }
+    return i;
 }
 //**************************************************************************************************************************
 int getLinkTotalNodeNum(pBeverageList head)
