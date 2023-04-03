@@ -10,6 +10,7 @@
 #define fileClientInfoLog "D:\\CSdiy\\JLU Program C Design\\Data\\clientInfo.txt"
 #define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\进货记录.txt"
 #define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\写入库存.txt"
+#define DELETEPATH "D:\\CSdiy\\JLU Program C Design\\Data\\删除记录.txt"
 #define PINFOPATH "D:\\CSdiy\\JLU Program C Design\\Data\\pInfo.txt"
 #define autoSaveStore "D:\\CSdiy\\JLU Program C Design\\Data\\autoSave.txt"
 void beveragePrintTime(char* file){
@@ -58,6 +59,9 @@ void beverageRecordInit()
     fp = fopen(file3, "at+");
     char ch=fgetc(fp);
     if(ch==EOF) fprintf(fp, "0");
+    fclose(fp);
+    char file4[] = DELETEPATH;
+    fp = fopen(file4, "w");
     fclose(fp);
 }//用来打表头捏
 
@@ -635,6 +639,8 @@ pBeverageList sortBeveragePrice(pBeverageList list, int key) {
 }
 
 void deleteBeverage(pBeverageList list, int pos) {
+    char file[] = DELETEPATH;
+    FILE* fp = fopen(file, "at+");
     int i = 0;
     pBeverageNode tarNode = list;
     pBeverageNode prevTarNode = NULL;
@@ -647,9 +653,11 @@ void deleteBeverage(pBeverageList list, int pos) {
     if(prevTarNode==NULL){
         return;
     }
+    fprintf(fp, "%-16s %-16s %-16s %-16d %-16.2f %-16s\n", tarNode->brand, tarNode->name, tarNode->time, tarNode->storeNum, tarNode->price, tarNode->info);
     prevTarNode->next = tarNode->next;
     free(tarNode);
     printf("\n删除了编号为%d的酒水\n", i);
+    fclose(fp);
 }
 
 void searchBeverageInfo(pBeverageList list, char* givenInfo) {
