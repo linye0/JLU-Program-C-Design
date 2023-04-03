@@ -95,7 +95,7 @@ pBeverageList addFromFile(char* file, pBeverageList list, pInteractInfo pInfo);
 
 pBeverageNode findname(pBeverageList head, char* name);
 
-void showData(pBeverageList list, int Num);
+void showData(pBeverageList list);
 
 void writeIntoFileAuto(pBeverageList list);
 
@@ -174,7 +174,7 @@ int searchClientBuy(char *info);
 
 int getLinkTotalNodeNum(pBeverageList head);
 
-void printClientInfo(clientNode p);
+void printClientInfo(clientNode p,pClientLinkedList list);
 
 void printCLientArchive(clientNode P);
 

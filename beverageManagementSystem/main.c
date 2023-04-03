@@ -62,7 +62,7 @@ int kehu(pClientLinkedList a,pClientLinkedList list,pClientshoppingcar car, pcli
     {
     case'1':
     system("cls");
-    printClientInfo(a);//输出基本客户信息
+    printClientInfo(a,list);//输出基本客户信息
     system("pause");
     system("cls");
     kehu(a,list,car, change);
@@ -253,11 +253,11 @@ kehu(a,list,car, change);
             kehu(a,list,car, change);
             break;
         }
-        int x=infoCheck(a,s);
-        if(x==0) {
+
+
             strcat(s," ");
             strcat(s,a->account);
-        }
+
         printf("%10s%11s%10s%11s%10s%10s%10s%9s%20s\n","账号","用户名","货物品牌","货物名称","货物价格","购买数量","花费","时间","状态");
         int i=searchClientBuy(s);
            printf("总共有%d条记录\n",i);
@@ -598,6 +598,7 @@ printf("请选择功能列表\n");
   printf("c.从本地文件初始化\n");
   printf("d.清除过期酒水\n");
   printf("0.返回\n");
+
   char d =_getch();
   switch(d)
 
@@ -1279,19 +1280,22 @@ int k;
                       printf("共有%d位用户满足需求\n",n3);
                       system("pause");
                       break;
-                  case '0':
-                       break;
+                    case'0':
+                  system("pause");
+                  break;
                   default:
                       printf("输入有误，请重新输入\n");
                        system("pause");
                       break;
+
+
             }
-          break;
+            break;
           case'3':
             system("cls");
             showClientAll(list);
             system("pause");
-
+            break;
           default:
               printf("输入有误，请重新输入\n");
               break;
@@ -1307,11 +1311,7 @@ int k;
           shanghu(change, list);
           break;
       }
-      int num = 0;
-      printf("请问你想查看销量榜前几的统计信息？\n");
-      scanf("%d", &num);
-      getchar();
-      showData(testList, num);
+      showData(testList);
       system("pause");
       shanghu(change, list);
       break;
@@ -1338,7 +1338,6 @@ int k;
       system("pause");
       shanghu(change, list);
       break;
-
   case 'd':
         if (testList == NULL) {
             printf("请先初始化库存！\n");
@@ -1355,7 +1354,6 @@ int k;
         system("pause");
         shanghu(change, list);
         break;
-
   default:
       printf("输入有误，请重新输入\n");
       system("pause");

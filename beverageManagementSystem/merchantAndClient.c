@@ -8,8 +8,8 @@
 #define fileClientBuyLog "D:\\CSdiy\\JLU Program C Design\\Data\\buy.txt"
 #define fileClientAccountLog "D:\\CSdiy\\JLU Program C Design\\Data\\client.txt"
 #define fileClientInfoLog "D:\\CSdiy\\JLU Program C Design\\Data\\clientInfo.txt"
-#define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\jinhuojilu.txt"
-#define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\xierukucun.txt"
+#define BEVEPATH1 "D:\\CSdiy\\JLU Program C Design\\Data\\进货记录.txt"
+#define BEVEPATH2 "D:\\CSdiy\\JLU Program C Design\\Data\\写入库存.txt"
 #define PINFOPATH "D:\\CSdiy\\JLU Program C Design\\Data\\pInfo.txt"
 #define autoSaveStore "D:\\CSdiy\\JLU Program C Design\\Data\\autoSave.txt"
 void beveragePrintTime(char* file){
@@ -21,6 +21,25 @@ void beveragePrintTime(char* file){
     tmp_ptr = localtime(&tmpcal_ptr);
     fprintf(fp,"%d.%d.%d", (1900+tmp_ptr->tm_year), (1+tmp_ptr->tm_mon), tmp_ptr->tm_mday);//五个空格
     fclose(fp);
+}
+
+pBeverageList sweepDate(pBeverageList head, char* date) {
+    int pos = 1;
+    int sweepPos[500] = {0};
+    pBeverageList curNode = head->next;
+    while (curNode != NULL) {
+        if (strcmp(curNode->time, date) < 0) {
+            sweepPos[pos] = 1;
+        }
+        curNode = curNode->next;
+        pos++;
+    }
+    for (int i = 500; i >= 1; i--) {
+        if (sweepPos[i] == 1){
+            deleteBeverage(head, i);
+        }
+    }
+    return head;
 }
 
 void beverageRecordInit()
@@ -119,25 +138,6 @@ pBeverageNode newBeverageNode(char brand[], char name[], char time[], int storeN
     node->sales = sales;
     if (!reduceSaving(pInfo, storeNum * price)) return NULL;
     return node;
-}
-
-pBeverageList sweepDate(pBeverageList head, char* date) {
-    int pos = 1;
-    int sweepPos[500] = {0};
-    pBeverageList curNode = head->next;
-    while (curNode != NULL) {
-        if (strcmp(curNode->time, date) < 0) {
-            sweepPos[pos] = 1;
-        }
-        curNode = curNode->next;
-        pos++;
-    }
-    for (int i = 500; i >= 1; i--) {
-        if (sweepPos[i] == 1){
-            deleteBeverage(head, i);
-        }
-    }
-    return head;
 }
 
 pBeverageList createFromFile(char* file, pInteractInfo pInfo) {
@@ -246,14 +246,13 @@ void showStaff(pBeverageList list) {
     }
 }
 
-void showData(pBeverageList list, int num) {
+void showData(pBeverageList list) {
     pBeverageList showSaleList = sortBeverageSalesNoDisplay(list, 1);
     int pos = 1;
     pBeverageNode curNode = showSaleList->next;
-    while (pos <= num && curNode != NULL) {
-        printf("\n");
+    while (pos <= 3 && curNode != NULL) {
         printf("本店销量的第%d名是:", pos);
-        printf("%s  %s\n", curNode->brand, curNode->name);
+        printf("%-16s\n", curNode->name);
         printf("它的销量是：%-8d", curNode->sales);
         int maxClientLevel = 0;
         int maxClientNum = 0;
@@ -267,7 +266,6 @@ void showData(pBeverageList list, int num) {
         printf("该类用户对该类酒水的累计购买量是%d\n", maxClientNum);
         curNode = curNode->next;
         pos++;
-        printf("\n");
     }
 }
 
@@ -990,7 +988,7 @@ void printCLientArchive(clientNode p){
     FILE *fp;
 
     fp = fopen(fileClientInfoLog,"at+");
-    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade);
+    fprintf(fp,"%15s%15s%15s%10.2f%10.2f%10d%10d\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->gradebonus);
     fclose(fp);
 }
 
@@ -1093,7 +1091,7 @@ void deposit(clientNode client, float money){
 
 void clientUpgradeCheck(pClientLinkedList list)
 {
-    pClientLinkedList p=list;
+    pClientLinkedList p=list->next;
     while(p!=NULL)
     {
         p->costMonthly=0;
@@ -1121,7 +1119,7 @@ void clientUpgradeCheck(pClientLinkedList list)
         }
         // 对ch进行分割
 
-        char account[100] = {0}; int costMonthly=0;char time1[200]={0};
+        char account[100] = {0}; float costMonthly=0;char time1[200]={0};
         pClientLinkedList ptr=NULL;
         int i = 0;
 
@@ -1129,7 +1127,7 @@ void clientUpgradeCheck(pClientLinkedList list)
         while(str){//使用第一个参数为NULL来提取子串
             switch(i) {
                 case 0:
-                    strcpy(account, str);
+                    strcpy(account,str);
                     ptr=clientSearch(list,account);
                     break;
 
@@ -1151,14 +1149,14 @@ void clientUpgradeCheck(pClientLinkedList list)
        {
            ptr->costMonthly-=costMonthly;
            if(costMonthly<0){
-                while(ptr->costMonthly>pow(10,2*list->grade))
+                while(ptr->costMonthly>pow(10,2*ptr->grade))
                 {
-                    list->grade++;
+                    ptr->grade++;
                 }
            }else{
-               while(ptr->costMonthly<pow(10,2*list->grade)&&(ptr->grade>1))
+               while((ptr->costMonthly<pow(10,2*ptr->grade-1))&&(ptr->grade>1))
                {
-                   list->grade--;
+                   ptr->grade--;
                }
            }
        }
@@ -1277,7 +1275,7 @@ int searchClientBuy(char *info)
     return sum;
 }
 //改过了 复制粘贴 传参不变
-void printClientInfo(clientNode p)
+void printClientInfo(clientNode p,pClientLinkedList list)
 {
     char account[]="账号";
     char username[]="用户名";
@@ -1286,16 +1284,16 @@ void printClientInfo(clientNode p)
     char grade[]="用户等级";
     char costMonthly[]="本月已花销";
     char grade0[]="管理员";
-    clientUpgradeCheck(p);//这里有点bug但是bug不多。
+    clientUpgradeCheck(list);//这里有点bug但是bug不多。
     printf("*****************************\n");
     printf("%15s%15s\n",account,p->account);
     printf("%15s%15s\n",username,p->username);
     printf("%15s%15.2f\n",cost,p->cost);
     printf("%15s%15.2f\n",saving,p->saving);
     if(p->grade>=0){
-        int grade0=p->grade;
-        if(grade0+p->gradebonus>=1) grade0+=p->gradebonus;
-        printf("%15s%15d(%s:%.2f,到下一级需再花费%.2f）\n",grade,grade0,costMonthly,p->costMonthly,pow(10,2*p->grade+1)-p->costMonthly);
+        int grade2=p->grade;
+        if(grade2+p->gradebonus>=1) grade2+=p->gradebonus;
+        printf("%15s%15d(%s:%.2f,到下一级需再花费%.2f）\n",grade,grade2,costMonthly,p->costMonthly,pow(10,2*p->grade+1)-p->costMonthly);
 
     }else{
         printf("%15s%15s\n",grade,grade0);
@@ -1638,6 +1636,9 @@ int rankClientCost(pClientLinkedList list,int k){
                     p->grade=grade;
                     p->saving=saving;
                     p->costMonthly=costMonthly;
+                    int bonus=p->gradebonus;
+                    p->gradebonus=ptr->gradebonus;
+                    ptr->gradebonus=bonus;
                 }
                 ptr=ptr->next;
             }
@@ -1680,6 +1681,9 @@ int rankClientCostMonthly(pClientLinkedList list,int k){
                     p->grade=grade;
                     p->saving=saving;
                     p->costMonthly=costMonthly;
+                    int bonus=p->gradebonus;
+                    p->gradebonus=ptr->gradebonus;
+                    ptr->gradebonus=bonus;
                 }
                 ptr=ptr->next;
             }
@@ -1721,6 +1725,9 @@ int rankClientUsername(pClientLinkedList list,int k){
                      p->grade=grade;
                      p->saving=saving;
                      p->costMonthly=costMonthly;
+                     int bonus=p->gradebonus;
+                     p->gradebonus=ptr->gradebonus;
+                     ptr->gradebonus=bonus;
                  }
                  ptr=ptr->next;
              }
@@ -1762,6 +1769,9 @@ int rankClientAccount(pClientLinkedList list,int k){
                      p->grade=grade;
                      p->saving=saving;
                      p->costMonthly=costMonthly;
+                     int bonus=p->gradebonus;
+                     p->gradebonus=ptr->gradebonus;
+                     ptr->gradebonus=bonus;
                  }
                  ptr=ptr->next;
              }
@@ -1775,7 +1785,9 @@ void showClientAll(pClientLinkedList list){
     printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
     while(p!=NULL){
         if(p->grade!=-1){
-            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            int grade=p->grade;
+            if(grade+p->gradebonus>1) grade+=p->gradebonus;
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,grade,p->costMonthly);
         }
         p=p->next;
     }
@@ -1784,9 +1796,11 @@ int showClientTop(pClientLinkedList list){
     pClientLinkedList p=list->next;
     printf("%15s%15s%15s%20s%20s%10s%20s\n","账号","用户名","密码","历史总花费","存款","等级","本月花费");
     int i=0;
-    while(p!=NULL&&i<=5){
+    while(p!=NULL&&i<3){
         if(p->grade!=-1){
-            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,p->grade,p->costMonthly);
+            int grade=p->grade;
+            if(grade+p->gradebonus>1) grade+=p->gradebonus;
+            printf("%15s%15s%15s%20.2f%20.2f%10d%20.2f\n",p->account,p->username,p->password,p->cost,p->saving,grade,p->costMonthly);
             i++;
         }
         p=p->next;
